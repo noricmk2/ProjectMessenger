@@ -1,3 +1,7 @@
 Library/
 Temp/
 UnityPackageManager/
+.vs/
+obj/
+Assembly-CSharp.csproj
+ProjectMessenger.sln
