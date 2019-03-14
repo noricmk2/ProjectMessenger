@@ -11,8 +11,8 @@ public class ObjectPool<T>
     private readonly Action<T> m_PushAction;
     private readonly Action<T> m_PopAction;
 
-    private Stack<T> m_Pool;
-    private List<T> m_RestoreList;
+    private Stack<T> m_Pool = new Stack<T>();
+    private List<T> m_RestoreList = new List<T>();
 
     public int Count
     {

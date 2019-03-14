@@ -57,7 +57,7 @@ public class WindowBase : MonoBehaviour
     protected virtual void Close() { }
     protected virtual void Refresh() { }
 
-    protected static WindowBase OpenWindow(eWINDOW eWindow, Transform parent, bool bOverlap)
+    public static WindowBase OpenWindow(eWINDOW eWindow, Transform parent, bool bOverlap)
     {
 #if UNITY_EDITOR
         if (!m_WindowInfoDic.ContainsKey(eWindow))
