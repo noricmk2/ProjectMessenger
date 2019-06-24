@@ -6,7 +6,8 @@ public class WindowBase : MonoBehaviour
 {
     public enum eWINDOW
     {
-        MainWindow,
+        Title,
+        ChatMain,
     }
 
     public class WindowData
@@ -45,7 +46,8 @@ public class WindowBase : MonoBehaviour
 
     static Dictionary<eWINDOW, WindowData> m_WindowInfoDic = new Dictionary<eWINDOW, WindowData>()
     {
-        { eWINDOW.MainWindow,  new WindowData(eWINDOW.MainWindow, "UI/window_main") },
+        { eWINDOW.ChatMain,  new WindowData(eWINDOW.ChatMain, "Prefab/UI/window_chat_main") },
+        { eWINDOW.Title,  new WindowData(eWINDOW.ChatMain, "Prefab/UI/window_title") },
     };
 
     public eWINDOW WindowType { get; private set; }
@@ -66,6 +68,7 @@ public class WindowBase : MonoBehaviour
             return null;
         }
 #endif
+
         WindowBase addObj = m_WindowInfoDic[eWindow].Instance;
         addObj.Overlap = bOverlap;
         if (!m_CurrentWindowStack.Contains(addObj))
@@ -81,13 +84,32 @@ public class WindowBase : MonoBehaviour
             addObj.transform.localPosition = new Vector3();
             addObj.gameObject.transform.SetAsLastSibling();
             m_CurrentWindowStack.Push(addObj);
-            addObj.Open();
 
             RectTransform rectTrans = addObj.gameObject.GetComponent<RectTransform>();
             rectTrans.anchorMin = Vector2.zero;
             rectTrans.anchorMax = Vector2.one;
             rectTrans.sizeDelta = Vector2.zero;
+
+            addObj.Open();
         }
+        return addObj;
+    }
+
+    public static WindowBase OpenWindowWithFade(eWINDOW eWindow, Transform parent, bool bOverlap)
+    {
+#if UNITY_EDITOR
+        if (!m_WindowInfoDic.ContainsKey(eWindow))
+        {
+            MSLog.LogError("Window is null - " + eWindow.ToString());
+            return null;
+        }
+#endif
+        WindowBase addObj = m_WindowInfoDic[eWindow].Instance;
+        AllwaysTopCanvas.Instance.SetFadeAnimation(0.5f, () =>
+        {
+            OpenWindow(eWindow, parent, bOverlap);
+        });
+
         return addObj;
     }
 

@@ -8,6 +8,7 @@ public abstract class SceneBase
     {
         INTRO,
         INGAME,
+        CHAT,
         LENGTH
     }
 
@@ -30,6 +31,9 @@ public abstract class SceneBase
                 break;
             case eScene.INGAME:
                 ret = new IngameScene();
+                break;
+            case eScene.CHAT:
+                ret = new ChatScene();
                 break;
         }
         return ret;

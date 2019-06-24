@@ -24,6 +24,7 @@ namespace MSUtil
 
     public class ColorPalette        //컬러 상수값
     {
-
+        public static readonly Color FADE_OUT_BLACK = new Color(0, 0, 0, 1); 
+        public static readonly Color FADE_IN_BLACK = new Color(0, 0, 0, 0); 
     }
 }

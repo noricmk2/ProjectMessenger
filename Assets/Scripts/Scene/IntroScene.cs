@@ -12,9 +12,14 @@ public class IntroScene : SceneBase
     public override IEnumerator Enter_C()
     {
         //TODO: 시트 로딩 & 데이터 처리
+        var count = (int)DataManager.eSheetType.Length;
+#if UNITY_EDITOR
 
-        yield return new WaitForSeconds(2.0f);
+        for (int i = 0; i < count; ++i)
+            yield return DataManager.Instance.LoadFromGoogleSheet((DataManager.eSheetType)i);
+#else
 
+#endif
         MSSceneManager.Instance.EnterScene(eScene.INGAME);
     }
 
