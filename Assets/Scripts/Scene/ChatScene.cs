@@ -13,7 +13,7 @@ public class ChatScene : SceneBase
     {
         var chatObj = ResourcesManager.Instantiate("Prefab/ChatObject").GetComponent<ChatObject>();
         var chatWindow = WindowBase.OpenWindowWithFade(WindowBase.eWINDOW.ChatMain, chatObj.WindowParent, true) as Window_Chat_Main;
-        chatWindow.Init("1");
+        chatWindow.Init();
         yield break;
     }
 

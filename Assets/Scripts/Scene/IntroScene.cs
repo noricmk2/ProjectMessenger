@@ -20,6 +20,7 @@ public class IntroScene : SceneBase
 #else
 
 #endif
+        UserInfo.Instance.InitUserInfo();
         MSSceneManager.Instance.EnterScene(eScene.INGAME);
     }
 

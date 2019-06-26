@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MSUtil;
 
 public partial class DataManager : Singleton<DataManager>
 {
@@ -8,15 +9,19 @@ public partial class DataManager : Singleton<DataManager>
 
     public enum eSheetType
     {
+        SystemText,
         StoryText,
         Chapter,
+        ChapterTextData,
         Length
     }
 
     private Dictionary<eSheetType, string> m_SheetIDDic = new Dictionary<eSheetType, string>()
     {
+        { eSheetType.SystemText , "0" },
         { eSheetType.StoryText , "1675975552" },
         { eSheetType.Chapter , "715858755" },
+        { eSheetType.ChapterTextData , "754458555" },
     };
 
     public Coroutine LoadFromGoogleSheet(eSheetType type)
@@ -36,11 +41,17 @@ public partial class DataManager : Singleton<DataManager>
         {
             switch (type)
             {
+                case eSheetType.SystemText:
+                    ParseTable_String(m_SystemTextDic, www.text);
+                    break;
                 case eSheetType.StoryText:
                     ParseTable_String(m_StoryTextDic, www.text);
                     break;
                 case eSheetType.Chapter:
-                    ParseTable_String(m_ChapterDataDic, www.text);
+                    ParseTable_Int(m_ChapterDataDic, www.text);
+                    break;
+                case eSheetType.ChapterTextData:
+                    ParseTable_Int(m_ChapterTextDataDic, www.text);
                     break;
             }
         }
@@ -110,7 +121,7 @@ public partial class DataManager : Singleton<DataManager>
     #region StoryText
     private Dictionary<string, TextData> m_StoryTextDic = new Dictionary<string, TextData>();
 
-    public string GetText(string id, TextData.eLanguage langType)
+    public string GetStoryText(string id, eLanguage langType)
     {
         string result = "";
         if (m_StoryTextDic.ContainsKey(id))
@@ -119,14 +130,67 @@ public partial class DataManager : Singleton<DataManager>
     }
     #endregion
 
-    #region ChapterData
-    private Dictionary<string, ChapterData> m_ChapterDataDic = new Dictionary<string, ChapterData>();
+    #region SystemText
+    private Dictionary<string, TextData> m_SystemTextDic = new Dictionary<string, TextData>();
 
-    public ChapterData GetChapterData(string id)
+    public string GetSystemText(string id, eLanguage langType)
+    {
+        string result = "";
+        if (m_SystemTextDic.ContainsKey(id))
+            result = m_SystemTextDic[id].GetText(langType);
+        return result;
+    }
+    #endregion
+
+    #region ChapterData
+    private Dictionary<int, ChapterData> m_ChapterDataDic = new Dictionary<int, ChapterData>();
+
+    public ChapterData GetChapterData(int id)
     {
         if (m_ChapterDataDic.ContainsKey(id))
             return m_ChapterDataDic[id];
         return null;
+    }
+
+    public ChapterData GetChapterData(eChapterTag chapter)
+    {
+        ChapterData data = null;
+        var iter = m_ChapterDataDic.GetEnumerator();
+        while (iter.MoveNext())
+        {
+            if (iter.Current.Value.ChapterTag == chapter)
+            {
+                data = iter.Current.Value;
+                break;
+            }
+        }
+        return data;
+    }
+    #endregion
+
+    #region ChapterTextData
+    private Dictionary<int, ChapterTextData> m_ChapterTextDataDic = new Dictionary<int, ChapterTextData>();
+
+    public ChapterTextData GetChapterTextData(int id)
+    {
+        if (m_ChapterTextDataDic.ContainsKey(id))
+            return m_ChapterTextDataDic[id];
+        return null;
+    }
+
+    public ChapterTextData GetChapterTextData(eEventTag eventTag)
+    {
+        ChapterTextData data = null;
+        var iter = m_ChapterTextDataDic.GetEnumerator();
+        while (iter.MoveNext())
+        {
+            if (iter.Current.Value.EventTag == eventTag)
+            {
+                data = iter.Current.Value;
+                break;
+            }
+        }
+        return data;
     }
     #endregion
 }

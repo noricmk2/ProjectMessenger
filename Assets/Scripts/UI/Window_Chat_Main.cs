@@ -12,12 +12,28 @@ public class Window_Chat_Main : WindowBase
     #endregion
     private DataManager.ChapterData m_CurrentChapterData;
 
-    public void Init(string chapterID)
+    public void Init()
     {
-        m_CurrentChapterData = DataManager.Instance.GetChapterData(chapterID);
-        if (m_CurrentChapterData != null)
+        m_CurrentChapterData = DataManager.Instance.GetChapterData(UserInfo.Instance.CurrentGameData.CurrentChapterID);
+
+
+
+        StartCoroutine(Update_C());
+    }
+
+    IEnumerator Update_C()
+    {
+        while(true)
         {
 
+
+            yield return null;
         }
+    }
+
+    protected override void Close()
+    {
+        StopCoroutine(Update_C());
+        base.Close();
     }
 }
