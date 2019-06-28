@@ -5,3 +5,4 @@ UnityPackageManager/
 obj/
 Assembly-CSharp.csproj
 ProjectMessenger.sln
+Assembly-CSharp-Editor.csproj

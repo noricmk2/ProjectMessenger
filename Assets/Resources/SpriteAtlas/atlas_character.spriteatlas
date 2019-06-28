@@ -31,12 +31,26 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 29963b21b1a073143b7cf7772a035fe8, type: 3}
-    totalSpriteSurfaceArea: 15408
+    totalSpriteSurfaceArea: 189994
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
+  - {fileID: 21300000, guid: eedf83d394398f949830587b3911f9ee, type: 3}
+  - {fileID: 21300000, guid: 17352b04700f1834a9aab9303bf80c1d, type: 3}
+  - {fileID: 21300000, guid: 6ac25cc489549c64b9aa9580537d30f4, type: 3}
+  - {fileID: 21300000, guid: 1774e175c24f765459797cb478c353fb, type: 3}
+  - {fileID: 21300000, guid: cea14327f040383468b1ad812287b363, type: 3}
+  - {fileID: 21300000, guid: 6d524048ae2cf05429e6c79310fc0921, type: 3}
+  - {fileID: 21300000, guid: 2b3cbee895e49af4baaa16edebe08c9c, type: 3}
   - {fileID: 21300000, guid: 8ecdc84aa3e3ca94c9d7500945e0bd5b, type: 3}
   m_PackedSpriteNamesToIndex:
+  - nika_portrait_angry_1
+  - nika_portrait_confuse_1
+  - nika_portrait_idle_2
+  - nika_portrait_laugh_1
+  - nika_portrait_idle_1
+  - nika_portrait_idle_3
+  - nika_portrait_sigh_1
   - nika_stand_default
   m_Tag: atlas_character
   m_IsVariant: 0

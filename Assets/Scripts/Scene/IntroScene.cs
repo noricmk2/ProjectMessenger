@@ -21,6 +21,7 @@ public class IntroScene : SceneBase
 
 #endif
         UserInfo.Instance.InitUserInfo();
+        ObjectFactory.Instance.CreateAllPool();
         MSSceneManager.Instance.EnterScene(eScene.INGAME);
     }
 

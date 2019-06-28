@@ -13,6 +13,7 @@ public partial class DataManager : Singleton<DataManager>
         StoryText,
         Chapter,
         ChapterTextData,
+        Character,
         Length
     }
 
@@ -22,6 +23,7 @@ public partial class DataManager : Singleton<DataManager>
         { eSheetType.StoryText , "1675975552" },
         { eSheetType.Chapter , "715858755" },
         { eSheetType.ChapterTextData , "754458555" },
+        { eSheetType.Character , "651796308" },
     };
 
     public Coroutine LoadFromGoogleSheet(eSheetType type)
@@ -52,6 +54,9 @@ public partial class DataManager : Singleton<DataManager>
                     break;
                 case eSheetType.ChapterTextData:
                     ParseTable_Int(m_ChapterTextDataDic, www.text);
+                    break;
+                case eSheetType.Character:
+                    ParseTable_Int(m_CharacterDataDic, www.text);
                     break;
             }
         }
@@ -119,7 +124,7 @@ public partial class DataManager : Singleton<DataManager>
 
 
     #region StoryText
-    private Dictionary<string, TextData> m_StoryTextDic = new Dictionary<string, TextData>();
+    private Dictionary<string, StoryTextData> m_StoryTextDic = new Dictionary<string, StoryTextData>();
 
     public string GetStoryText(string id, eLanguage langType)
     {
@@ -131,7 +136,7 @@ public partial class DataManager : Singleton<DataManager>
     #endregion
 
     #region SystemText
-    private Dictionary<string, TextData> m_SystemTextDic = new Dictionary<string, TextData>();
+    private Dictionary<string, SystemTextData> m_SystemTextDic = new Dictionary<string, SystemTextData>();
 
     public string GetSystemText(string id, eLanguage langType)
     {
@@ -191,6 +196,28 @@ public partial class DataManager : Singleton<DataManager>
             }
         }
         return data;
+    }
+    #endregion
+
+    #region CharacterData
+    private Dictionary<int, CharacterData> m_CharacterDataDic = new Dictionary<int, CharacterData>();
+
+    public CharacterData GetCharacterData(int id)
+    {
+        if (m_CharacterDataDic.ContainsKey(id))
+            return m_CharacterDataDic[id];
+        return null;
+    }
+
+    public CharacterData GetCharacterData(string name)
+    {
+        var iter = m_CharacterDataDic.GetEnumerator();
+        while (iter.MoveNext())
+        {
+            if (iter.Current.Value.CharacterName == name)
+                return iter.Current.Value;
+        }
+        return null;
     }
     #endregion
 }

@@ -6,11 +6,21 @@ public class TextManager : Singleton<TextManager>
 {
     public static string GetStoryText(string id)
     {
-        return DataManager.Instance.GetStoryText(id, (MSUtil.eLanguage)UserInfo.Instance.UserData.CurrentLanguageType);
+        var result = DataManager.Instance.GetStoryText(id, (MSUtil.eLanguage)UserInfo.Instance.UserData.CurrentLanguageType);
+
+        if (string.IsNullOrEmpty(result))
+            MSLog.LogError("no text content:" + id);
+
+        return result;
     }
 
     public static string GetSystemText(string id)
     {
-        return DataManager.Instance.GetSystemText(id, (MSUtil.eLanguage)UserInfo.Instance.UserData.CurrentLanguageType);
+        var result = DataManager.Instance.GetSystemText(id, (MSUtil.eLanguage)UserInfo.Instance.UserData.CurrentLanguageType);
+
+        if (string.IsNullOrEmpty(result))
+            MSLog.LogError("no text content:" + id);
+
+        return result;
     }
 }

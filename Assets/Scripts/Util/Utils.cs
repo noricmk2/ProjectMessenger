@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace MSUtil
 {
@@ -23,6 +24,22 @@ namespace MSUtil
         English,
         Japanese,
         Length
+    }
+
+    public enum eCharacterState
+    {
+        Idle,
+        Laugh,
+        Angry,
+        Confuse,
+        Sigh,
+    }
+
+    public enum eChatPosition
+    {
+        Center,
+        Left,
+        Right,
     }
     #endregion
 
@@ -113,6 +130,8 @@ namespace MSUtil
     {
         public static readonly Vector2 DEFULT_SCREEN_SIZE = new Vector2(1280f, 720f); // 기본 화면사이즈
         public static readonly string LAST_CHAPTER_SAVE_KEY = "LAST_CHAPTER"; // 최근 플레이 챕터 세이브 키값
+
+        public static readonly string CHARACTER_NIKA = "nika"; //니카 캐릭터명;
     }
 
     public class ColorPalette        //컬러 상수값

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class ChatScene : SceneBase
 {
+    private ChatObject m_ChatObject;
+
     public ChatScene() : base(eScene.CHAT)
     {
 
@@ -11,14 +13,17 @@ public class ChatScene : SceneBase
 
     public override IEnumerator Enter_C()
     {
-        var chatObj = ResourcesManager.Instantiate("Prefab/ChatObject").GetComponent<ChatObject>();
-        var chatWindow = WindowBase.OpenWindowWithFade(WindowBase.eWINDOW.ChatMain, chatObj.WindowParent, true) as Window_Chat_Main;
-        chatWindow.Init();
+        ObjectFactory.Instance.CreateChatObjectPool();
+        m_ChatObject = ResourcesManager.Instantiate("Prefab/ChatObject").GetComponent<ChatObject>();
+        m_ChatObject.Init();
         yield break;
     }
 
     public override IEnumerator Exit_C()
     {
-        throw new System.NotImplementedException();
+        if (m_ChatObject != null)
+            m_ChatObject.Release();
+        ObjectFactory.Instance.Release();
+        yield break;
     }
 }

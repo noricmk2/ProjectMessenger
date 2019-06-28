@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class ObjectPool<T>
+public class ObjectPool<T> where T : IPoolObjectBase
 {
     public delegate T CreateAction();
 
