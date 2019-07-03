@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using MSUtil;
 
 public class ExpandTextOutput : MonoBehaviour
 {
@@ -9,9 +10,15 @@ public class ExpandTextOutput : MonoBehaviour
     public TextMeshProUGUI Text;
     #endregion
     private float TYPE_WRITE_SPEED = 0.1f;
+    public delegate IEnumerator TextEventDelegate(DataManager.TextEventData data);
 
+    private float m_DeltaTime = 0;
     private eTextFlag m_TextFlag;
     private string m_CurrentString;
+    private TextEventDelegate m_EventAction;
+    private System.Action m_TextEndAction;
+    private Dictionary<int, DataManager.TextEventData> m_TextEventTagDic;
+    private Coroutine m_TypeWriteCoroutine;
 
     [System.Flags]
     public enum eTextFlag
@@ -31,17 +38,28 @@ public class ExpandTextOutput : MonoBehaviour
         m_TextFlag = m_TextFlag | flag;
     }
 
-    public void SetText(string content, float fontSize = 0)
+    public void SetText(string content, Dictionary<int, DataManager.TextEventData> tagDic, TextEventDelegate eventAction = null, System.Action textEndAction = null)
     {
+        m_EventAction = eventAction;
         m_CurrentString = content;
-        Text.fontSize = fontSize;
+        m_TextEventTagDic = tagDic;
+        m_TextEndAction = textEndAction;
     }
 
     public void PlayText()
     {
+        m_DeltaTime = 0;
+        if (m_TypeWriteCoroutine != null)
+            StopCoroutine(m_TypeWriteCoroutine);
         if ((m_TextFlag ^ eTextFlag.TYPE_WRITE_EFFECT) == eTextFlag.TYPE_WRITE_EFFECT)
         {
-            StartCoroutine(TypeWrite_C());
+            m_TypeWriteCoroutine = StartCoroutine(TypeWrite_C());
+        }
+        else
+        {
+            Text.text = m_CurrentString;
+            if (m_TextEventTagDic != null && m_EventAction != null && m_TextEventTagDic.ContainsKey(m_CurrentString.Length))
+                m_EventAction(m_TextEventTagDic[m_CurrentString.Length]);
         }
     }
 
@@ -51,13 +69,31 @@ public class ExpandTextOutput : MonoBehaviour
         var tempStrBuilder = new System.Text.StringBuilder();
         while (idx < m_CurrentString.Length && m_CurrentString.Length > 0)
         {
-            tempStrBuilder.Append(m_CurrentString[idx]);
-            ++idx;
+            m_DeltaTime += Time.deltaTime;
+            if (m_DeltaTime >= TYPE_WRITE_SPEED)
+            {
+                if (m_TextEventTagDic != null && m_EventAction != null)
+                {
+                    if (m_TextEventTagDic.ContainsKey(idx))
+                        yield return m_EventAction(m_TextEventTagDic[idx]);
+                }
 
-            Text.text = tempStrBuilder.ToString();
+                tempStrBuilder.Append(m_CurrentString[idx]);
+                ++idx;
 
-            yield return new WaitForSeconds(TYPE_WRITE_SPEED);
+                Text.text = tempStrBuilder.ToString();
+                m_DeltaTime = 0;
+            }
+            yield return null;
         }
+        if (m_TextEventTagDic != null && m_EventAction != null)
+        {
+            if (m_TextEventTagDic.ContainsKey(m_CurrentString.Length))
+                m_EventAction(m_TextEventTagDic[m_CurrentString.Length]);
+        }
+        if (m_TextEndAction != null)
+            m_TextEndAction();
+
     }
 
     public void Reset()

@@ -2,19 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using MSUtil;
 
 public class CharacterObject : MonoBehaviour, IPoolObjectBase
 {
     #region Inspector
-    public Image CharacterImage;
+    public SpriteAnimation CharacterAnimation;
     public RectTransform BubbleParent;
     public SpeechBubble Bubble;
     #endregion
     public DataManager.CharacterData CurrentCharacterData { get; private set; }
 
-    public void Init(int characterID)
+    public void Init(int characterID, Transform parent)
     {
+        transform.Init(parent);
         CurrentCharacterData = DataManager.Instance.GetCharacterData(characterID);
+        Bubble.Init(this);
+        CharacterAnimation.Init(CurrentCharacterData);
     }
 
     public void SetFocus(bool focusOn)

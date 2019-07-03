@@ -31,12 +31,14 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 7a16d2f5f8c3c68498649a3edd0bd3f9, type: 3}
-    totalSpriteSurfaceArea: 1808894
+    totalSpriteSurfaceArea: 1793320
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: f6919e105f967f94f90aea721f693ac1, type: 3}
+  - {fileID: 21300000, guid: e05fd564219427e4bb645a0c6481bad3, type: 3}
   - {fileID: 21300000, guid: f8f2ae25d76295a459108211d89b8ec4, type: 3}
+  - {fileID: 21300000, guid: 781e43751867c1f4fb4c7373a640b9b7, type: 3}
   - {fileID: 21300000, guid: 863018e5ce3df9c4a972273e2d5c1708, type: 3}
   - {fileID: 21300000, guid: 78d321879f99b2846abedb36b8bfd723, type: 3}
   - {fileID: 21300000, guid: 1a878c187122107479ce17b09b61daf4, type: 3}
@@ -53,7 +55,9 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 75ebd0ee7fc5e9b49a24c1c89e5f49b8, type: 3}
   m_PackedSpriteNamesToIndex:
   - ui_title_neon_1
+  - ui_cursor
   - ui_1
+  - ui_blur
   - ui_11
   - ui_5
   - ui_6

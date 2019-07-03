@@ -107,7 +107,8 @@ public class WindowBase : MonoBehaviour
         WindowBase addObj = m_WindowInfoDic[eWindow].Instance;
         AllwaysTopCanvas.Instance.SetFadeAnimation(0.5f, () =>
         {
-            OpenWindow(eWindow, parent, bOverlap);
+            var window = OpenWindow(eWindow, parent, bOverlap);
+            window.AfterOpen();
         });
 
         return addObj;

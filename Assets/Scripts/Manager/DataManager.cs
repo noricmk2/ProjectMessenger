@@ -126,6 +126,13 @@ public partial class DataManager : Singleton<DataManager>
     #region StoryText
     private Dictionary<string, StoryTextData> m_StoryTextDic = new Dictionary<string, StoryTextData>();
 
+    public StoryTextData GetStoryTextData(string id)
+    {
+        if (m_StoryTextDic.ContainsKey(id))
+            return m_StoryTextDic[id];
+        return null;
+    }
+
     public string GetStoryText(string id, eLanguage langType)
     {
         string result = "";
@@ -209,12 +216,12 @@ public partial class DataManager : Singleton<DataManager>
         return null;
     }
 
-    public CharacterData GetCharacterData(string name)
+    public CharacterData GetCharacterData(eCharacter character)
     {
         var iter = m_CharacterDataDic.GetEnumerator();
         while (iter.MoveNext())
         {
-            if (iter.Current.Value.CharacterName == name)
+            if (iter.Current.Value.CharacterType == character)
                 return iter.Current.Value;
         }
         return null;

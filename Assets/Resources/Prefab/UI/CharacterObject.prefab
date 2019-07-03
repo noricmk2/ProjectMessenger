@@ -50,7 +50,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d05184201a3d23478546dac9030eba1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CharacterImage: {fileID: 1034756001476365955}
+  CharacterAnimation: {fileID: 4693577991101241574}
   BubbleParent: {fileID: 9132920788917479593}
   Bubble: {fileID: 4490883782349934986}
 --- !u!1 &4288081255549346009
@@ -86,7 +86,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 257, y: 306}
+  m_AnchoredPosition: {x: -300, y: 306}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &5359573758544670020
@@ -100,6 +100,7 @@ GameObject:
   - component: {fileID: 7113307877026752405}
   - component: {fileID: 5155175658931346305}
   - component: {fileID: 1034756001476365955}
+  - component: {fileID: 4693577991101241574}
   m_Layer: 5
   m_Name: CharacterImage
   m_TagString: Untagged
@@ -154,7 +155,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 8ecdc84aa3e3ca94c9d7500945e0bd5b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ef8b657fc15daa746a915c9c2b3571a8, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -163,6 +164,18 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!114 &4693577991101241574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5359573758544670020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03f351f3b421ac749bc108dd1bd343ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7274425312579271646
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -282,7 +295,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5574770560685158988, guid: c82332fbb5961714982659df2ca999de,
         type: 3}
-      propertyPath: m_textInfo.lineCount
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5574770560685158988, guid: c82332fbb5961714982659df2ca999de,
+        type: 3}
+      propertyPath: m_isInputParsingRequired
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

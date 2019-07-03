@@ -28,11 +28,13 @@ namespace MSUtil
 
     public enum eCharacterState
     {
-        Idle,
-        Laugh,
-        Angry,
-        Confuse,
-        Sigh,
+        NONE,
+        IDLE,
+        LAUGH,
+        ANGRY,
+        CONFUSE,
+        SIGH,
+        LENGTH
     }
 
     public enum eChatPosition
@@ -40,6 +42,29 @@ namespace MSUtil
         Center,
         Left,
         Right,
+    }
+
+    public enum eCharacter
+    {
+        NIKA,
+        LUCIA,
+        RINTA,
+        LESS,
+        JACQUES,
+        ARUE,
+        LENGTH
+    }
+
+    public enum eTextEventTag
+    {
+        APR,
+        DPR,
+        HL,
+        CNG,
+        FONTBIG,
+        FONTSML,
+        FONTCOL,
+        LENGTH
     }
     #endregion
 

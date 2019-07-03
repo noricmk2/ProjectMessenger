@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.U2D;
+using MSUtil;
 
 public interface IPoolObjectBase
 {
@@ -13,12 +14,14 @@ public class ObjectFactory : Singleton<ObjectFactory>
 {
     private Dictionary<string, ObjectPool<IPoolObjectBase>> m_TotalPoolDic = new Dictionary<string, ObjectPool<IPoolObjectBase>>();
     private SpriteAtlas UIAtlas;
-    private SpriteAtlas CharacterAtlas;
+    private SpriteAtlas CharacterAtlas_Nika;
+    private SpriteAtlas CharacterAtlas_Less;
 
     public void CreateAllPool()
     {
         UIAtlas = ResourcesManager.LoadObject<SpriteAtlas>("SpriteAtlas/atlas_ui");
-        CharacterAtlas = ResourcesManager.LoadObject<SpriteAtlas>("SpriteAtlas/atlas_character");
+        CharacterAtlas_Nika = ResourcesManager.LoadObject<SpriteAtlas>("SpriteAtlas/atlas_character_nika");
+        CharacterAtlas_Less = ResourcesManager.LoadObject<SpriteAtlas>("SpriteAtlas/atlas_character_less");
     }
 
     public void CreateChatObjectPool()
@@ -35,10 +38,31 @@ public class ObjectFactory : Singleton<ObjectFactory>
         return null;
     }
 
-    public Sprite GetCharacterSprite(string spriteName)
+    public Sprite GetCharacterSprite(eCharacter character, string spriteName)
     {
-        if (CharacterAtlas != null)
-            return CharacterAtlas.GetSprite(spriteName);
+        SpriteAtlas atlas = null;
+        switch (character)
+        {
+            case eCharacter.NIKA:
+                atlas = CharacterAtlas_Nika;
+                break;
+            case eCharacter.LUCIA:
+                break;
+            case eCharacter.RINTA:
+                break;
+            case eCharacter.LESS:
+                atlas = CharacterAtlas_Less;
+                break;
+            case eCharacter.JACQUES:
+                break;
+            case eCharacter.ARUE:
+                break;
+            case eCharacter.LENGTH:
+                break;
+        }
+
+        if (CharacterAtlas_Nika != null)
+            return atlas.GetSprite(spriteName);
         return null;
     }
 

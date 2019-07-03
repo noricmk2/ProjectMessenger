@@ -21,14 +21,16 @@ public class AllwaysTopCanvas : Singleton<AllwaysTopCanvas>
     public void SetFadeAnimation(float time, Action fadeEndAction = null)
     {
         FadeImage.gameObject.SetActive_Check(true);
-        FadeImage.DOColor(ColorPalette.FADE_OUT_BLACK, time).OnComplete(delegate ()
+        var sequence = DOTween.Sequence();
+        sequence.Append(FadeImage.DOColor(ColorPalette.FADE_OUT_BLACK, time)).AppendCallback(()=>
         {
-            FadeImage.DOColor(ColorPalette.FADE_IN_BLACK, time).OnComplete(delegate ()
-            {
-                if (fadeEndAction != null)
-                    fadeEndAction();
-                FadeImage.gameObject.SetActive_Check(false);
-            });
+            if (fadeEndAction != null)
+                fadeEndAction();
+        });
+        sequence.Append(FadeImage.DOColor(ColorPalette.FADE_IN_BLACK, time));
+        sequence.OnComplete(() =>
+        {
+            FadeImage.gameObject.SetActive_Check(false);
         });
     }
 }

@@ -4,79 +4,111 @@ using UnityEngine;
 using MSUtil;
 using UnityEngine.UI;
 
+public struct AnimationFrameData
+{
+    public int StartFrame;
+    public int FrameCount;
+}
+
+public class SpriteAnimationData
+{
+    public List<Sprite> SpriteList;
+    public AnimationFrameData FrameData;
+}
+
 public class SpriteAnimation : MonoBehaviour
 {
+    private float TARGET_ANIM_FPS = 15f;
+    public Dictionary<eCharacterState, SpriteAnimationData> TotalAnimationDataDic = new Dictionary<eCharacterState, SpriteAnimationData>();
+    public Image TargetImage { get; private set; }
+
     private Dictionary<eCharacterState, List<Sprite>> m_AnimationDic = new Dictionary<eCharacterState, List<Sprite>>();
-    private float AnimationSpeed = 0.1f;
-    private Image m_TargetImage;
-    private IEnumerator m_PlayCoruoutine;
+    private Coroutine m_PlayCoruoutine;
     private eCharacterState m_CurrentState;
     private bool m_IsRepeat;
-
+    private float m_FrameTime = 0;
+    private Coroutine m_UpdateCoroutine;
     private void Awake()
     {
-        if (m_TargetImage == null)
-            m_TargetImage = GetComponent<Image>();
+        if (TargetImage == null)
+            TargetImage = GetComponent<Image>();
     }
 
     public void Init(DataManager.CharacterData data)
     {
         var iter = data.SpriteCountDic.GetEnumerator();
+
         while (iter.MoveNext())
         {
             if (iter.Current.Value > 0)
-                m_AnimationDic[iter.Current.Key] = data.GetSpriteList(iter.Current.Key);
+            {
+                var animData = new SpriteAnimationData();
+                animData.SpriteList = data.GetSpriteList(iter.Current.Key);
+                animData.FrameData.StartFrame = 0;
+                animData.FrameData.FrameCount = animData.SpriteList.Count;
+                TotalAnimationDataDic[iter.Current.Key] = animData;
+            }
         }
+        TargetImage.sprite = TotalAnimationDataDic[eCharacterState.IDLE].SpriteList[0];
+        TargetImage.SetNativeSize();
+        SetAnimation(eCharacterState.NONE);
+        m_FrameTime = 0;
     }
 
-    public void PlayAnimation(eCharacterState state, bool isRepeat)
+    public void SetAnimation(eCharacterState state, bool isRepeat = false)
     {
-        m_CurrentState = state;
+        TargetImage.gameObject.SetActive_Check(true);
+        if (!TotalAnimationDataDic.ContainsKey(state))
+        {
+            if (state == eCharacterState.NONE)
+            {
+                m_CurrentState = state;
+                if (m_UpdateCoroutine != null)
+                    StopCoroutine(m_UpdateCoroutine);
+                TargetImage.gameObject.SetActive_Check(false);
+                return;
+            }
+            MSLog.LogError("animation not exist:" + state);
+            return;
+        }
+
+        m_FrameTime = 0;
         m_IsRepeat = isRepeat;
-        if (m_TargetImage != null && m_AnimationDic.ContainsKey(state))
+        if (m_CurrentState != state)
         {
-            if (m_PlayCoruoutine != null)
-                StopCoroutine(m_PlayCoruoutine);
-            else
-                m_PlayCoruoutine = PlayAnimation_C();
-            StartCoroutine(m_PlayCoruoutine);
+            m_CurrentState = state;
+            if (m_UpdateCoroutine != null)
+                StopCoroutine(m_UpdateCoroutine);
+            m_UpdateCoroutine = StartCoroutine(Update_C());
         }
     }
 
-    //TODO: 반복재생 관련 로직 수정
-    IEnumerator PlayAnimation_C()
+    IEnumerator Update_C()
     {
-        var spriteList = m_AnimationDic[m_CurrentState];
-        if (spriteList == null || spriteList.Count == 0)
+        var targetAnimData = TotalAnimationDataDic[m_CurrentState];
+        int frameIdx = 0;
+        TargetImage.sprite = targetAnimData.SpriteList[frameIdx];
+        while (true)
         {
-            MSLog.LogError("no sprite list");
-            yield break;
-        }
+            m_FrameTime += Time.deltaTime;
 
-        int idx = 0;
-        bool playSet = true;
-        while (m_IsRepeat || idx < spriteList.Count)
-        {
-            m_TargetImage.sprite = spriteList[idx];
-            m_TargetImage.SetNativeSize();
-
-            if (playSet)
-                ++idx;
-            else
-                --idx;
-
-            if (idx >= spriteList.Count && m_IsRepeat)
+            if (m_FrameTime > (1 / TARGET_ANIM_FPS))
             {
-                playSet = false;
-                --idx;
-            }
-            if (idx < 0 && m_IsRepeat)
-            {
-                playSet = true;
-                ++idx;
-            }
+                frameIdx += Mathf.RoundToInt(m_FrameTime * TARGET_ANIM_FPS);
 
-            yield return new WaitForSeconds(AnimationSpeed);
+                if (frameIdx >= targetAnimData.FrameData.FrameCount)
+                {
+                    if (m_IsRepeat)
+                        frameIdx = frameIdx % targetAnimData.FrameData.FrameCount;
+                    else
+                        yield break;
+                }
+
+                var animIdx = targetAnimData.FrameData.StartFrame + frameIdx;
+                TargetImage.sprite = targetAnimData.SpriteList[animIdx];
+                m_FrameTime = m_FrameTime % 1.0f / TARGET_ANIM_FPS;
+            }
+            yield return null;
         }
     }
 }

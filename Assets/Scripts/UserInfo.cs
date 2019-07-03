@@ -15,6 +15,7 @@ public class UserInfo : Singleton<UserInfo>
     public class _GameData
     {
         public int CurrentChapterID;
+        public int CurrentChapterEvent;
         public int Cash;
     }
 
@@ -43,6 +44,7 @@ public class UserInfo : Singleton<UserInfo>
             //TODO:첫 실행시 게임 정보 초기화
             CurrentGameData = new _GameData();
             CurrentGameData.CurrentChapterID = 1;
+            CurrentGameData.CurrentChapterEvent = 0;
             CurrentGameData.Cash = 100;
         }
     }

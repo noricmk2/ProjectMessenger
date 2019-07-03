@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using MSUtil;
+using System.Text.RegularExpressions;
 
 public partial class DataManager : Singleton<DataManager>
 {
@@ -25,25 +26,62 @@ public partial class DataManager : Singleton<DataManager>
         public abstract string GetText(eLanguage langType);
     }
 
+    public struct TextEventData
+    {
+        public eTextEventTag Tag;
+        public string Value;
+    }
+
     public class StoryTextData : TextData
     {
         public string[] Tags { get; private set; }
         public int CharacterID { get; private set; }
         Dictionary<eLanguage, string> m_TextDic = new Dictionary<eLanguage, string>();
-
+        Dictionary<int, TextEventData> m_EventTagDic = new Dictionary<int, TextEventData>();
+        
         public override void Parse(string[] values)
         {
             ID = values[0];
-            Tags = values[1].Split(';');
-            CharacterID = Func.GetInt(values[2]);
+            CharacterID = Func.GetInt(values[1]);
+            var regex = new Regex(@"\[(\w+)\]");
+            var result = regex.Matches(values[2]);
+
+            var iter = result.GetEnumerator();
+            var prevIdx = 0;
+            while (iter.MoveNext())
+            {
+                var match = iter.Current as Match;
+
+                TextEventData eventData = new TextEventData();
+                var matchStr = match.Groups[1].Value;
+                if (matchStr.Contains("_"))
+                {
+                    var split = matchStr.Split('_');
+                    eventData.Tag = Func.GetEnum<eTextEventTag>(split[0]);
+                    eventData.Value = split[1];
+                }
+                else
+                    eventData.Tag = Func.GetEnum<eTextEventTag>(match.Groups[1].Value);
+
+                m_EventTagDic[match.Index - prevIdx] = eventData;
+                prevIdx += match.Groups[0].Length;
+
+                for (int i = 0; i < (int)eLanguage.Length; ++i)
+                    values[2 + i] = values[2 + i].Replace(match.Groups[0].Value, "");
+            }
 
             for (int i = 0; i < (int)eLanguage.Length; ++i)
-                m_TextDic[(eLanguage)i] = values[3 + i];
+                m_TextDic[(eLanguage)i] = values[2 + i];
         }
 
         public override string GetText(eLanguage langType)
         {
             return m_TextDic[langType];
+        }
+
+        public Dictionary<int, TextEventData> GetEventTagDic()
+        {
+            return m_EventTagDic;
         }
     }
 
@@ -128,10 +166,18 @@ public partial class DataManager : Singleton<DataManager>
             }
         }
 
+        public StoryTextData GetTextData(int idx)
+        {
+            if (TextIDDic.ContainsKey(idx))
+                return DataManager.Instance.GetStoryTextData(TextIDDic[idx]);
+            else
+                MSLog.LogError("text id not exist:" + idx);
+
+            return null;
+        }
+
         public string GetText(int idx)
         {
-            var id = "";
-
             if (TextIDDic.ContainsKey(idx))
                 return TextManager.GetStoryText(TextIDDic[idx]);
             else
@@ -151,7 +197,7 @@ public partial class DataManager : Singleton<DataManager>
             get { return textColor; }
             private set { textColor = value; }
         }
-        public string CharacterName { get; private set; }
+        public eCharacter CharacterType { get; private set; }
         public Dictionary<eCharacterState, int> SpriteCountDic { get; private set; }
 
         public override void Parse(string[] values)
@@ -162,14 +208,13 @@ public partial class DataManager : Singleton<DataManager>
                 MSLog.LogError("invalid color:" + values[2]);
                 textColor = Color.black;
             }
-            CharacterName = values[3];
-
+            CharacterType = Func.GetEnum<eCharacter>(values[3].ToUpper());
             SpriteCountDic = new Dictionary<eCharacterState, int>();
-            SpriteCountDic[eCharacterState.Idle] = Func.GetInt(values[4]);
-            SpriteCountDic[eCharacterState.Laugh] = Func.GetInt(values[5]);
-            SpriteCountDic[eCharacterState.Angry] = Func.GetInt(values[6]);
-            SpriteCountDic[eCharacterState.Confuse] = Func.GetInt(values[7]);
-            SpriteCountDic[eCharacterState.Sigh] = Func.GetInt(values[8]);
+            SpriteCountDic[eCharacterState.IDLE] = Func.GetInt(values[4]);
+            SpriteCountDic[eCharacterState.LAUGH] = Func.GetInt(values[5]);
+            SpriteCountDic[eCharacterState.ANGRY] = Func.GetInt(values[6]);
+            SpriteCountDic[eCharacterState.CONFUSE] = Func.GetInt(values[7]);
+            SpriteCountDic[eCharacterState.SIGH] = Func.GetInt(values[8]);
         }
 
         public List<Sprite> GetSpriteList(eCharacterState state)
@@ -181,9 +226,9 @@ public partial class DataManager : Singleton<DataManager>
 
                 for (int i = 1; i <= SpriteCountDic[state]; ++i)
                 {
-                    var isPortrait = CharacterName == "nika" ? "portrait" : "stand";
-                    var resourceName = CharacterName + "_" + isPortrait + "_" + state.ToString().ToLower() + "_" + i;
-                    resultList.Add(ObjectFactory.Instance.GetCharacterSprite(resourceName));
+                    var isPortrait = CharacterType == eCharacter.NIKA ? "portrait" : "stand";
+                    var resourceName = CharacterType.ToString().ToLower() + "_" + isPortrait + "_" + state.ToString().ToLower() + "_" + i;
+                    resultList.Add(ObjectFactory.Instance.GetCharacterSprite(CharacterType, resourceName));
                 }
             }
             return resultList;
