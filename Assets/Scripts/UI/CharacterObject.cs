@@ -26,6 +26,11 @@ public class CharacterObject : MonoBehaviour, IPoolObjectBase
 
     }
 
+    public void Release()
+    {
+        Bubble.Release();
+    }
+
     public void PopAction()
     {
         gameObject.SetActive(true);
@@ -34,5 +39,6 @@ public class CharacterObject : MonoBehaviour, IPoolObjectBase
     public void PushAction()
     {
         gameObject.SetActive(false);
+        transform.SetParent(null);
     }
 }

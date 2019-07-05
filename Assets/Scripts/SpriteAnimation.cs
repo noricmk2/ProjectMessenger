@@ -18,7 +18,7 @@ public class SpriteAnimationData
 
 public class SpriteAnimation : MonoBehaviour
 {
-    private float TARGET_ANIM_FPS = 15f;
+    private float m_targetFPS = 14f;
     public Dictionary<eCharacterState, SpriteAnimationData> TotalAnimationDataDic = new Dictionary<eCharacterState, SpriteAnimationData>();
     public Image TargetImage { get; private set; }
 
@@ -55,8 +55,13 @@ public class SpriteAnimation : MonoBehaviour
         m_FrameTime = 0;
     }
 
-    public void SetAnimation(eCharacterState state, bool isRepeat = false)
+    public void SetAnimation(eCharacterState state, bool isRepeat = false, float fps = 0)
     {
+        if (fps > 0)
+            m_targetFPS = fps;
+        else
+            m_targetFPS = ConstValue.DEFAULT_ANIM_FPS;
+
         TargetImage.gameObject.SetActive_Check(true);
         if (!TotalAnimationDataDic.ContainsKey(state))
         {
@@ -92,9 +97,9 @@ public class SpriteAnimation : MonoBehaviour
         {
             m_FrameTime += Time.deltaTime;
 
-            if (m_FrameTime > (1 / TARGET_ANIM_FPS))
+            if (m_FrameTime > (1 / m_targetFPS))
             {
-                frameIdx += Mathf.RoundToInt(m_FrameTime * TARGET_ANIM_FPS);
+                frameIdx += Mathf.RoundToInt(m_FrameTime * m_targetFPS);
 
                 if (frameIdx >= targetAnimData.FrameData.FrameCount)
                 {
@@ -106,7 +111,7 @@ public class SpriteAnimation : MonoBehaviour
 
                 var animIdx = targetAnimData.FrameData.StartFrame + frameIdx;
                 TargetImage.sprite = targetAnimData.SpriteList[animIdx];
-                m_FrameTime = m_FrameTime % 1.0f / TARGET_ANIM_FPS;
+                m_FrameTime = m_FrameTime % 1.0f / m_targetFPS;
             }
             yield return null;
         }

@@ -27,8 +27,9 @@ public class ObjectFactory : Singleton<ObjectFactory>
     public void CreateChatObjectPool()
     {
         Release();
-        CreatePool<SpeechBubble>(3, "Prefab/UI/SpeechBubble");
         CreatePool<CharacterObject>(3, "Prefab/UI/CharacterObject");
+        CreatePool<ChoiceObject>(3, "Prefab/UI/ChoiceObject");
+        CreatePool<ItemObject>(1, "Prefab/UI/ItemObject");
     }
 
     public Sprite GetUISprite(string spriteName)
@@ -66,7 +67,7 @@ public class ObjectFactory : Singleton<ObjectFactory>
         return null;
     }
 
-    public T ActivateObject<T>(Transform parent = null) where T : class, IPoolObjectBase
+    public T ActivateObject<T>() where T : class, IPoolObjectBase
     {
         var poolName = typeof(T).Name;
         if (m_TotalPoolDic.ContainsKey(poolName))

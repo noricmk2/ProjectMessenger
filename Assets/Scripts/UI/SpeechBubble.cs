@@ -16,14 +16,14 @@ public class SpeechBubble : MonoBehaviour, IPoolObjectBase
     private float APPEAR_TIME = 0.5f;
     private float BLINK_TIME = 0.5f;
 
-    private CharacterObject m_Parent;
-    private SpriteAnimation m_ParentAnimation;
+    public CharacterObject ParentObject { get; private set; }
+    public SpriteAnimation ParentAnimation { get; private set; }
     private Coroutine m_CursorCoroutine;
 
     public void Init(CharacterObject parent)
     {
         BubbleBG.enabled = false;
-        m_Parent = parent;
+        ParentObject = parent;
         Text.Reset();
         TextCursor.DOKill();
         TextCursor.gameObject.SetActive_Check(false);
@@ -31,57 +31,57 @@ public class SpeechBubble : MonoBehaviour, IPoolObjectBase
 
     public void Init(SpriteAnimation parentAnimation)
     {
-        m_ParentAnimation = parentAnimation;
+        ParentAnimation = parentAnimation;
         Text.Reset();
     }
 
-    public void SetTextData(DataManager.StoryTextData data)
+    public void SetTextData(DataManager.StoryTextData data, ExpandTextOutput.TextEventDelegate textEvent)
     {
         SetCursor(false);
-        Text.SetText(TextManager.GetStoryText(data.ID), data.GetEventTagDic(), TextEvent, () => SetCursor(true));
+        Text.SetText(this, TextManager.GetStoryText(data.ID), data.GetEventTagDic(), textEvent, () => SetCursor(true));
         Text.PlayText();
     }
 
-    public IEnumerator TextEvent(DataManager.TextEventData data)
-    {
-        var targetSpriteAnim = m_Parent != null ? m_Parent.CharacterAnimation : m_ParentAnimation;
+    //public IEnumerator TextEvent(DataManager.TextEventData data)
+    //{
+    //    var targetSpriteAnim = m_Parent != null ? m_Parent.CharacterAnimation : m_ParentAnimation;
 
-        switch (data.Tag)
-        {
-            case eTextEventTag.APR:
-                targetSpriteAnim.TargetImage.color = new Color(0, 0, 0, 0);
-                targetSpriteAnim.TargetImage.gameObject.SetActive_Check(true);
-                var sequence = DOTween.Sequence();
-                sequence.Append(targetSpriteAnim.TargetImage.DOColor(ColorPalette.FADE_OUT_BLACK, APPEAR_TIME));
-                sequence.Append(targetSpriteAnim.TargetImage.DOColor(Color.white, APPEAR_TIME));
-                sequence.Play();
-                while (sequence.IsActive() && !sequence.IsComplete())
-                {
-                    yield return null;
-                }
-                BubbleBG.enabled = true;
-                targetSpriteAnim.SetAnimation(eCharacterState.IDLE, true);
-                MSLog.Log("appear");
-                break;
-            case eTextEventTag.DPR:
-                MSLog.Log("disappear");
-                break;
-            case eTextEventTag.HL:
-                MSLog.Log("hilight");
-                break;
-            case eTextEventTag.CNG:
-                var animType = Func.GetEnum<eCharacterState>(data.Value);
-                targetSpriteAnim.SetAnimation(animType, animType == eCharacterState.IDLE ? true : false);
-                MSLog.Log("change");
-                break;
-            case eTextEventTag.FONTBIG:
-                break;
-            case eTextEventTag.FONTSML:
-                break;
-            case eTextEventTag.FONTCOL:
-                break;
-        }
-    }
+    //    switch (data.Tag)
+    //    {
+    //        case eTextEventTag.APR:
+    //            targetSpriteAnim.TargetImage.color = new Color(0, 0, 0, 0);
+    //            targetSpriteAnim.TargetImage.gameObject.SetActive_Check(true);
+    //            var sequence = DOTween.Sequence();
+    //            sequence.Append(targetSpriteAnim.TargetImage.DOColor(ColorPalette.FADE_OUT_BLACK, APPEAR_TIME));
+    //            sequence.Append(targetSpriteAnim.TargetImage.DOColor(Color.white, APPEAR_TIME));
+    //            sequence.Play();
+    //            while (sequence.IsActive() && !sequence.IsComplete())
+    //            {
+    //                yield return null;
+    //            }
+    //            BubbleBG.enabled = true;
+    //            targetSpriteAnim.SetAnimation(eCharacterState.IDLE, true);
+    //            MSLog.Log("appear");
+    //            break;
+    //        case eTextEventTag.DPR:
+    //            MSLog.Log("disappear");
+    //            break;
+    //        case eTextEventTag.HL:
+    //            MSLog.Log("hilight");
+    //            break;
+    //        case eTextEventTag.CNG:
+    //            var animType = Func.GetEnum<eCharacterState>(data.Value);
+    //            targetSpriteAnim.SetAnimation(animType, animType == eCharacterState.IDLE ? true : false);
+    //            MSLog.Log("change");
+    //            break;
+    //        case eTextEventTag.FONTBIG:
+    //            break;
+    //        case eTextEventTag.FONTSML:
+    //            break;
+    //        case eTextEventTag.FONTCOL:
+    //            break;
+    //    }
+    //}
 
     public void SetCursor(bool active)
     {
@@ -90,6 +90,11 @@ public class SpeechBubble : MonoBehaviour, IPoolObjectBase
             StopCoroutine(m_CursorCoroutine);
         if (active)
             m_CursorCoroutine = StartCoroutine(CursorBlink_C());
+    }
+
+    public void Release()
+    {
+        Text.Reset();
     }
 
     IEnumerator CursorBlink_C()

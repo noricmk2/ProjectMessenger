@@ -9,7 +9,7 @@ public class TextManager : Singleton<TextManager>
         var result = DataManager.Instance.GetStoryText(id, (MSUtil.eLanguage)UserInfo.Instance.UserData.CurrentLanguageType);
 
         if (string.IsNullOrEmpty(result))
-            MSLog.LogError("no text content:" + id);
+            MSLog.Log("no text content:" + id);
 
         return result;
     }

@@ -13,12 +13,12 @@ public class IngameScene : SceneBase
     {
         var ingameObject = ResourcesManager.Instantiate("Prefab/IngameObject").GetComponent<IngameObject>();
 
-        if (!GameManager.StartUpGame)
+        //if (!GameManager.StartUpGame)
         {
             WindowBase.OpenWindow(WindowBase.eWINDOW.Title, ingameObject.WindowParent, false);
             GameManager.StartUpGame = true;
         }
-        else
+        //else
         {
             //WindowBase.OpenWindow(WindowBase.eWINDOW.MainWindow, ingameObject.WindowParent, false);
         }

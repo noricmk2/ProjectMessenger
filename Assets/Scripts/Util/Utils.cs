@@ -59,8 +59,12 @@ namespace MSUtil
     {
         APR,
         DPR,
+        DRK,
+        CHO,
         HL,
         CNG,
+        APITEM,
+        DPITEM,
         FONTBIG,
         FONTSML,
         FONTCOL,
@@ -157,12 +161,18 @@ namespace MSUtil
         public static readonly string LAST_CHAPTER_SAVE_KEY = "LAST_CHAPTER"; // 최근 플레이 챕터 세이브 키값
 
         public static readonly string CHARACTER_NIKA = "nika"; //니카 캐릭터명;
+
+        public static float CHARACTER_APPEAR_TIME = 0.5f;
+        public static float CURSOR_BLINK_TIME = 0.5f;
+        public static float LONG_CLICK_TIME = 1.0f;
+        public static float DEFAULT_ANIM_FPS = 14f;
     }
 
     public class ColorPalette        //컬러 상수값
     {
         public static readonly Color FADE_OUT_BLACK = new Color(0, 0, 0, 1); 
         public static readonly Color FADE_IN_BLACK = new Color(0, 0, 0, 0); 
+        public static readonly Color CHOICE_BUTTON_HILIGHT_COLOR = new Color(94 / 255f, 94 / 255f, 94 / 255f, 146 / 255f); 
     }
     #endregion
 }

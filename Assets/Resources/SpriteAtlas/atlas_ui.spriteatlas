@@ -31,7 +31,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 7a16d2f5f8c3c68498649a3edd0bd3f9, type: 3}
-    totalSpriteSurfaceArea: 1793320
+    totalSpriteSurfaceArea: 1851784
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -42,12 +42,14 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 863018e5ce3df9c4a972273e2d5c1708, type: 3}
   - {fileID: 21300000, guid: 78d321879f99b2846abedb36b8bfd723, type: 3}
   - {fileID: 21300000, guid: 1a878c187122107479ce17b09b61daf4, type: 3}
+  - {fileID: 21300000, guid: 32359199429404949bf68e03d85754c3, type: 3}
   - {fileID: 21300000, guid: c02716991ef5c624886da7103b2d085c, type: 3}
   - {fileID: 21300000, guid: 672d100a999330643b46e62f08037f8e, type: 3}
   - {fileID: 21300000, guid: b636df7a33690034d8e896b0ba8568f6, type: 3}
   - {fileID: 21300000, guid: 7c140e4bbaeec1f49a9a6177512c2266, type: 3}
   - {fileID: 21300000, guid: fb17a91c68a57f844b3d7eb804589d1e, type: 3}
   - {fileID: 21300000, guid: 49b6e06c2e9a87343854b0c66a550e5c, type: 3}
+  - {fileID: 21300000, guid: dd8b6f2d233d14f469e17ace6e371cd0, type: 3}
   - {fileID: 21300000, guid: eb8b3a4d9e2c8ad489330966853af9c0, type: 3}
   - {fileID: 21300000, guid: 4f52b88e36f126141899fec32329e4d0, type: 3}
   - {fileID: 21300000, guid: 4b1d979e945a58a468f2ebf884f7cc4c, type: 3}
@@ -61,12 +63,14 @@ SpriteAtlas:
   - ui_11
   - ui_5
   - ui_6
+  - icon_candy
   - ui_12
   - ui_10
   - UI_13
   - ui_2
   - ui_3
   - ui_title_background
+  - ui_frame1
   - ui_8
   - ui_7
   - ui_title_logo

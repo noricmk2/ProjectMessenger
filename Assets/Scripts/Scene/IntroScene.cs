@@ -18,7 +18,8 @@ public class IntroScene : SceneBase
         for (int i = 0; i < count; ++i)
             yield return DataManager.Instance.LoadFromGoogleSheet((DataManager.eSheetType)i);
 #else
-
+        for (int i = 0; i < count; ++i)
+            yield return DataManager.Instance.LoadFromGoogleSheet((DataManager.eSheetType)i);
 #endif
         UserInfo.Instance.InitUserInfo();
         ObjectFactory.Instance.CreateAllPool();

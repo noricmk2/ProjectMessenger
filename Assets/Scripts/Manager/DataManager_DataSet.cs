@@ -34,7 +34,6 @@ public partial class DataManager : Singleton<DataManager>
 
     public class StoryTextData : TextData
     {
-        public string[] Tags { get; private set; }
         public int CharacterID { get; private set; }
         Dictionary<eLanguage, string> m_TextDic = new Dictionary<eLanguage, string>();
         Dictionary<int, TextEventData> m_EventTagDic = new Dictionary<int, TextEventData>();
@@ -43,7 +42,11 @@ public partial class DataManager : Singleton<DataManager>
         {
             ID = values[0];
             CharacterID = Func.GetInt(values[1]);
-            var regex = new Regex(@"\[(\w+)\]");
+            Regex regex;
+            if(values[2].Contains("[CHO"))
+                regex = new Regex(@"\[(.+)\]");
+            else
+                regex = new Regex(@"\[(\w+)\]");
             var result = regex.Matches(values[2]);
 
             var iter = result.GetEnumerator();
@@ -126,9 +129,9 @@ public partial class DataManager : Singleton<DataManager>
                 LetterIDList.Add(Func.GetInt(split[i]));
         }
 
-        public ChapterTextData GetChapterTextData(eEventTag eventTag)
+        public ChapterTextData GetChapterTextData(eEventTag eventTag, string dialogueID)
         {
-            var data = Instance.GetChapterTextData(eventTag);
+            var data = Instance.GetChapterTextData(eventTag, dialogueID);
             return data;
         }
     }
@@ -140,6 +143,7 @@ public partial class DataManager : Singleton<DataManager>
         const string STORY_TEXT = "TEXT_STORY_";
         public eChapterTag ChapterTag { get; private set; }
         public eEventTag EventTag { get; private set; }
+        public string DialogueID { get; private set; }
         public Dictionary<int, string> TextIDDic { get; private set; }
 
         public override void Parse(string[] values)
@@ -147,10 +151,11 @@ public partial class DataManager : Singleton<DataManager>
             ID = Func.GetInt(values[0]);
             ChapterTag = Func.GetEnum<eChapterTag>(values[1]);
             EventTag = Func.GetEnum<eEventTag>(values[2]);
+            DialogueID = values[3];
 
             TextIDDic = new Dictionary<int, string>();
-            var min = Func.GetInt(values[3]);
-            var max = Func.GetInt(values[4]);
+            var min = Func.GetInt(values[4]);
+            var max = Func.GetInt(values[5]);
             int count = max - min + 1;
             var strBuilder = new System.Text.StringBuilder();
             for (int i=0; i < count; ++i)
@@ -160,6 +165,8 @@ public partial class DataManager : Singleton<DataManager>
                 strBuilder.Append(values[1]);
                 strBuilder.Append("_");
                 strBuilder.Append(values[2]);
+                strBuilder.Append("_");
+                strBuilder.Append(values[3]);
                 strBuilder.Append("_");
                 strBuilder.Append((min + i).ToString());
                 TextIDDic[min + i] = strBuilder.ToString();

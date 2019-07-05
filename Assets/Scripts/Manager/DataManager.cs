@@ -190,13 +190,13 @@ public partial class DataManager : Singleton<DataManager>
         return null;
     }
 
-    public ChapterTextData GetChapterTextData(eEventTag eventTag)
+    public ChapterTextData GetChapterTextData(eEventTag eventTag, string dialogueID)
     {
         ChapterTextData data = null;
         var iter = m_ChapterTextDataDic.GetEnumerator();
         while (iter.MoveNext())
         {
-            if (iter.Current.Value.EventTag == eventTag)
+            if (iter.Current.Value.EventTag == eventTag && iter.Current.Value.DialogueID == dialogueID)
             {
                 data = iter.Current.Value;
                 break;

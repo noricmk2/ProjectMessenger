@@ -3,6 +3,6 @@ Temp/
 UnityPackageManager/
 .vs/
 obj/
-Assembly-CSharp.csproj
-ProjectMessenger.sln
-Assembly-CSharp-Editor.csproj
+*.csproj
+*.sln
+
