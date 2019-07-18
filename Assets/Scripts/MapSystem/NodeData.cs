@@ -8,6 +8,7 @@ public class NodeData
 {
     public int nodeID;
     public NodeObject nodeObject;
+    public RoadObject roadObject;
     public Vector2 centerPosition;
     public Vector2 nodePosition;
     public bool oneway;

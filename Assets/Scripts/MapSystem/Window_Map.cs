@@ -24,6 +24,8 @@ public class Window_Map : WindowBase
 
     //[Header("Map")]
     public List<RectTransform> pointList;
+    public Transform markerParent;
+    //public MarkerObject 
 
     public void OpenMap()
     {

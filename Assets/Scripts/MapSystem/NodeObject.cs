@@ -12,6 +12,7 @@ public class NodeObject : MonoBehaviour
 
     public NodeData currentNodeData;
     public List<NodeData> nodeDataList;
+    public List<RoadObject> roadList;
 
     private RectTransform m_rectTransform;
     public RectTransform rectTransform
@@ -27,25 +28,31 @@ public class NodeObject : MonoBehaviour
 
     //자동으로 노드에 대한 데이터를 업데이트 해주는 곳
     #region DataUpdate 
-    public void OnValidate()
+    [ContextMenu("NodeUpdate")]
+    public void NodeUpdate()
     {
+        Debug.Log(this + ": Validating");
         if (nodeDataList == null)
             nodeDataList = new List<NodeData>();
 
+        currentNodeData.nodeID = transform.GetSiblingIndex();
+        currentNodeData.nodePosition = rectTransform.anchoredPosition;
+
         if (currentNodeData.nodeObject == null)
         {
-            currentNodeData.nodeID = transform.GetSiblingIndex();
             currentNodeData.nodeObject = this;
-            currentNodeData.nodePosition = rectTransform.anchoredPosition;
+            currentNodeData.roadObject = null;
         }
 
         int listCount = nodeDataList.Count;
+
         for (int i = 0; i < listCount; i++)
         {
             NodeData data = nodeDataList[i];
             if (data.nodeObject != null)
             {
-                data.nodeID = data.nodeObject.currentNodeData.nodeID;
+                //data.nodeID = data.nodeObject.currentNodeData.nodeID;
+                data.nodeID = data.nodeObject.transform.GetSiblingIndex();
                 data.nodePosition = data.nodeObject.rectTransform.anchoredPosition;
                 data.centerPosition = Vector2.Lerp(currentNodeData.nodePosition, data.nodeObject.rectTransform.anchoredPosition, 0.5f);
                 data.oneway = false;
@@ -65,6 +72,46 @@ public class NodeObject : MonoBehaviour
                 {
                     data.nodeObject.nodeDataList.Add(currentNodeData);
                 }
+                else
+                {
+                    //Debug.Log();
+                }
+
+                for (int j = 0; j < nodeCount; j++)
+                {
+                    //if (currentNodeData.roadObject == null && nodeDataList[i].roadObject == null)
+                    if (nodeDataList[i].roadObject == null && data.nodeObject.nodeDataList[j].roadObject == null && data.nodeObject.nodeDataList[j].nodeObject == this)
+                    {
+                        //Debug.Log(this);
+                        //Debug.Log(this + " :: " + nodeDataList[i].nodeObject);
+
+                        GameObject roadObject = new GameObject();
+
+                        Transform parent = transform.parent.parent.GetChild(4);
+                        roadObject.transform.SetParent(parent);
+                        RoadObject road = roadObject.AddComponent<RoadObject>();
+                        road.rectTransform = roadObject.AddComponent<RectTransform>();
+                        road.CreateRoad(this, data.nodeObject);
+
+                        nodeDataList[i].roadObject = road;
+                        data.nodeObject.nodeDataList[j].roadObject = road;
+
+                        Debug.Log(i + "  :: " + j + "  :: " + this + "  :: " + nodeDataList[i].roadObject + " :: " + data.nodeObject.nodeDataList[j].roadObject);
+                    }
+                }
+
+                //if (data.roadObject == null)
+                //{
+                //    Debug.Log(RoadManager.Instance.roadParent);
+                //    //GameObject roadObject = new GameObject();
+                //    //RoadObject road = roadObject.AddComponent<RoadObject>();
+                //    //road.startNode = this;
+                //    //road.endNode = data.nodeObject;
+                //}
+                //else
+                //{
+
+                //}
             }
         }
     }
