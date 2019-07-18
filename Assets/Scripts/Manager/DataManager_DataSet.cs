@@ -205,7 +205,7 @@ public partial class DataManager : Singleton<DataManager>
             private set { textColor = value; }
         }
         public eCharacter CharacterType { get; private set; }
-        public Dictionary<eCharacterState, int> SpriteCountDic { get; private set; }
+        public Dictionary<eCharacterState, AnimationFrameData> FrameDataDic { get; private set; }
 
         public override void Parse(string[] values)
         {
@@ -216,22 +216,24 @@ public partial class DataManager : Singleton<DataManager>
                 textColor = Color.black;
             }
             CharacterType = Func.GetEnum<eCharacter>(values[3].ToUpper());
-            SpriteCountDic = new Dictionary<eCharacterState, int>();
-            SpriteCountDic[eCharacterState.IDLE] = Func.GetInt(values[4]);
-            SpriteCountDic[eCharacterState.LAUGH] = Func.GetInt(values[5]);
-            SpriteCountDic[eCharacterState.ANGRY] = Func.GetInt(values[6]);
-            SpriteCountDic[eCharacterState.CONFUSE] = Func.GetInt(values[7]);
-            SpriteCountDic[eCharacterState.SIGH] = Func.GetInt(values[8]);
+
+            FrameDataDic = new Dictionary<eCharacterState, AnimationFrameData>();
+            for (int i = 1; i < (int)eCharacterState.LENGTH; ++i)
+            {
+                var count = Func.GetInt(values[(2 * i - 1) + 3]);
+                var targetFrame = Func.GetFloat(values[(2 * i - 1) + 4]);
+                FrameDataDic[(eCharacterState)i] = new AnimationFrameData(0, count, targetFrame);
+            }
         }
 
         public List<Sprite> GetSpriteList(eCharacterState state)
         {
             List<Sprite> resultList = null;
-            if (SpriteCountDic.ContainsKey(state))
+            if (FrameDataDic.ContainsKey(state))
             {
                 resultList = new List<Sprite>();
 
-                for (int i = 1; i <= SpriteCountDic[state]; ++i)
+                for (int i = 1; i <= FrameDataDic[state].FrameCount; ++i)
                 {
                     var isPortrait = CharacterType == eCharacter.NIKA ? "portrait" : "stand";
                     var resourceName = CharacterType.ToString().ToLower() + "_" + isPortrait + "_" + state.ToString().ToLower() + "_" + i;

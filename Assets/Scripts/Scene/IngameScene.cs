@@ -12,7 +12,7 @@ public class IngameScene : SceneBase
     public override IEnumerator Enter_C()
     {
         var ingameObject = ResourcesManager.Instantiate("Prefab/IngameObject").GetComponent<IngameObject>();
-
+        ingameObject.Init();
         //if (!GameManager.StartUpGame)
         {
             WindowBase.OpenWindow(WindowBase.eWINDOW.Title, ingameObject.WindowParent, false);

@@ -34,6 +34,8 @@ namespace MSUtil
         ANGRY,
         CONFUSE,
         SIGH,
+        QUESTION,
+        SURPRISE,
         LENGTH
     }
 
@@ -164,6 +166,7 @@ namespace MSUtil
 
         public static float CHARACTER_APPEAR_TIME = 0.5f;
         public static float CURSOR_BLINK_TIME = 0.5f;
+        public static float BUBBLE_ANIMATION_TIME = 0.3f;
         public static float LONG_CLICK_TIME = 1.0f;
         public static float DEFAULT_ANIM_FPS = 14f;
     }
@@ -172,7 +175,8 @@ namespace MSUtil
     {
         public static readonly Color FADE_OUT_BLACK = new Color(0, 0, 0, 1); 
         public static readonly Color FADE_IN_BLACK = new Color(0, 0, 0, 0); 
-        public static readonly Color CHOICE_BUTTON_HILIGHT_COLOR = new Color(94 / 255f, 94 / 255f, 94 / 255f, 146 / 255f); 
+        public static readonly Color BUTTON_HILIGHT_COLOR = new Color(94 / 255f, 94 / 255f, 94 / 255f, 146 / 255f); 
+        public static readonly Color CHARACTER_HILIGHT_COLOR = new Color(85 / 255f, 85 / 255f, 85 / 255f, 255 / 255f); 
     }
     #endregion
 }

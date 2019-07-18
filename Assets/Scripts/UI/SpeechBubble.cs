@@ -42,47 +42,6 @@ public class SpeechBubble : MonoBehaviour, IPoolObjectBase
         Text.PlayText();
     }
 
-    //public IEnumerator TextEvent(DataManager.TextEventData data)
-    //{
-    //    var targetSpriteAnim = m_Parent != null ? m_Parent.CharacterAnimation : m_ParentAnimation;
-
-    //    switch (data.Tag)
-    //    {
-    //        case eTextEventTag.APR:
-    //            targetSpriteAnim.TargetImage.color = new Color(0, 0, 0, 0);
-    //            targetSpriteAnim.TargetImage.gameObject.SetActive_Check(true);
-    //            var sequence = DOTween.Sequence();
-    //            sequence.Append(targetSpriteAnim.TargetImage.DOColor(ColorPalette.FADE_OUT_BLACK, APPEAR_TIME));
-    //            sequence.Append(targetSpriteAnim.TargetImage.DOColor(Color.white, APPEAR_TIME));
-    //            sequence.Play();
-    //            while (sequence.IsActive() && !sequence.IsComplete())
-    //            {
-    //                yield return null;
-    //            }
-    //            BubbleBG.enabled = true;
-    //            targetSpriteAnim.SetAnimation(eCharacterState.IDLE, true);
-    //            MSLog.Log("appear");
-    //            break;
-    //        case eTextEventTag.DPR:
-    //            MSLog.Log("disappear");
-    //            break;
-    //        case eTextEventTag.HL:
-    //            MSLog.Log("hilight");
-    //            break;
-    //        case eTextEventTag.CNG:
-    //            var animType = Func.GetEnum<eCharacterState>(data.Value);
-    //            targetSpriteAnim.SetAnimation(animType, animType == eCharacterState.IDLE ? true : false);
-    //            MSLog.Log("change");
-    //            break;
-    //        case eTextEventTag.FONTBIG:
-    //            break;
-    //        case eTextEventTag.FONTSML:
-    //            break;
-    //        case eTextEventTag.FONTCOL:
-    //            break;
-    //    }
-    //}
-
     public void SetCursor(bool active)
     {
         TextCursor.gameObject.SetActive_Check(active);

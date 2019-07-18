@@ -510,6 +510,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WindowParent: {fileID: 95279536841685086}
+  IngameCanvas: {fileID: 2653058539699716186}
 --- !u!1 &4510549947318542299
 GameObject:
   m_ObjectHideFlags: 0
@@ -669,7 +670,7 @@ Canvas:
   m_GameObject: {fileID: 8649447994124550776}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 0

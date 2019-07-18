@@ -10,6 +10,7 @@ public class ChoiceObject : MonoBehaviour, IPoolObjectBase
     #region Inspector
     public Image BG;
     public TextMeshProUGUI Text;
+    public CustomButton ChoiceButton;
     #endregion
     private System.Action<string> m_ClickEvent;
     private string m_DialogueFlag;
@@ -20,6 +21,7 @@ public class ChoiceObject : MonoBehaviour, IPoolObjectBase
         m_ClickEvent = clickEvent;
         m_DialogueFlag = flag;
         transform.Init(parent);
+        ChoiceButton.IsColorHilight = true;
     }
 
     public void OnClickButton()

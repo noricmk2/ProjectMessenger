@@ -16,6 +16,9 @@ public class CustomButton : MonoBehaviour, IPointerClickHandler, IPointerDownHan
     public UnityEvent OnDownEvent;
     public UnityEvent OnUpEvent;
     #endregion
+    [System.NonSerialized]
+    public bool IsColorHilight;
+
     private bool m_IsLongTouch;
     private bool m_LongTouchStart;
     private bool m_IsDown;
@@ -77,12 +80,14 @@ public class CustomButton : MonoBehaviour, IPointerClickHandler, IPointerDownHan
 
     void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
     {
-        ButtonImage.color = ColorPalette.CHOICE_BUTTON_HILIGHT_COLOR;
+        if(IsColorHilight)
+            ButtonImage.color = ColorPalette.BUTTON_HILIGHT_COLOR;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        ButtonImage.color = m_OriginColor;
+        if (IsColorHilight)
+            ButtonImage.color = m_OriginColor;
         m_CurTime = 0;
         m_IsLongTouch = false;
         m_IsDown = false;

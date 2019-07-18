@@ -188,6 +188,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WindowParent: {fileID: 95279536841685086}
+  ChatCanvas: {fileID: 2653058539699716186}
 --- !u!1 &4253284640328190706
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,8 +6,16 @@ using UnityEngine.UI;
 
 public struct AnimationFrameData
 {
+    public AnimationFrameData(int startFrame, int frameCount, float targetFrame)
+    {
+        StartFrame = startFrame;
+        FrameCount = frameCount;
+        TargetFrame = targetFrame;
+    }
+
     public int StartFrame;
     public int FrameCount;
+    public float TargetFrame;
 }
 
 public class SpriteAnimationData
@@ -36,16 +44,15 @@ public class SpriteAnimation : MonoBehaviour
 
     public void Init(DataManager.CharacterData data)
     {
-        var iter = data.SpriteCountDic.GetEnumerator();
+        var iter = data.FrameDataDic.GetEnumerator();
 
         while (iter.MoveNext())
         {
-            if (iter.Current.Value > 0)
+            if (iter.Current.Value.FrameCount > 0)
             {
                 var animData = new SpriteAnimationData();
                 animData.SpriteList = data.GetSpriteList(iter.Current.Key);
-                animData.FrameData.StartFrame = 0;
-                animData.FrameData.FrameCount = animData.SpriteList.Count;
+                animData.FrameData = data.FrameDataDic[iter.Current.Key];
                 TotalAnimationDataDic[iter.Current.Key] = animData;
             }
         }
@@ -55,13 +62,13 @@ public class SpriteAnimation : MonoBehaviour
         m_FrameTime = 0;
     }
 
+    public void SetColor(Color color)
+    {
+        TargetImage.color = color;
+    }
+
     public void SetAnimation(eCharacterState state, bool isRepeat = false, float fps = 0)
     {
-        if (fps > 0)
-            m_targetFPS = fps;
-        else
-            m_targetFPS = ConstValue.DEFAULT_ANIM_FPS;
-
         TargetImage.gameObject.SetActive_Check(true);
         if (!TotalAnimationDataDic.ContainsKey(state))
         {
@@ -77,6 +84,7 @@ public class SpriteAnimation : MonoBehaviour
             return;
         }
 
+        m_targetFPS = TotalAnimationDataDic[state].FrameData.TargetFrame;
         m_FrameTime = 0;
         m_IsRepeat = isRepeat;
         if (m_CurrentState != state)

@@ -39,7 +39,8 @@ public class ExpandTextOutput : MonoBehaviour
         m_TextFlag = m_TextFlag | flag;
     }
 
-    public void SetText(SpeechBubble parent, string content, Dictionary<int, DataManager.TextEventData> tagDic, TextEventDelegate eventAction = null, System.Action textEndAction = null)
+    public void SetText(SpeechBubble parent, string content, Dictionary<int, DataManager.TextEventData> tagDic, 
+        TextEventDelegate eventAction = null, System.Action textEndAction = null)
     {
         m_ParentBubble = parent;
         m_EventAction = eventAction;

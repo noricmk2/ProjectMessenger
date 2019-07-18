@@ -363,6 +363,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BG: {fileID: 8485484189300153435}
   Text: {fileID: 7617911048361333346}
+  ChoiceButton: {fileID: 3729936909160189357}
 --- !u!114 &3729936909160189357
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -408,3 +409,4 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+  IsColorHilight: 0
