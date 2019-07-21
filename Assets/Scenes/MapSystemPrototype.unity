@@ -2661,6 +2661,28 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 560253433}
+    - target: {fileID: 2017610861994572700, guid: 6e792390e21a16e46a05cef4a08263f1,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2017610861994572700, guid: 6e792390e21a16e46a05cef4a08263f1,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2017610862587645764, guid: 6e792390e21a16e46a05cef4a08263f1,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: a408fe9f5b4c06347beba2d25a976955,
+        type: 3}
+    - target: {fileID: 2017610861994572699, guid: 6e792390e21a16e46a05cef4a08263f1,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: a408fe9f5b4c06347beba2d25a976955,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6e792390e21a16e46a05cef4a08263f1, type: 3}
 --- !u!224 &2017610861681902823 stripped
