@@ -94,6 +94,12 @@ namespace MSUtil
         }
         #endregion
 
+        public static Vector2 GetRectSizeByCorner(Vector3[] corners)
+        {
+            var result = new Vector2(Screen.width - (corners[0].x - corners[2].x), Screen.height - (corners[0].y - corners[1].y));
+            return result;
+        }
+
         public static bool InPercent(float percent)
         {
             return UnityEngine.Random.Range(0f, 100f) <= percent;
@@ -162,7 +168,9 @@ namespace MSUtil
         public static readonly Vector2 DEFULT_SCREEN_SIZE = new Vector2(1280f, 720f); // 기본 화면사이즈
         public static readonly string LAST_CHAPTER_SAVE_KEY = "LAST_CHAPTER"; // 최근 플레이 챕터 세이브 키값
 
+        public static readonly string CHARACTER_GETTER_ID = "CHARACTER_NAME_";
         public static readonly string CHARACTER_NIKA = "nika"; //니카 캐릭터명;
+        public static readonly int CHARACTER_NIKA_ID = 10001; //니카 캐릭터 ID;
 
         public static float CHARACTER_APPEAR_TIME = 0.5f;
         public static float CURSOR_BLINK_TIME = 0.5f;
