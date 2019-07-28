@@ -13,29 +13,48 @@ public class CharacterObject : MonoBehaviour, IPoolObjectBase
     public SpeechBubble Bubble;
     #endregion
     public DataManager.CharacterData CurrentCharacterData { get; private set; }
+    public bool CharacterActivate { get; set; }
 
     public void Init(int characterID, Transform parent)
     {
         transform.Init(parent);
         CurrentCharacterData = DataManager.Instance.GetCharacterData(characterID);
-        Bubble.transform.localScale = Vector3.zero;
+        CharacterActivate = false;
         Bubble.Init(this);
+        if(CurrentCharacterData.CharacterType != eCharacter.NIKA)
+            Bubble.transform.localScale = Vector3.zero;
         CharacterAnimation.Init(CurrentCharacterData);
     }
 
-    public void SetFocus(bool focusOn)
+    public void SetFocus(bool focus, System.Action endAction = null)
     {
         Bubble.transform.DOKill();
-        if (focusOn)
+        if (focus)
         {
             CharacterAnimation.SetColor(Color.white);
-            Bubble.gameObject.SetActive_Check(true);
-            Bubble.transform.DOScale(Vector3.one, ConstValue.BUBBLE_ANIMATION_TIME).SetEase(Ease.InOutBack);
+            if (CurrentCharacterData.CharacterType != eCharacter.NIKA)
+            {
+                Bubble.gameObject.SetActive_Check(true);
+                Bubble.ExpandText.Reset();
+                Bubble.transform.DOScale(Vector3.one, ConstValue.BUBBLE_ANIMATION_TIME).SetEase(Ease.InOutBack).OnComplete(
+                    () =>
+                    {
+                        if (endAction != null)
+                            endAction();
+                    });
+            }
+            else
+                if (endAction != null)
+                endAction();
         }
         else
         {
             CharacterAnimation.SetColor(ColorPalette.CHARACTER_HILIGHT_COLOR);
-            Bubble.transform.DOScale(Vector3.zero, ConstValue.BUBBLE_ANIMATION_TIME).SetEase(Ease.InOutBack).OnComplete(() => Bubble.gameObject.SetActive_Check(false));
+            if (CurrentCharacterData.CharacterType != eCharacter.NIKA)
+            {
+                Bubble.transform.DOScale(Vector3.zero, ConstValue.BUBBLE_ANIMATION_TIME).SetEase(Ease.InOutBack).OnComplete(() => Bubble.gameObject.SetActive_Check(false));
+                Bubble.gameObject.SetActive_Check(false);
+            }
         }
     }
 

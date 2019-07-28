@@ -11,22 +11,36 @@ public class Window_Chat_Main : WindowBase
     public RectTransform PortraitTrans;
     public RectTransform CharacterPosition;
     public RectTransform ChoiceParent;
-    public SpeechBubble MainSpeechBubble;
-    public SpriteAnimation PortraitSpriteAnimation;
+    public CharacterObject MainCharacter;
     public Image BackGroundImage;
     public CustomButton MainTouch;
+    public RecycleScroll BackLogScroll;
+    public CustomButton BackLogButton;
     #endregion
     private System.Action m_AfterOpenAction;
     private System.Action m_MainTouchAction;
+    private GameObject BackLogObject;
+    private ChatObject m_Parent;
 
-    public void Init(System.Action afterOpenAction = null, System.Action mainTouchAction = null)
+    private void Awake()
     {
-        MainSpeechBubble.Init(PortraitSpriteAnimation);
-        PortraitSpriteAnimation.Init(DataManager.Instance.GetCharacterData(eCharacter.NIKA));
-        PortraitSpriteAnimation.SetAnimation(eCharacterState.NONE);
+        BackLogObject = BackLogScroll.transform.parent.gameObject;
+    }
+
+    public void Init(ChatObject parent, System.Action afterOpenAction = null, System.Action mainTouchAction = null)
+    {
+        m_Parent = parent;
+        MainCharacter.Init(ConstValue.CHARACTER_NIKA_ID, MainCharacter.transform.parent);
         m_AfterOpenAction = afterOpenAction;
         m_MainTouchAction = mainTouchAction;
         MainTouch.IsColorHilight = false;
+        BackLogObject.SetActive_Check(false);
+        BackLogButton.gameObject.SetActive_Check(true);
+    }
+
+    private RecycleSlotBase ActiveSlot()
+    {
+        return ObjectFactory.Instance.ActivateObject<BackLogText>();
     }
 
     protected override void AfterOpen()
@@ -40,6 +54,22 @@ public class Window_Chat_Main : WindowBase
     {
         if(m_MainTouchAction != null)
             m_MainTouchAction();
+    }
+
+    public void OnClickBackLog()
+    {
+        if (BackLogObject.activeSelf)
+        {
+            BackLogScroll.Release();
+            BackLogObject.SetActive_Check(false);
+            BackLogButton.gameObject.SetActive_Check(true);
+        }
+        else
+        {
+            BackLogButton.gameObject.SetActive_Check(false);
+            BackLogScroll.Init(new List<IRecycleSlotData>(m_Parent.LogTextList.ToArray()), ActiveSlot);
+            BackLogObject.SetActive_Check(true);
+        }
     }
 
     public void OnClickBag()

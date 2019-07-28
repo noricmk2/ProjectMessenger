@@ -65,8 +65,9 @@ namespace MSUtil
         CHO,
         HL,
         CNG,
-        APITEM,
-        DPITEM,
+        APRITEM,
+        DPRITEM,
+        MAILSORT,
         FONTBIG,
         FONTSML,
         FONTCOL,
@@ -101,7 +102,7 @@ namespace MSUtil
         }
         #endregion
 
-        public static Vector2 GetRectSizeByCorner(Vector3[] corners)
+        public static Vector2 GetSizeByCorner(Vector3[] corners)
         {
             var result = new Vector2(Screen.width - (corners[0].x - corners[2].x), Screen.height - (corners[0].y - corners[1].y));
             return result;

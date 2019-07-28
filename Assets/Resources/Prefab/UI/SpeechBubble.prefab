@@ -127,7 +127,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BubbleTrans: {fileID: 7507267124238972072}
   BubbleBG: {fileID: 8819867404575971013}
-  Text: {fileID: 7301133591211096654}
+  ExpandText: {fileID: 7301133591211096654}
   TextCursor: {fileID: 9073612480492798948}
 --- !u!1 &9066065619156778521
 GameObject:

@@ -44,7 +44,7 @@ public class ObjectPool<T> where T : IPoolObjectBase
 
     public T Pop()
     {
-        if (m_Pool.Count <= 0)
+        if (m_Pool.Count == 0)
             Add();
 
         var retObj = m_Pool.Pop();
@@ -52,6 +52,14 @@ public class ObjectPool<T> where T : IPoolObjectBase
             m_PopAction(retObj);
         m_RestoreList.Add(retObj);
         return retObj;
+    }
+
+    public T Peek()
+    {
+        if (m_Pool.Count == 0)
+            Add();
+
+        return m_Pool.Peek();
     }
 
     private void Add()

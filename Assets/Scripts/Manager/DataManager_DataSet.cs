@@ -7,13 +7,13 @@ using System.Text.RegularExpressions;
 public partial class DataManager : Singleton<DataManager>
 {
     #region class
-    public abstract class TableDataBase_String
+    public abstract class TableDataBase_String : IRecycleSlotData
     {
         public string ID { get; protected set; }
         public abstract void Parse(string[] values);
     }
 
-    public abstract class TableDataBase_Int
+    public abstract class TableDataBase_Int : IRecycleSlotData
     {
         public int ID { get; protected set; }
         public abstract void Parse(string[] values);

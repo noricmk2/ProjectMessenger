@@ -18,24 +18,31 @@ public class ChatObject : MonoBehaviour
     private Dictionary<int, CharacterObject> m_CurrentCharacterDic = new Dictionary<int, CharacterObject>();
     private List<ChoiceObject> m_ChoiceList = new List<ChoiceObject>();
     private ItemObject m_ItemObject;
+    private CharacterObject m_CurrentChatter;
+
+    public List<BackLogTextData> LogTextList { get; private set; }
 
     private bool m_IsChoice = false;
 
     public void Init()
     {
         //TODO:챕터 정보 불러오기
+        if(LogTextList == null)
+            LogTextList = new List<BackLogTextData>();
         ChatCanvas.renderMode = RenderMode.ScreenSpaceCamera;
         ChatCanvas.worldCamera = UICamera.Instance.Camera;
         Release();
+        m_CurrentChatter = null;
         m_CurrentChapterData = DataManager.Instance.GetChapterData(UserInfo.Instance.CurrentGameData.CurrentChapterID);
         SetChapterDialogue((eEventTag)UserInfo.Instance.CurrentGameData.CurrentChapterEvent, "DL1");
         m_ChatWindow = WindowBase.OpenWindowWithFade(WindowBase.eWINDOW.ChatMain, WindowParent, true) as Window_Chat_Main;
-        m_ChatWindow.Init(()=>
+        m_ChatWindow.Init(this, ()=>
         {
             if (m_UpdateCouroutine == null)
                 m_UpdateCouroutine = Update_C();
             StartCoroutine(m_UpdateCouroutine);
         }, OnMainTouch);
+        m_CurrentCharacterDic[m_ChatWindow.MainCharacter.CurrentCharacterData.ID] = m_ChatWindow.MainCharacter;
     }
 
     int testIdx = 1;
@@ -45,17 +52,6 @@ public class ChatObject : MonoBehaviour
         SetTextData(textData);
         while (true)
         {
-            if (Input.GetKeyDown(KeyCode.F1))
-            {
-                ++testIdx;
-                if (testIdx >= (int)eCharacterState.LENGTH)
-                    testIdx = 0;
-                m_ChatWindow.PortraitSpriteAnimation.SetAnimation((eCharacterState)testIdx, testIdx == 1 ? true : false);
-            }
-            if (Input.GetKeyDown(KeyCode.F2))
-            {
-                SetActiveCharacter(10004, true);
-            }
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
             {
                 OnMainTouch();
@@ -64,27 +60,32 @@ public class ChatObject : MonoBehaviour
         }
     }
 
-    public void OnMainTouch()
+    private void OnMainTouch()
     {
-        if (!m_IsChoice && !GameManager.IsPlayText)
+        if (!m_IsChoice && m_CurrentChatter != null && m_CurrentChatter.CharacterActivate)
         {
-            ++m_CurrentEventIdx;
-            var textData = m_CurrentChapterTextData.GetTextData(m_CurrentEventIdx);
-
-            if (textData != null)
-                SetTextData(textData);
+            if (GameManager.IsPlayText)
+            {
+                m_CurrentChatter.Bubble.CancelTypeWrite();
+            }
             else
             {
-                //임시
-                MSSceneManager.Instance.EnterScene(SceneBase.eScene.INTRO);
+                ++m_CurrentEventIdx;
+                var textData = m_CurrentChapterTextData.GetTextData(m_CurrentEventIdx);
+
+                if (textData != null)
+                    SetTextData(textData);
+                else
+                {
+                    //임시
+                    MSSceneManager.Instance.EnterScene(SceneBase.eScene.INTRO);
+                }
             }
         }
     }
 
     private void SetTextData(DataManager.StoryTextData data)
     {
-        m_ChatWindow.MainSpeechBubble.SetCursor(false);
-        m_ChatWindow.PortraitSpriteAnimation.SetColor(ColorPalette.CHARACTER_HILIGHT_COLOR);
         var iter = m_CurrentCharacterDic.GetEnumerator();
         while (iter.MoveNext())
         {
@@ -93,18 +94,16 @@ public class ChatObject : MonoBehaviour
         }
 
         var charData = DataManager.Instance.GetCharacterData(data.CharacterID);
-        if (charData.CharacterType == eCharacter.NIKA)
-        {
-            m_ChatWindow.MainSpeechBubble.SetTextData(data, TextEvent);
-            m_ChatWindow.PortraitSpriteAnimation.SetColor(Color.white);
-            return;
-        }
-
         if (!m_CurrentCharacterDic.ContainsKey(data.CharacterID))
             SetActiveCharacter(data.CharacterID, true);
-        var charObj = m_CurrentCharacterDic[data.CharacterID];
-        charObj.SetFocus(true);
-        charObj.Bubble.SetTextData(data, TextEvent);
+        m_CurrentChatter = m_CurrentCharacterDic[data.CharacterID];
+        m_CurrentChatter.SetFocus(true, () =>
+        {
+            m_CurrentChatter.Bubble.SetTextData(data, TextEvent);
+        });
+
+        var logData = new BackLogTextData(data.GetCharacterName(), TextManager.GetStoryText(data.ID));
+        LogTextList.Insert(0, logData);
     }
 
     public void SetActiveCharacter(int characterID, bool activate, bool focus = false)
@@ -131,9 +130,9 @@ public class ChatObject : MonoBehaviour
         }
     }
 
-    public IEnumerator TextEvent(SpeechBubble target, DataManager.TextEventData data)
+    private IEnumerator TextEvent(SpeechBubble target, DataManager.TextEventData data)
     {
-        var targetSpriteAnim = target.ParentObject != null ? target.ParentObject.CharacterAnimation : target.ParentAnimation;
+        var targetSpriteAnim = target.ParentObject.CharacterAnimation;
 
         switch (data.Tag)
         {
@@ -149,12 +148,15 @@ public class ChatObject : MonoBehaviour
                     {
                         yield return null;
                     }
+                    
                     target.BubbleBG.enabled = true;
+                    target.ParentObject.CharacterActivate = true;
                     targetSpriteAnim.SetAnimation(eCharacterState.IDLE, true);
                 }
                 break;
             case eTextEventTag.DPR:
                 {
+                    target.ParentObject.CharacterActivate = false;
                     var sequence = DOTween.Sequence();
                     sequence.Append(targetSpriteAnim.TargetImage.DOColor(Color.black, ConstValue.CHARACTER_APPEAR_TIME));
                     sequence.Append(targetSpriteAnim.TargetImage.DOColor(ColorPalette.FADE_IN_BLACK, ConstValue.CHARACTER_APPEAR_TIME));
@@ -168,8 +170,8 @@ public class ChatObject : MonoBehaviour
                     if (target.ParentObject != null)
                         SetActiveCharacter(target.ParentObject.CurrentCharacterData.ID, false);
                     ++m_CurrentEventIdx;
-                    var textData = m_CurrentChapterTextData.GetTextData(m_CurrentEventIdx);
 
+                    var textData = m_CurrentChapterTextData.GetTextData(m_CurrentEventIdx);
                     if (textData != null)
                         SetTextData(textData);
                     else
@@ -207,15 +209,18 @@ public class ChatObject : MonoBehaviour
                 break;
             case eTextEventTag.DRK:
                 m_ChatWindow.BackGroundImage.DOColor(ColorPalette.FADE_OUT_BLACK, ConstValue.CHARACTER_APPEAR_TIME);
-                m_ChatWindow.PortraitSpriteAnimation.SetAnimation(eCharacterState.NONE);
+                m_ChatWindow.MainCharacter.CharacterAnimation.SetAnimation(eCharacterState.NONE);
                 var iter = m_CurrentCharacterDic.GetEnumerator();
                 while (iter.MoveNext())
                 {
-                    iter.Current.Value.CharacterAnimation.SetAnimation(eCharacterState.NONE);
-                    iter.Current.Value.Bubble.gameObject.SetActive_Check(false);
+                    if (iter.Current.Value.CurrentCharacterData.CharacterType != eCharacter.NIKA)
+                    {
+                        iter.Current.Value.CharacterAnimation.SetAnimation(eCharacterState.NONE);
+                        iter.Current.Value.Bubble.gameObject.SetActive_Check(false);
+                    }
                 }
                 break;
-            case eTextEventTag.APITEM:
+            case eTextEventTag.APRITEM:
                 {
                     if (m_ItemObject == null)
                         m_ItemObject = ObjectFactory.Instance.ActivateObject<ItemObject>();
@@ -229,7 +234,7 @@ public class ChatObject : MonoBehaviour
                     m_ItemObject.transform.DOMove(m_ChatWindow.BackGroundImage.transform.position, 0.3f).SetEase(Ease.OutBack);
                 }
                 break;
-            case eTextEventTag.DPITEM:
+            case eTextEventTag.DPRITEM:
                 {
                     if (m_ItemObject != null)
                     {
@@ -238,10 +243,15 @@ public class ChatObject : MonoBehaviour
                     }
                 }
                 break;
+            case eTextEventTag.MAILSORT:
+                {
+
+                }
+                break;
         }
     }
 
-    public void ChoiceEvent(string flag)
+    private void ChoiceEvent(string flag)
     {
         m_IsChoice = false;
         SetChapterDialogue((eEventTag)UserInfo.Instance.CurrentGameData.CurrentChapterEvent, flag);
@@ -254,7 +264,7 @@ public class ChatObject : MonoBehaviour
         m_ChatWindow.MainTouch.gameObject.SetActive_Check(true);
     }
 
-    public void SetChapterDialogue(eEventTag tag, string dialogueID)
+    private void SetChapterDialogue(eEventTag tag, string dialogueID)
     {
         UserInfo.Instance.CurrentGameData.CurrentChapterEvent = (int)tag;
         m_CurrentChapterTextData = m_CurrentChapterData.GetChapterTextData(tag, dialogueID);
@@ -276,5 +286,8 @@ public class ChatObject : MonoBehaviour
             m_UpdateCouroutine = null;
         }
         m_CurrentEventIdx = 1;
+        m_CurrentChatter = null;
+
+        LogTextList.Clear();
     }
 }

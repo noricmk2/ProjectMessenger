@@ -31,6 +31,7 @@ public class ObjectFactory : Singleton<ObjectFactory>
         CreatePool<ChoiceObject>(3, "Prefab/UI/ChoiceObject");
         CreatePool<ItemObject>(1, "Prefab/UI/ItemObject");
         CreatePool<LetterListObject>(1, "Prefab/UI/LetterObject");
+        CreatePool<BackLogText>(10, "Prefab/UI/BackLogText");
     }
 
     public Sprite GetUISprite(string spriteName)
@@ -79,12 +80,23 @@ public class ObjectFactory : Singleton<ObjectFactory>
         return default(T);
     }
 
-    public void DeactivateObject<T>(T obj) where T : class, IPoolObjectBase
+    public void DeactivateObject<T>(T obj, bool findType = false) where T : class, IPoolObjectBase
     {
         var poolName = typeof(T).Name;
         if (m_TotalPoolDic.ContainsKey(poolName))
         {
             m_TotalPoolDic[poolName].Push(obj);
+        }
+
+        if (findType)
+        {
+            var iter = m_TotalPoolDic.GetEnumerator();
+            while(iter.MoveNext())
+            {
+                var pObj = iter.Current.Value.Peek();
+                if (obj.GetType() == pObj.GetType())
+                    iter.Current.Value.Push(obj);
+            }
         }
     }
 

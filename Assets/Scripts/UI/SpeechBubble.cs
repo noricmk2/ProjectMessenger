@@ -10,7 +10,7 @@ public class SpeechBubble : MonoBehaviour, IPoolObjectBase
     #region Inspector
     public RectTransform BubbleTrans;
     public Image BubbleBG; 
-    public ExpandTextOutput Text;
+    public ExpandTextOutput ExpandText;
     public Image TextCursor;
     #endregion
     private float APPEAR_TIME = 0.5f;
@@ -24,7 +24,7 @@ public class SpeechBubble : MonoBehaviour, IPoolObjectBase
     {
         BubbleBG.enabled = false;
         ParentObject = parent;
-        Text.Reset();
+        ExpandText.Reset();
         TextCursor.DOKill();
         TextCursor.gameObject.SetActive_Check(false);
     }
@@ -32,14 +32,17 @@ public class SpeechBubble : MonoBehaviour, IPoolObjectBase
     public void Init(SpriteAnimation parentAnimation)
     {
         ParentAnimation = parentAnimation;
-        Text.Reset();
+        ExpandText.Reset();
     }
 
-    public void SetTextData(DataManager.StoryTextData data, ExpandTextOutput.TextEventDelegate textEvent)
+    public void SetTextData(DataManager.StoryTextData data, ExpandTextOutput.TextEventDelegate textTagEvent)
     {
         SetCursor(false);
-        Text.SetText(this, TextManager.GetStoryText(data.ID), data.GetEventTagDic(), textEvent, () => SetCursor(true));
-        Text.PlayText();
+        ExpandText.SetText(this, TextManager.GetStoryText(data.ID), data.GetEventTagDic(), textTagEvent, () =>
+        {
+            SetCursor(true);
+        });
+        ExpandText.PlayText();
     }
 
     public void SetCursor(bool active)
@@ -51,9 +54,16 @@ public class SpeechBubble : MonoBehaviour, IPoolObjectBase
             m_CursorCoroutine = StartCoroutine(CursorBlink_C());
     }
 
+    public void CancelTypeWrite()
+    {
+        ExpandText.CancelTypeWrite();
+        transform.DOKill();
+        transform.localScale = Vector3.one;
+    }
+
     public void Release()
     {
-        Text.Reset();
+        ExpandText.Reset();
     }
 
     IEnumerator CursorBlink_C()

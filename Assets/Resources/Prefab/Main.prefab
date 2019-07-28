@@ -506,7 +506,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7973834444770494854}
   - component: {fileID: 7973834444770494873}
-  - component: {fileID: 6422619371156430564}
   m_Layer: 0
   m_Name: Main
   m_TagString: Untagged
@@ -542,18 +541,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1e7be7f42fcfeeb4b848f6068d88f6a6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &6422619371156430564
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7973834444770494872}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 428c51778135155419ac2d665f5727b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &7973834444997196088
@@ -628,7 +615,7 @@ Camera:
   m_HDR: 1
   m_AllowMSAA: 0
   m_AllowDynamicResolution: 0
-  m_ForceIntoRT: 0
+  m_ForceIntoRT: 1
   m_OcclusionCulling: 0
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022

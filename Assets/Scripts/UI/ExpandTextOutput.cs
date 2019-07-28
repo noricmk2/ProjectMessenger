@@ -67,6 +67,22 @@ public class ExpandTextOutput : MonoBehaviour
         }
     }
 
+    public void CancelTypeWrite()
+    {
+        if (m_CurrentString.Length > 0)
+        {
+            StopCoroutine(m_TypeWriteCoroutine);
+            m_TypeWriteCoroutine = null;
+            var content = m_CurrentString.Replace('^', '\n');
+            Text.text = content;
+            if (m_TextEventTagDic != null && m_EventAction != null && m_TextEventTagDic.ContainsKey(m_CurrentString.Length))
+                m_EventAction(m_ParentBubble, m_TextEventTagDic[m_CurrentString.Length]);
+            if (m_TextEndAction != null)
+                m_TextEndAction();
+            GameManager.IsPlayText = false;
+        }
+    }
+
     IEnumerator TypeWrite_C()
     {
         GameManager.IsPlayText = true;
