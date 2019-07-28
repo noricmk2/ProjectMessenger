@@ -82,6 +82,12 @@ public partial class DataManager : Singleton<DataManager>
             return m_TextDic[langType];
         }
 
+        public string GetCharacterName()
+        {
+            var charData = Instance.GetCharacterData(CharacterID);
+            return TextManager.GetSystemText(ConstValue.CHARACTER_GETTER_ID + charData.CharacterType.ToString().ToUpper());
+        }
+
         public Dictionary<int, TextEventData> GetEventTagDic()
         {
             return m_EventTagDic;
@@ -134,6 +140,13 @@ public partial class DataManager : Singleton<DataManager>
             var data = Instance.GetChapterTextData(eventTag, dialogueID);
             return data;
         }
+        public List<ChapterTextData> GetAllChapterTextData()
+        {
+            var list = new List<ChapterTextData>();
+            for (int i = 0; i < ChapterTextDataIDList.Count; ++i)
+                list.Add(Instance.GetChapterTextData(ChapterTextDataIDList[i]));
+            return list;
+        }
     }
     #endregion
 
@@ -173,10 +186,19 @@ public partial class DataManager : Singleton<DataManager>
             }
         }
 
+        public List<StoryTextData> GetAllTextData()
+        {
+            var list = new List<StoryTextData>();
+            var iter = TextIDDic.GetEnumerator();
+            while (iter.MoveNext())
+                list.Add(Instance.GetStoryTextData(iter.Current.Value));
+            return list;
+        }
+
         public StoryTextData GetTextData(int idx)
         {
             if (TextIDDic.ContainsKey(idx))
-                return DataManager.Instance.GetStoryTextData(TextIDDic[idx]);
+                return Instance.GetStoryTextData(TextIDDic[idx]);
             else
                 MSLog.LogError("text id not exist:" + idx);
 
@@ -241,6 +263,11 @@ public partial class DataManager : Singleton<DataManager>
                 }
             }
             return resultList;
+        }
+
+        public string GetCharacterName()
+        {
+            return TextManager.GetSystemText(ConstValue.CHARACTER_GETTER_ID + CharacterType.ToString().ToUpper());
         }
     }
     #endregion
