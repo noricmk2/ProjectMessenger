@@ -30,6 +30,7 @@ public class ObjectFactory : Singleton<ObjectFactory>
         CreatePool<CharacterObject>(3, "Prefab/UI/CharacterObject");
         CreatePool<ChoiceObject>(3, "Prefab/UI/ChoiceObject");
         CreatePool<ItemObject>(1, "Prefab/UI/ItemObject");
+        CreatePool<LetterListObject>(1, "Prefab/UI/LetterObject");
     }
 
     public Sprite GetUISprite(string spriteName)

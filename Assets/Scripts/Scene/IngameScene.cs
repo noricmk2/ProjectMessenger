@@ -17,7 +17,7 @@ public class IngameScene : SceneBase
 
         //if()
         //채팅씬으로 가야할 때
-        //MSSceneManager.Instance.EnterScene(SceneBase.eScene.CHAT);
+        MSSceneManager.Instance.EnterScene(SceneBase.eScene.CHAT);
 
         //채팅 아닐 때
     }

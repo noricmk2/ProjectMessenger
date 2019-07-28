@@ -227,4 +227,26 @@ public partial class DataManager : Singleton<DataManager>
         return null;
     }
     #endregion
+
+    #region LetterData
+    private Dictionary<int, LetterData> m_LetterDataDic = new Dictionary<int, LetterData>();
+
+    public LetterData GetLetterData(int id)
+    {
+        if (m_LetterDataDic.ContainsKey(id))
+            return m_LetterDataDic[id];
+        return null;
+    }
+    #endregion
+
+    #region MapData_Point
+    private Dictionary<int, MapData_Point> m_MapData_PointDic = new Dictionary<int, MapData_Point>();
+
+    public MapData_Point GetMapData_Point(int id)
+    {
+        if (m_MapData_PointDic.ContainsKey(id))
+            return m_MapData_PointDic[id];
+        return null;
+    }
+    #endregion
 }

@@ -72,6 +72,13 @@ namespace MSUtil
         FONTCOL,
         LENGTH
     }
+
+    public enum eLetterType
+    {
+        Event,
+        Junk,
+    }
+
     #endregion
 
     #region Func

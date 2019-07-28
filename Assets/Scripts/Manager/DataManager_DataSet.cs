@@ -37,13 +37,13 @@ public partial class DataManager : Singleton<DataManager>
         public int CharacterID { get; private set; }
         Dictionary<eLanguage, string> m_TextDic = new Dictionary<eLanguage, string>();
         Dictionary<int, TextEventData> m_EventTagDic = new Dictionary<int, TextEventData>();
-        
+
         public override void Parse(string[] values)
         {
             ID = values[0];
             CharacterID = Func.GetInt(values[1]);
             Regex regex;
-            if(values[2].Contains("[CHO"))
+            if (values[2].Contains("[CHO"))
                 regex = new Regex(@"\[(.+)\]");
             else
                 regex = new Regex(@"\[(\w+)\]");
@@ -158,7 +158,7 @@ public partial class DataManager : Singleton<DataManager>
             var max = Func.GetInt(values[5]);
             int count = max - min + 1;
             var strBuilder = new System.Text.StringBuilder();
-            for (int i=0; i < count; ++i)
+            for (int i = 0; i < count; ++i)
             {
                 strBuilder.Clear();
                 strBuilder.Append(STORY_TEXT);
@@ -241,6 +241,45 @@ public partial class DataManager : Singleton<DataManager>
                 }
             }
             return resultList;
+        }
+    }
+    #endregion
+
+    #region LetterData
+    public class LetterData : TableDataBase_Int
+    {
+        public eLetterType LetterType { get; private set; }
+        public int From { get; private set; }
+        public int To { get; private set; }
+        public int Destination { get; private set; }
+        public int Reward { get; private set; }
+        public int Flag { get; private set; }
+
+        public override void Parse(string[] values)
+        {
+            ID = Func.GetInt(values[1]);
+            LetterType = Func.GetEnum<eLetterType>(values[2]);
+            From = Func.GetInt(values[3]);
+            To = Func.GetInt(values[4]);
+            Destination = Func.GetInt(values[5]);
+            Reward = Func.GetInt(values[6]);
+            Flag = Func.GetInt(values[7]);
+
+        }
+    }
+    #endregion
+
+    #region MapData_Point
+    public class MapData_Point : TableDataBase_Int
+    {
+        public string Name { get; private set; }
+        public string Description { get; private set; }
+
+        public override void Parse(string[] values)
+        {
+            ID = Func.GetInt(values[1]);
+            Name = values[2];
+            Description = values[3];
         }
     }
     #endregion
