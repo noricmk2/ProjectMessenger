@@ -14,6 +14,7 @@ public partial class DataManager : Singleton<DataManager>
         Chapter,
         ChapterTextData,
         Character,
+        Letter,
         Length
     }
 
@@ -24,6 +25,7 @@ public partial class DataManager : Singleton<DataManager>
         { eSheetType.Chapter , "715858755" },
         { eSheetType.ChapterTextData , "754458555" },
         { eSheetType.Character , "651796308" },
+        { eSheetType.Letter , "1623412517" },
     };
 
     public Coroutine LoadFromGoogleSheet(eSheetType type)
@@ -58,17 +60,20 @@ public partial class DataManager : Singleton<DataManager>
                 case eSheetType.Character:
                     ParseTable_Int(m_CharacterDataDic, www.text);
                     break;
+                case eSheetType.Letter:
+                    ParseTable_Int(m_LetterDataDic, www.text, 2);
+                    break;
             }
         }
         else
             MSLog.LogError(type.ToString() + "//" + www.error);
     }
 
-    private void ParseTable_String<T>(Dictionary<string, T> dataDic, string content) where T : TableDataBase_String, new()
+    private void ParseTable_String<T>(Dictionary<string, T> dataDic, string content, int startIdx = 1) where T : TableDataBase_String, new()
     {
         dataDic.Clear();
         var lines = content.Split('\n');
-        for (int i = 1; i < lines.Length; ++i)
+        for (int i = startIdx; i < lines.Length; ++i)
         {
             var tabs = lines[i].Split('\t');
             for (int j = 0; j < tabs.Length; ++j)
@@ -93,11 +98,11 @@ public partial class DataManager : Singleton<DataManager>
         }
     }
 
-    private void ParseTable_Int<T>(Dictionary<int, T> dataDic, string content) where T : TableDataBase_Int, new()
+    private void ParseTable_Int<T>(Dictionary<int, T> dataDic, string content, int startIdx = 1) where T : TableDataBase_Int, new()
     {
         dataDic.Clear();
         var lines = content.Split('\n');
-        for (int i = 1; i < lines.Length; ++i)
+        for (int i = startIdx; i < lines.Length; ++i)
         {
             var tabs = lines[i].Split('\t');
             for (int j = 0; j < tabs.Length; ++j)
@@ -236,6 +241,29 @@ public partial class DataManager : Singleton<DataManager>
         if (m_LetterDataDic.ContainsKey(id))
             return m_LetterDataDic[id];
         return null;
+    }
+
+    public List<LetterData> GetRandomLetterList(int count)
+    {
+        var list = new List<LetterData>();
+        var iter = m_LetterDataDic.GetEnumerator();
+
+        //TODO: 조건에 맞는 랜덤 편지 선별
+        while (iter.MoveNext() && count > 0)
+        {
+            var letter = iter.Current.Value;
+            if (letter.LetterType == eLetterType.Junk)
+            {
+                var rand = Random.Range(0, 2) == 0 ? true : false;
+                if (rand)
+                {
+                    list.Add(letter);
+                    --count;
+                }
+            }
+        }
+
+        return list;
     }
     #endregion
 

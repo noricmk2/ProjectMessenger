@@ -72,6 +72,6 @@ public class CharacterObject : MonoBehaviour, IPoolObjectBase
     public void PushAction()
     {
         gameObject.SetActive(false);
-        transform.SetParent(null);
+        transform.SetParent(ObjectFactory.Instance.ChatPoolParent);
     }
 }

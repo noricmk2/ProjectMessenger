@@ -83,5 +83,6 @@ public class SpeechBubble : MonoBehaviour, IPoolObjectBase
     public void PopAction()
     {
         gameObject.SetActive(true);
+        transform.SetParent(ObjectFactory.Instance.ChatPoolParent);
     }
 }

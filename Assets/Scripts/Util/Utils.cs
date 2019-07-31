@@ -8,13 +8,13 @@ namespace MSUtil
     #region Enum
     public enum eEventTag
     {
-        START,
+        START = 1,
         PREV_DELV,
     }
 
     public enum eChapterTag
     {
-        PROLOGUE,
+        PROLOGUE = 1,
         DAY1,
     }
 
@@ -80,6 +80,12 @@ namespace MSUtil
         Junk,
     }
 
+    public enum eItemType
+    {
+        Letter,
+        Item,
+        Length
+    }
     #endregion
 
     #region Func

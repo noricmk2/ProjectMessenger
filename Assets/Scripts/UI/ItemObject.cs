@@ -17,14 +17,14 @@ public class ItemObject : MonoBehaviour, IPoolObjectBase
         Icon.SetNativeSize();
     }
 
-    public void PushAction()
-    {
-        gameObject.SetActive(false);
-        transform.SetParent(null);
-    }
-
     public void PopAction()
     {
         gameObject.SetActive(true);
+    }
+
+    public void PushAction()
+    {
+        gameObject.SetActive(false);
+        transform.SetParent(ObjectFactory.Instance.ChatPoolParent);
     }
 }

@@ -17,21 +17,31 @@ public class ObjectFactory : Singleton<ObjectFactory>
     private SpriteAtlas CharacterAtlas_Nika;
     private SpriteAtlas CharacterAtlas_Less;
 
+    public  Transform ChatPoolParent { get; private set; }
+    public Material SpriteOutlineMaterial { get; private set; }
+
     public void CreateAllPool()
     {
         UIAtlas = ResourcesManager.LoadObject<SpriteAtlas>("SpriteAtlas/atlas_ui");
         CharacterAtlas_Nika = ResourcesManager.LoadObject<SpriteAtlas>("SpriteAtlas/atlas_character_nika");
         CharacterAtlas_Less = ResourcesManager.LoadObject<SpriteAtlas>("SpriteAtlas/atlas_character_less");
+        SpriteOutlineMaterial = new Material(Shader.Find("Sprites/Outline"));
+        SpriteOutlineMaterial.SetColor("_OutlineColor", Color.red);
+        SpriteOutlineMaterial.SetFloat("_IsOutlineEnabled", 1);
     }
 
-    public void CreateChatObjectPool()
+    public void CreateChatObjectPool(Transform parent)
     {
+        ChatPoolParent = parent;
         Release();
-        CreatePool<CharacterObject>(3, "Prefab/UI/CharacterObject");
-        CreatePool<ChoiceObject>(3, "Prefab/UI/ChoiceObject");
-        CreatePool<ItemObject>(1, "Prefab/UI/ItemObject");
-        CreatePool<LetterListObject>(1, "Prefab/UI/LetterObject");
-        CreatePool<BackLogText>(10, "Prefab/UI/BackLogText");
+        CreatePool<CharacterObject>(3, "Prefab/UI/CharacterObject", ChatPoolParent);
+        CreatePool<ChoiceObject>(3, "Prefab/UI/ChoiceObject", ChatPoolParent);
+        CreatePool<ItemObject>(1, "Prefab/UI/ItemObject", ChatPoolParent);
+        CreatePool<LetterListObject>(1, "Prefab/UI/LetterObject", ChatPoolParent);
+        CreatePool<BackLogText>(10, "Prefab/UI/BackLogText", ChatPoolParent);
+        CreatePool<BagSlot>(10, "Prefab/UI/BagSlot", ChatPoolParent);
+        CreatePool<MailBundle>(1, "Prefab/UI/MailBundle", ChatPoolParent);
+        CreatePool<MailSlot>(10, "Prefab/UI/MailSlot", ChatPoolParent);
     }
 
     public Sprite GetUISprite(string spriteName)
@@ -69,6 +79,11 @@ public class ObjectFactory : Singleton<ObjectFactory>
         return null;
     }
 
+    public Sprite GetBackGroundSprite(string spriteName)
+    {
+        return ResourcesManager.LoadObject<Sprite>("BG/" + spriteName);
+    }
+
     public T ActivateObject<T>() where T : class, IPoolObjectBase
     {
         var poolName = typeof(T).Name;
@@ -80,14 +95,12 @@ public class ObjectFactory : Singleton<ObjectFactory>
         return default(T);
     }
 
-    public void DeactivateObject<T>(T obj, bool findType = false) where T : class, IPoolObjectBase
+    public void DeactivateObject<T>(T obj, bool findType = false) where T : MonoBehaviour, IPoolObjectBase
     {
         var poolName = typeof(T).Name;
         if (m_TotalPoolDic.ContainsKey(poolName))
-        {
             m_TotalPoolDic[poolName].Push(obj);
-        }
-
+        
         if (findType)
         {
             var iter = m_TotalPoolDic.GetEnumerator();
@@ -100,11 +113,11 @@ public class ObjectFactory : Singleton<ObjectFactory>
         }
     }
 
-    public void CreatePool<T>(int count, string path) where T : IPoolObjectBase
+    public void CreatePool<T>(int count, string path, Transform parent = null) where T : MonoBehaviour, IPoolObjectBase
     {
         var pool = new ObjectPool<IPoolObjectBase>(count, () =>
         {
-            T poolObj = ResourcesManager.Instantiate<T>(path);
+            T poolObj = ResourcesManager.Instantiate<T>(path, parent);
             return poolObj;
         }
         , (IPoolObjectBase pushObj) => { pushObj.PushAction(); }, (IPoolObjectBase popObj) => { popObj.PopAction(); });

@@ -23,20 +23,19 @@ public class BackLogText : RecycleSlotBase
     public TextMeshProUGUI ContentText;
     public RectTransform SlotTrans;
     #endregion
-    private List<IRecycleSlotData> m_DataList;
     private BackLogTextData m_CurrentData;
 
-    public override void Init(Transform parent, List<IRecycleSlotData> dataList)
+    public override void Init(RecycleScroll scroll, Transform parent, List<IRecycleSlotData> dataList)
     {
-        SlotTrans.Init(parent);
-        m_DataList = dataList;
+        base.Init(scroll, parent, dataList);
     }
 
     public override void Refresh(int idx)
     {
+        base.Refresh(idx);
         m_CurrentData = m_DataList[idx] as BackLogTextData;
         HeaderText.text = m_CurrentData.CharacterName;
-        ContentText.text = m_CurrentData.Content;
+        ContentText.text = m_CurrentData.Content.Replace('^', '\n');
     }
 
     public override float GetHeight()

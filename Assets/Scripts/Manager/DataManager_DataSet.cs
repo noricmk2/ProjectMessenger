@@ -140,11 +140,24 @@ public partial class DataManager : Singleton<DataManager>
             var data = Instance.GetChapterTextData(eventTag, dialogueID);
             return data;
         }
+
         public List<ChapterTextData> GetAllChapterTextData()
         {
             var list = new List<ChapterTextData>();
             for (int i = 0; i < ChapterTextDataIDList.Count; ++i)
                 list.Add(Instance.GetChapterTextData(ChapterTextDataIDList[i]));
+            return list;
+        }
+
+        public List<LetterData> GetLetterList(int randomCount = 0)
+        {
+            var list = new List<LetterData>();
+
+            for (int i = 0; i < LetterIDList.Count; ++i)
+                list.Add(Instance.GetLetterData(LetterIDList[i]));
+
+            list.AddRange(Instance.GetRandomLetterList(randomCount));
+
             return list;
         }
     }
@@ -158,6 +171,7 @@ public partial class DataManager : Singleton<DataManager>
         public eEventTag EventTag { get; private set; }
         public string DialogueID { get; private set; }
         public Dictionary<int, string> TextIDDic { get; private set; }
+        public string BGResourceName { get; private set; }
 
         public override void Parse(string[] values)
         {
@@ -184,6 +198,7 @@ public partial class DataManager : Singleton<DataManager>
                 strBuilder.Append((min + i).ToString());
                 TextIDDic[min + i] = strBuilder.ToString();
             }
+            BGResourceName = values[6];
         }
 
         public List<StoryTextData> GetAllTextData()
@@ -213,6 +228,11 @@ public partial class DataManager : Singleton<DataManager>
                 MSLog.LogError("text id not exist:" + idx);
 
             return "";
+        }
+
+        public Sprite GetBackGroundSprite()
+        {
+            return ObjectFactory.Instance.GetBackGroundSprite(BGResourceName);
         }
     }
     #endregion

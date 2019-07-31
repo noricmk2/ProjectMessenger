@@ -14,17 +14,39 @@ public abstract class RecycleSlotBase : MonoBehaviour, IPoolObjectBase
 {
     public abstract float GetWidth();
     public abstract float GetHeight();
-    public abstract void Init(Transform parent, List<IRecycleSlotData> dataList);
-    public abstract void Refresh(int idx);
 
-    public void PushAction()
+    protected RecycleScroll m_Scroll;
+    protected List<IRecycleSlotData> m_DataList;
+    protected int m_CurrentIdx;
+
+    public virtual void Init(RecycleScroll scroll, Transform parent, List<IRecycleSlotData> dataList)
     {
-        gameObject.SetActive(false);
+        transform.Init(parent);
+        m_Scroll = scroll;
+        m_DataList = dataList;
     }
 
-    public void PopAction()
+    public virtual void Refresh(int idx)
+    {
+        m_CurrentIdx = idx;
+    }
+
+    public virtual void RefreshData(List<IRecycleSlotData> dataList, int idx)
+    {
+        m_DataList = dataList;
+        m_CurrentIdx = idx;
+        Refresh(idx);
+    }
+
+    public virtual void PopAction()
     {
         gameObject.SetActive(true);
+    }
+
+    public virtual void PushAction()
+    {
+        gameObject.SetActive(false);
+        transform.SetParent(ObjectFactory.Instance.ChatPoolParent);
     }
 }
 
@@ -69,7 +91,7 @@ public class RecycleScroll : ScrollRect
 
         m_InstantDelegate = instantDelegate;
         var firstSlot = m_InstantDelegate();
-        firstSlot.Init(content, m_DataList);
+        firstSlot.Init(this, content, m_DataList);
         m_ItemSize = new Vector2(firstSlot.GetWidth(), firstSlot.GetHeight());
         m_PaddingSize = new Vector2(LayoutGroup.padding.horizontal, LayoutGroup.padding.vertical);
         m_UsedItemSize = vertical ? m_ItemSize.y : m_ItemSize.x;
@@ -118,7 +140,7 @@ public class RecycleScroll : ScrollRect
             for (int i = 1; i < count; ++i)
             {
                 var item = m_InstantDelegate();
-                item.Init(content, m_DataList);
+                item.Init(this, content, m_DataList);
                 item.Refresh(m_StartIdx + i);
                 m_SlotList.AddLast(item);
                 if(m_IsReverse)
@@ -126,6 +148,76 @@ public class RecycleScroll : ScrollRect
             }
         }
         m_LastIdx = count - 1;
+    }
+
+    public void RefreshScroll(List<IRecycleSlotData> dataList = null)
+    {
+        if (dataList != null)
+        {
+            m_DataList = dataList;
+            m_TotalCount = m_DataList.Count;
+
+            if (m_TotalCount > m_SlotList.Count)
+            {
+                var idx = m_StartIdx;
+                for (int i = 0; i < m_TotalCount - m_SlotList.Count; ++i)
+                {
+                    var slot = m_InstantDelegate();
+                    slot.Init(this, content, m_DataList);
+                    m_SlotList.AddLast(slot);
+                }
+                var iter = m_SlotList.GetEnumerator();
+                while (iter.MoveNext())
+                {
+                    iter.Current.RefreshData(m_DataList, idx);
+                    ++idx;
+                }
+            }
+            else
+            {
+                var count = Math.Min(m_TotalCount, m_LastIdx + 1);
+                m_LastIdx = count - 1;
+                var node = m_SlotList.First;
+                var idx = m_StartIdx;
+                while (node != null)
+                {
+                    var next = node.Next;
+                    var slot = node.Value;
+                    if (idx < count)
+                    {
+                        slot.RefreshData(m_DataList, idx);
+                        ++idx;
+                    }
+                    else
+                    {
+                        m_SlotList.Remove(slot);
+                        ObjectFactory.Instance.DeactivateObject(slot, true);
+                    }
+                    node = next;
+                }
+            }
+        }
+        else
+        {
+            var idx = m_StartIdx;
+            var iter = m_SlotList.GetEnumerator();
+            while (iter.MoveNext())
+            {
+                iter.Current.RefreshData(m_DataList, idx);
+                ++idx;
+            }
+        }
+    }
+
+    public void RemoveSlot(RecycleSlotBase slot)
+    {
+        if (m_SlotList.Contains(slot))
+            m_SlotList.Remove(slot);
+    }
+
+    public void AddSlot(RecycleSlotBase slot)
+    {
+        m_SlotList.AddLast(slot);
     }
 
     private void OnValueChange(Vector2 position)
@@ -254,7 +346,7 @@ public class RecycleScroll : ScrollRect
 
                 ++m_LastIdx;
                 var addSlot = m_InstantDelegate();
-                addSlot.Init(content, m_DataList);
+                addSlot.Init(this, content, m_DataList);
                 addSlot.Refresh(m_LastIdx);
                 m_SlotList.AddLast(addSlot);
 
@@ -284,7 +376,7 @@ public class RecycleScroll : ScrollRect
 
                 --m_StartIdx;
                 var addSlot = m_InstantDelegate();
-                addSlot.Init(content, m_DataList);
+                addSlot.Init(this, content, m_DataList);
                 addSlot.Refresh(m_StartIdx);
                 m_SlotList.AddFirst(addSlot);
 
@@ -323,6 +415,8 @@ public class RecycleScroll : ScrollRect
             while (iter.MoveNext())
                 ObjectFactory.Instance.DeactivateObject(iter.Current, true);
         }
-        m_DataList.Clear();
+        m_IsFirstUpdate = false;
+        if(m_DataList != null)
+            m_DataList.Clear();
     }
 }

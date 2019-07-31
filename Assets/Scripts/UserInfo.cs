@@ -17,6 +17,14 @@ public class UserInfo : Singleton<UserInfo>
         public int CurrentChapterID;
         public int CurrentChapterEvent;
         public int Cash;
+        public int[] InventoryLetterIDs;
+    }
+
+    public class ItemData : IRecycleSlotData
+    {
+        public eItemType Type;
+        public int ID;
+        public string Value;
     }
 
     public _UserData UserData { get; private set; }
@@ -44,8 +52,60 @@ public class UserInfo : Singleton<UserInfo>
             //TODO:첫 실행시 게임 정보 초기화
             CurrentGameData = new _GameData();
             CurrentGameData.CurrentChapterID = 1;
-            CurrentGameData.CurrentChapterEvent = 0;
+            CurrentGameData.CurrentChapterEvent = 1;
             CurrentGameData.Cash = 100;
         }
+    }
+
+    public List<DataManager.LetterData> GetChapterMailList(int chapter = -1)
+    {
+        //TODO:해당 챕터 리스트 가져오기
+        if (chapter >= 0)
+        {
+            return null;
+        }
+        else
+        {
+            var curChapter = DataManager.Instance.GetChapterData((eChapterTag)CurrentGameData.CurrentChapterID);
+            return curChapter.GetLetterList(5);
+        }
+    }
+
+    public void AddLetter(DataManager.LetterData data)
+    {
+        var list = new List<int>();
+        if (CurrentGameData.InventoryLetterIDs != null)
+            list.AddRange(CurrentGameData.InventoryLetterIDs);
+        list.Add(data.ID);
+        CurrentGameData.InventoryLetterIDs = list.ToArray();
+    }
+
+    public void RemoveLetter(DataManager.LetterData data)
+    {
+        if (CurrentGameData.InventoryLetterIDs != null)
+        {
+            var list = new List<int>(CurrentGameData.InventoryLetterIDs);
+            if (list.Contains(data.ID))
+                list.Remove(data.ID);
+            CurrentGameData.InventoryLetterIDs = list.ToArray();
+        }
+    }
+
+    public List<ItemData> GetBagItemList()
+    {
+        var list = new List<ItemData>();
+
+        if (CurrentGameData.InventoryLetterIDs != null)
+        {
+            for (int i = 0; i < CurrentGameData.InventoryLetterIDs.Length; ++i)
+            {
+                var item = new ItemData();
+                item.Type = eItemType.Letter;
+                item.ID = CurrentGameData.InventoryLetterIDs[i];
+                list.Add(item);
+            }
+        }
+
+        return list;
     }
 }

@@ -19,6 +19,7 @@ public class ExpandTextOutput : MonoBehaviour
     private System.Action m_TextEndAction;
     private Dictionary<int, DataManager.TextEventData> m_TextEventTagDic;
     private Coroutine m_TypeWriteCoroutine;
+    private Coroutine m_CancelCoroutine;
     private SpeechBubble m_ParentBubble;
 
     [System.Flags]
@@ -67,7 +68,7 @@ public class ExpandTextOutput : MonoBehaviour
         }
     }
 
-    public void CancelTypeWrite()
+    IEnumerator CancelTypeWrite_C()
     {
         if (m_CurrentString.Length > 0)
         {
@@ -75,12 +76,20 @@ public class ExpandTextOutput : MonoBehaviour
             m_TypeWriteCoroutine = null;
             var content = m_CurrentString.Replace('^', '\n');
             Text.text = content;
+            GameManager.IsPlayText = false;
+
             if (m_TextEventTagDic != null && m_EventAction != null && m_TextEventTagDic.ContainsKey(m_CurrentString.Length))
-                m_EventAction(m_ParentBubble, m_TextEventTagDic[m_CurrentString.Length]);
+                yield return m_EventAction(m_ParentBubble, m_TextEventTagDic[m_CurrentString.Length]);
             if (m_TextEndAction != null)
                 m_TextEndAction();
-            GameManager.IsPlayText = false;
         }
+    }
+
+    public void CancelTypeWrite()
+    {
+        if (m_CancelCoroutine != null)
+            StopCoroutine(m_CancelCoroutine);
+        m_CancelCoroutine = StartCoroutine(CancelTypeWrite_C());
     }
 
     IEnumerator TypeWrite_C()

@@ -9,6 +9,7 @@ public class ChatObject : MonoBehaviour
     #region Inspector
     public Transform WindowParent;
     public Canvas ChatCanvas;
+    public Transform PoolParent;
     #endregion
     private IEnumerator m_UpdateCouroutine = null;
     private Window_Chat_Main m_ChatWindow;
@@ -31,11 +32,13 @@ public class ChatObject : MonoBehaviour
             LogTextList = new List<BackLogTextData>();
         ChatCanvas.renderMode = RenderMode.ScreenSpaceCamera;
         ChatCanvas.worldCamera = UICamera.Instance.Camera;
-        Release();
+
         m_CurrentChatter = null;
         m_CurrentChapterData = DataManager.Instance.GetChapterData(UserInfo.Instance.CurrentGameData.CurrentChapterID);
-        SetChapterDialogue((eEventTag)UserInfo.Instance.CurrentGameData.CurrentChapterEvent, "DL1");
         m_ChatWindow = WindowBase.OpenWindowWithFade(WindowBase.eWINDOW.ChatMain, WindowParent, true) as Window_Chat_Main;
+        Release();
+        SetMainTouch(true);
+
         m_ChatWindow.Init(this, ()=>
         {
             if (m_UpdateCouroutine == null)
@@ -43,6 +46,7 @@ public class ChatObject : MonoBehaviour
             StartCoroutine(m_UpdateCouroutine);
         }, OnMainTouch);
         m_CurrentCharacterDic[m_ChatWindow.MainCharacter.CurrentCharacterData.ID] = m_ChatWindow.MainCharacter;
+        SetChapterDialogue((eEventTag)UserInfo.Instance.CurrentGameData.CurrentChapterEvent, "DL1");
     }
 
     int testIdx = 1;
@@ -52,7 +56,8 @@ public class ChatObject : MonoBehaviour
         SetTextData(textData);
         while (true)
         {
-            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
+            if (m_ChatWindow.MainTouch.gameObject.activeSelf && 
+                (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return)))
             {
                 OnMainTouch();
             }
@@ -77,6 +82,8 @@ public class ChatObject : MonoBehaviour
                     SetTextData(textData);
                 else
                 {
+                    m_ChatWindow.MainTouch.gameObject.SetActive_Check(false);
+                    return;
                     //임시
                     MSSceneManager.Instance.EnterScene(SceneBase.eScene.INTRO);
                 }
@@ -245,10 +252,16 @@ public class ChatObject : MonoBehaviour
                 break;
             case eTextEventTag.MAILSORT:
                 {
-
+                    SetMainTouch(false);
+                    m_ChatWindow.SetMailBundle();
                 }
                 break;
         }
+    }
+
+    public void SetMainTouch(bool active)
+    {
+        m_ChatWindow.MainTouch.gameObject.SetActive_Check(active);
     }
 
     private void ChoiceEvent(string flag)
@@ -268,6 +281,8 @@ public class ChatObject : MonoBehaviour
     {
         UserInfo.Instance.CurrentGameData.CurrentChapterEvent = (int)tag;
         m_CurrentChapterTextData = m_CurrentChapterData.GetChapterTextData(tag, dialogueID);
+        if (m_ChatWindow.BackGroundImage.sprite.name != m_CurrentChapterTextData.BGResourceName)
+            m_ChatWindow.BackGroundImage.sprite = m_CurrentChapterTextData.GetBackGroundSprite();
     }
 
     public void Release()
@@ -287,7 +302,8 @@ public class ChatObject : MonoBehaviour
         }
         m_CurrentEventIdx = 1;
         m_CurrentChatter = null;
-
+        if (m_ChatWindow != null)
+            m_ChatWindow.ReleaseWindow();
         LogTextList.Clear();
     }
 }

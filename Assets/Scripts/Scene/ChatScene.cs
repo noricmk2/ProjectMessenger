@@ -13,8 +13,8 @@ public class ChatScene : SceneBase
 
     public override IEnumerator Enter_C()
     {
-        ObjectFactory.Instance.CreateChatObjectPool();
         m_ChatObject = ResourcesManager.Instantiate("Prefab/ChatObject").GetComponent<ChatObject>();
+        ObjectFactory.Instance.CreateChatObjectPool(m_ChatObject.PoolParent);
         m_ChatObject.Init();
         yield break;
     }

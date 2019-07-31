@@ -8,6 +8,7 @@ Shader "Sprites/Outline"
         [PerRendererData] _MainTex("Sprite Texture", 2D) = "white" {}
 		_Color("Tint", Color) = (1,1,1,1)
 		[MaterialToggle] PixelSnap("Pixel snap", Float) = 0
+		[Toggle(OUTLINE_OUTSIDE)] _OutlineOutside("Outside", Float) = 0
 		[MaterialToggle] _IsOutlineEnabled("Enable Outline", float) = 0
 		[HDR] _OutlineColor("Outline Color", Color) = (1,1,1,1)
 		_OutlineSize("Outline Size", Range(1, 10)) = 1
@@ -40,6 +41,7 @@ Shader "Sprites/Outline"
             #pragma fragment ComputeFragment
             #pragma multi_compile_instancing
             #pragma multi_compile _ PIXELSNAP_ON
+			#pragma multi_compile _ OUTLINE_OUTSIDE 
 
             #ifndef SAMPLE_DEPTH_LIMIT
             #define SAMPLE_DEPTH_LIMIT 10
@@ -157,21 +159,17 @@ Shader "Sprites/Outline"
 
             fixed4 ComputeFragment(VertexOutput vertexOutput) : SV_Target
             {
-                fixed4 color = SampleSpriteTexture(vertexOutput.TexCoord) * vertexOutput.Color;
-                color.rgb *= color.a;
+				fixed4 color = SampleSpriteTexture(vertexOutput.TexCoord) * vertexOutput.Color;
+				color.rgb *= color.a;
 
-                #ifdef SPRITE_OUTLINE_OUTSIDE
-                int shouldDrawOutline = ShouldDrawOutlineOutside(color, vertexOutput.TexCoord, _IsOutlineEnabled, _OutlineSize, _AlphaThreshold);
-                #else
-                int shouldDrawOutline = ShouldDrawOutlineInside(color, vertexOutput.TexCoord, _IsOutlineEnabled, _OutlineSize, _AlphaThreshold);
-                #endif
+				#ifdef OUTLINE_OUTSIDE
+				int shouldDrawOutline = ShouldDrawOutlineOutside(color, vertexOutput.TexCoord, _IsOutlineEnabled, _OutlineSize, _AlphaThreshold);
+				#else
+				int shouldDrawOutline = ShouldDrawOutlineInside(color, vertexOutput.TexCoord, _IsOutlineEnabled, _OutlineSize, _AlphaThreshold);
+				#endif
 
 				if (_ShutOff == 1)
 				{
-					//color.r = 0.3 * color.a;
-					//color.g = 0.3 * color.a;
-					//color.b = 0.3 * color.a;
-					//color.rgb = _OutlineColor.rgb * 0.03f * color.a;
 					float delta = float(shouldDrawOutline) / float(SAMPLE_DEPTH_LIMIT);
 					delta = delta == 0 ? 1 : delta;
 					color.rgb = lerp(_OutlineColor.rgb, _OutlineColor.rgb * 0.7f, 1 - delta) * color.a;
