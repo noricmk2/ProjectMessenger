@@ -42,7 +42,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 7a16d2f5f8c3c68498649a3edd0bd3f9, type: 3}
-    totalSpriteSurfaceArea: 973540
+    totalSpriteSurfaceArea: 2715220
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -69,6 +69,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 4f52b88e36f126141899fec32329e4d0, type: 3}
   - {fileID: 21300000, guid: 1a5e999ea4b08a74da7cbf56f5105fae, type: 3}
   - {fileID: 21300000, guid: 75ebd0ee7fc5e9b49a24c1c89e5f49b8, type: 3}
+  - {fileID: 21300000, guid: 294be99f69b349342bd4699864d41917, type: 3}
   m_PackedSpriteNamesToIndex:
   - icon_bag
   - icon_mail
@@ -93,5 +94,6 @@ SpriteAtlas:
   - ui_7
   - ui_4
   - ui_9
+  - map_temp
   m_Tag: atlas_ui
   m_IsVariant: 0

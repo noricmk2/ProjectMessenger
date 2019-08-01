@@ -86,6 +86,13 @@ namespace MSUtil
         Item,
         Length
     }
+
+    public enum eIngameState
+    {
+        Title = 0,
+        MailSort,
+        Map,
+    }
     #endregion
 
     #region Func
@@ -129,7 +136,7 @@ namespace MSUtil
             if (value == null || string.IsNullOrEmpty(value))
                 return defaultVal;
             int result = 0;
-            if(int.TryParse(value, out result))
+            if (int.TryParse(value, out result))
                 return result;
             return defaultVal;
         }
@@ -195,10 +202,10 @@ namespace MSUtil
 
     public class ColorPalette        //컬러 상수값
     {
-        public static readonly Color FADE_OUT_BLACK = new Color(0, 0, 0, 1); 
-        public static readonly Color FADE_IN_BLACK = new Color(0, 0, 0, 0); 
-        public static readonly Color BUTTON_HILIGHT_COLOR = new Color(94 / 255f, 94 / 255f, 94 / 255f, 146 / 255f); 
-        public static readonly Color CHARACTER_HILIGHT_COLOR = new Color(85 / 255f, 85 / 255f, 85 / 255f, 255 / 255f); 
+        public static readonly Color FADE_OUT_BLACK = new Color(0, 0, 0, 1);
+        public static readonly Color FADE_IN_BLACK = new Color(0, 0, 0, 0);
+        public static readonly Color BUTTON_HILIGHT_COLOR = new Color(94 / 255f, 94 / 255f, 94 / 255f, 146 / 255f);
+        public static readonly Color CHARACTER_HILIGHT_COLOR = new Color(85 / 255f, 85 / 255f, 85 / 255f, 255 / 255f);
     }
     #endregion
 }

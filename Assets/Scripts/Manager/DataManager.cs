@@ -15,6 +15,7 @@ public partial class DataManager : Singleton<DataManager>
         ChapterTextData,
         Character,
         Letter,
+        MapData_Point,
         Length
     }
 
@@ -26,6 +27,7 @@ public partial class DataManager : Singleton<DataManager>
         { eSheetType.ChapterTextData , "754458555" },
         { eSheetType.Character , "651796308" },
         { eSheetType.Letter , "1623412517" },
+        { eSheetType.MapData_Point, "2094624213" },
     };
 
     public Coroutine LoadFromGoogleSheet(eSheetType type)
@@ -62,6 +64,9 @@ public partial class DataManager : Singleton<DataManager>
                     break;
                 case eSheetType.Letter:
                     ParseTable_Int(m_LetterDataDic, www.text, 2);
+                    break;
+                case eSheetType.MapData_Point:
+                    ParseTable_Int(m_MapData_PointDic, www.text, 2);
                     break;
             }
         }

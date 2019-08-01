@@ -55,7 +55,7 @@ public class Window_Tablet : WindowBase
                 //Window_Map.instance.logoImage.rectTransform.sizeDelta = Vector2.zero;
                 appStartSeq.OnComplete(delegate ()
                 {
-                    Window_Map.instance.OpenMap();
+                    //Window_Map.OpenWindow(eWINDOW.Map,  IngameScene.instance.ingame IngameObject.WindowParent, false);
                 });
                 break;
             default:

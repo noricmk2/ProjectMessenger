@@ -1,10 +1,15 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MSUtil;
 
 public class IngameScene : SceneBase
 {
     public static IngameScene instance;
+
+    [NonSerialized]
+    public IngameObject ingameObject = null;
 
     public IngameScene() : base(eScene.INGAME)
     {
@@ -15,31 +20,31 @@ public class IngameScene : SceneBase
     {
         UserInfo.Instance.SetGameData();
 
-        //if()
-        //채팅씬으로 가야할 때
-        MSSceneManager.Instance.EnterScene(SceneBase.eScene.CHAT);
-
-        //채팅 아닐 때
+        switch (UserInfo.Instance.GetCurrentIngameState())
+        {
+            case eIngameState.Title:
+            case eIngameState.MailSort:
+                //채팅씬으로 가야할 때
+                UserInfo.Instance.SetCurrentIngameState(eIngameState.MailSort);
+                MSSceneManager.Instance.EnterScene(eScene.CHAT);
+                break;
+            case eIngameState.Map:
+                ingameObject.StartMap();
+                break;
+        }
     }
 
     public override IEnumerator Enter_C()
     {
-        var ingameObject = ResourcesManager.Instantiate("Prefab/IngameObject").GetComponent<IngameObject>();
+        ingameObject = ResourcesManager.Instantiate("Prefab/IngameObject").GetComponent<IngameObject>();
+        ObjectFactory.Instance.CreateIngameObjectPool(ingameObject.PoolParent);
         ingameObject.Init();
-        //if (!GameManager.StartUpGame)
-        {
-            WindowBase.OpenWindow(WindowBase.eWINDOW.Title, ingameObject.WindowParent, false);
-            GameManager.StartUpGame = true;
-        }
-        //else
-        {
-            //WindowBase.OpenWindow(WindowBase.eWINDOW.MainWindow, ingameObject.WindowParent, false);
-        }
         yield break;
     }
 
     public override IEnumerator Exit_C()
     {
+        ObjectFactory.Instance.Release();
         yield break;
     }
 }

@@ -836,7 +836,9 @@ MonoBehaviour:
   iconMapImage: {fileID: 1511157495}
   iconPinImage: {fileID: 750037544}
   iconCircleImage: {fileID: 498365034}
+  fuelGauge: {fileID: 0}
   LetterObjectsParent: {fileID: 0}
+  letterObjectList: []
   markerParent: {fileID: 0}
 --- !u!224 &623463700 stripped
 RectTransform:
@@ -1781,6 +1783,10 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1574407032, guid: 6e792390e21a16e46a05cef4a08263f1, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6e792390e21a16e46a05cef4a08263f1, type: 3}

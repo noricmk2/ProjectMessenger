@@ -139,6 +139,7 @@ public class Window_Chat_Main : WindowBase
 
     public void OnClickStart()
     {
+        UserInfo.Instance.SetCurrentIngameState(eIngameState.Map);
         MSSceneManager.Instance.EnterScene(SceneBase.eScene.INGAME);
     }
 

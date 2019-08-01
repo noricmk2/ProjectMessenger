@@ -18,6 +18,7 @@ public class UserInfo : Singleton<UserInfo>
         public int CurrentChapterEvent;
         public int Cash;
         public int[] InventoryLetterIDs;
+        public int CurrentIngameState;
     }
 
     public class ItemData : IRecycleSlotData
@@ -54,6 +55,7 @@ public class UserInfo : Singleton<UserInfo>
             CurrentGameData.CurrentChapterID = 1;
             CurrentGameData.CurrentChapterEvent = 1;
             CurrentGameData.Cash = 100;
+            CurrentGameData.CurrentIngameState = 0;
         }
     }
 
@@ -107,5 +109,20 @@ public class UserInfo : Singleton<UserInfo>
         }
 
         return list;
+    }
+
+    public void SetCurrentIngameState(eIngameState state)
+    {
+        if (CurrentGameData != null)
+            CurrentGameData.CurrentIngameState = (int)state;
+    }
+
+    public eIngameState GetCurrentIngameState()
+    {
+        if (CurrentGameData != null)
+            return (eIngameState)CurrentGameData.CurrentIngameState;
+        else
+            return eIngameState.Title;
+
     }
 }

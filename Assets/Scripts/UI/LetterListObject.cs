@@ -15,9 +15,10 @@ public class LetterListObject : MonoBehaviour, IPoolObjectBase
     public void SetLetterObject(DataManager.LetterData letterData)
     {
         DataManager.CharacterData fromData = DataManager.Instance.GetCharacterData(letterData.From);
+        DataManager.MapData_Point mapData = DataManager.Instance.GetMapData_Point(letterData.Destination);
 
-        //fromText.text = fromData.name
-        //destinationText.text = letterData.Destination;
+        fromText.text = fromData.GetCharacterName();
+        destinationText.text = TextManager.GetSystemText(mapData.Name);
 
         eCharacter characterType = DataManager.Instance.GetCharacterData(letterData.From).CharacterType;
 

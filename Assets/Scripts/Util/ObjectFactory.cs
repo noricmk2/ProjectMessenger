@@ -17,7 +17,8 @@ public class ObjectFactory : Singleton<ObjectFactory>
     private SpriteAtlas CharacterAtlas_Nika;
     private SpriteAtlas CharacterAtlas_Less;
 
-    public  Transform ChatPoolParent { get; private set; }
+    public Transform ChatPoolParent { get; private set; }
+    public Transform IngamePoolParent { get; private set; }
     public Material SpriteOutlineMaterial { get; private set; }
 
     public void CreateAllPool()
@@ -37,11 +38,17 @@ public class ObjectFactory : Singleton<ObjectFactory>
         CreatePool<CharacterObject>(3, "Prefab/UI/CharacterObject", ChatPoolParent);
         CreatePool<ChoiceObject>(3, "Prefab/UI/ChoiceObject", ChatPoolParent);
         CreatePool<ItemObject>(1, "Prefab/UI/ItemObject", ChatPoolParent);
-        CreatePool<LetterListObject>(1, "Prefab/UI/LetterObject", ChatPoolParent);
         CreatePool<BackLogText>(10, "Prefab/UI/BackLogText", ChatPoolParent);
         CreatePool<BagSlot>(10, "Prefab/UI/BagSlot", ChatPoolParent);
         CreatePool<MailBundle>(1, "Prefab/UI/MailBundle", ChatPoolParent);
         CreatePool<MailSlot>(10, "Prefab/UI/MailSlot", ChatPoolParent);
+    }
+
+    public void CreateIngameObjectPool(Transform parent)
+    {
+        IngamePoolParent = parent;
+        Release();
+        CreatePool<LetterListObject>(1, "Prefab/UI/LetterObject", IngamePoolParent);
     }
 
     public Sprite GetUISprite(string spriteName)
@@ -100,11 +107,11 @@ public class ObjectFactory : Singleton<ObjectFactory>
         var poolName = typeof(T).Name;
         if (m_TotalPoolDic.ContainsKey(poolName))
             m_TotalPoolDic[poolName].Push(obj);
-        
+
         if (findType)
         {
             var iter = m_TotalPoolDic.GetEnumerator();
-            while(iter.MoveNext())
+            while (iter.MoveNext())
             {
                 var pObj = iter.Current.Value.Peek();
                 if (obj.GetType() == pObj.GetType())

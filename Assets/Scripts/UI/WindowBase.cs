@@ -8,6 +8,7 @@ public class WindowBase : MonoBehaviour
     {
         Title,
         ChatMain,
+        Map,
     }
 
     public class WindowData
@@ -46,8 +47,9 @@ public class WindowBase : MonoBehaviour
 
     static Dictionary<eWINDOW, WindowData> m_WindowInfoDic = new Dictionary<eWINDOW, WindowData>()
     {
-        { eWINDOW.ChatMain,  new WindowData(eWINDOW.ChatMain, "Prefab/UI/window_chat_main") },
-        { eWINDOW.Title,  new WindowData(eWINDOW.ChatMain, "Prefab/UI/window_title") },
+        { eWINDOW.ChatMain,     new WindowData(eWINDOW.ChatMain, "Prefab/UI/window_chat_main")  },
+        { eWINDOW.Title,        new WindowData(eWINDOW.Title, "Prefab/UI/window_title")         },
+        { eWINDOW.Map,          new WindowData(eWINDOW.Map, "Prefab/UI/window_map")             },
     };
 
     public eWINDOW WindowType { get; private set; }

@@ -6,13 +6,6 @@ using DG.Tweening;
 
 public class Window_Map : WindowBase
 {
-    public static Window_Map instance;
-
-    private void Awake()
-    {
-        instance = this;
-    }
-
     [Header("Object")]
     public GameObject mapObject;
     public Image logoImage;
@@ -22,19 +15,39 @@ public class Window_Map : WindowBase
     public Image iconPinImage;
     public Image iconCircleImage;
 
-    //[Header("LetterList")]
-    //p
+    [Header("FuelObject")]
+    public Image fuelGauge;
 
+    [Header("LetterList")]
     public Transform LetterObjectsParent;
+    public List<LetterListObject> letterObjectList;
+    //p
     //[Header("Map")]
     public Transform markerParent;
     //public MarkerObject 
 
     public void OpenMap()
     {
-        iconCircleImage.rectTransform.sizeDelta = Vector2.zero;
-        iconPinImage.rectTransform.anchoredPosition = new Vector2(10, 60);
-        logoImage.gameObject.SetActive(true);
+        List<UserInfo.ItemData> bagItemList = UserInfo.Instance.GetBagItemList();
+
+        letterObjectList = new List<LetterListObject>();
+        Debug.Log(bagItemList.Count);
+        for (int i = 0; i < bagItemList.Count; i++)
+        {
+            if (bagItemList[i].Type == MSUtil.eItemType.Letter)
+            {
+                LetterListObject letterObject = ObjectFactory.Instance.ActivateObject<LetterListObject>();
+                letterObject.transform.SetParent(LetterObjectsParent);
+                letterObject.transform.localScale = Vector3.one;
+                letterObject.SetLetterObject(DataManager.Instance.GetLetterData(bagItemList[i].ID));
+            }
+        }
+
+        //iconCircleImage.rectTransform.sizeDelta = Vector2.zero;
+        //iconPinImage.rectTransform.anchoredPosition = new Vector2(10, 60);
+        //logoImage.gameObject.SetActive(true);
+
+
 
         //Sequence iconSeq = DOTween.Sequence();
         //iconSeq.Append(logoImage.rectTransform.DOAnchorMin(Vector2.zero, 0.5f).SetEase(Ease.OutQuint));
