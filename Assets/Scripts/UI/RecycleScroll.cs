@@ -143,11 +143,15 @@ public class RecycleScroll : ScrollRect
                 item.Init(this, content, m_DataList);
                 item.Refresh(m_StartIdx + i);
                 m_SlotList.AddLast(item);
-                if(m_IsReverse)
+                if (m_IsReverse)
                     item.transform.SetAsFirstSibling();
             }
+            m_LastIdx = count - 1;
         }
-        m_LastIdx = count - 1;
+        else
+        {
+            ObjectFactory.Instance.DeactivateObject(firstSlot, true);
+        }
     }
 
     public void RefreshScroll(List<IRecycleSlotData> dataList = null)
