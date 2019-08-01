@@ -134,6 +134,9 @@ public class ObjectFactory : Singleton<ObjectFactory>
 
     public void Release()
     {
+        var iter = m_TotalPoolDic.GetEnumerator();
+        while (iter.MoveNext())
+            iter.Current.Value.Release();
         m_TotalPoolDic.Clear();
     }
 }

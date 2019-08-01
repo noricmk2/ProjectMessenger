@@ -76,4 +76,10 @@ public class ObjectPool<T> where T : IPoolObjectBase
         for (int i = 0; i < m_RestoreList.Count; ++i)
             Push(m_RestoreList[i]);
     }
+
+    public void Release()
+    {
+        m_Pool.Clear();
+        m_RestoreList.Clear();
+    }
 }
