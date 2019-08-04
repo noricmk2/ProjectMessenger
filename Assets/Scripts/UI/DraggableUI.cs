@@ -15,22 +15,15 @@ public class DraggableUI : MonoBehaviour, IPointerExitHandler
     private bool m_IsHolding;
     private bool m_CanDrag;
     private bool m_IsOverlap;
-    private CanvasGroup canvasGroup;
 
     [HideInInspector]
     public bool IsActivate = false;
-
-    void Awake()
-    {
-        canvasGroup = GetComponent<CanvasGroup>();
-    }
 
     void Start()
     {
         m_Timer = HoldTime;
     }
 
-    private IEnumerator m_HoldingEnumerator;
     private Coroutine m_HoldingCoroutine;
 
     void Update()
@@ -196,7 +189,6 @@ public class DraggableUI : MonoBehaviour, IPointerExitHandler
         }
 
         m_CanDrag = true;
-        //canvasGroup.blocksRaycasts = false;
         var data = new PointerEventData(EventSystem.current);
 #if UNITY_EDITOR || UNITY_STANDALONE
         data.position = Input.mousePosition;

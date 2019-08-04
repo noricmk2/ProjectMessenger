@@ -208,4 +208,37 @@ namespace MSUtil
         public static readonly Color CHARACTER_HILIGHT_COLOR = new Color(85 / 255f, 85 / 255f, 85 / 255f, 255 / 255f);
     }
     #endregion
+
+    #region Sort
+    public class Sort
+    {
+        public class LetterSort : IComparer<DataManager.LetterData>
+        {
+            private int m_Ascending = -1;
+
+            public void SetAscending(bool ascend)
+            {
+                m_Ascending = ascend ? -1 : 1;
+            }
+
+            public bool IsAscending()
+            {
+                return m_Ascending == -1 ? true : false;
+            }
+
+            public int Compare(DataManager.LetterData x, DataManager.LetterData y)
+            {
+                if (x == y)
+                    return 0;
+
+                if (x.ID > y.ID)
+                    return -m_Ascending;
+                else if (x.ID < y.ID)
+                    return m_Ascending;
+
+                return 0;
+            }
+        }
+    }
+    #endregion
 }

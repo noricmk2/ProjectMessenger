@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using MSUtil;
 using System.Text.RegularExpressions;
+using System.Text;
 
 public partial class DataManager : Singleton<DataManager>
 {
@@ -301,6 +302,8 @@ public partial class DataManager : Singleton<DataManager>
         public int Destination { get; private set; }
         public int Reward { get; private set; }
         public int Flag { get; private set; }
+        private string AddresseeText;
+        private string AddressText;
 
         public override void Parse(string[] values)
         {
@@ -311,7 +314,32 @@ public partial class DataManager : Singleton<DataManager>
             Destination = Func.GetInt(values[5]);
             Reward = Func.GetInt(values[6]);
             Flag = Func.GetInt(values[7]);
+        }
 
+        public string GetAddresseeText()
+        {
+            if (string.IsNullOrEmpty(AddresseeText))
+            {
+                var charData = Instance.GetCharacterData(To);
+                var strBuilder = new StringBuilder(TextManager.GetSystemText("TEXT_ADDRESSEE"));
+                strBuilder.Append(':');
+                strBuilder.Append(charData.GetCharacterName());
+                AddresseeText = strBuilder.ToString();
+            }
+            return AddresseeText;
+        }
+
+        public string GetAddressText()
+        {
+            if (string.IsNullOrEmpty(AddressText))
+            {
+                var mapData = Instance.GetMapData_Point(Destination);
+                var strBuilder = new StringBuilder(TextManager.GetSystemText("TEXT_ADDRESS"));
+                strBuilder.Append(":\n");
+                strBuilder.Append(TextManager.GetStoryText(mapData.Description));
+                AddressText = strBuilder.ToString();
+            }
+            return AddressText;
         }
     }
     #endregion

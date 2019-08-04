@@ -6,7 +6,7 @@ using MSUtil;
 using UnityEngine.EventSystems;
 using TMPro;
 
-public class MailSlot : RecycleSlotBase
+public class LetterSlot : RecycleSlotBase
 {
     #region Inspector
     public RectTransform SlotTrans;
@@ -15,6 +15,7 @@ public class MailSlot : RecycleSlotBase
     #endregion
     private Transform m_OrgParent;
     private CustomButton m_TargetBag;
+    private Window_Chat_Main m_ParentWindow;
 
     public DataManager.LetterData CurrentLetterData { get; private set; }
 
@@ -28,8 +29,8 @@ public class MailSlot : RecycleSlotBase
     {
         base.Init(scroll, parent, dataList);
         Drag.Init(BeginDrag, OnDrag, EndDrag);
-        var window = WindowBase.GetWindow<Window_Chat_Main>();
-        m_TargetBag = window.DragTargetBag;
+        m_ParentWindow = WindowBase.GetWindow<Window_Chat_Main>();
+        m_TargetBag = m_ParentWindow.DragTargetBag;
     }
 
     public void InitForClone(Transform parent, DataManager.LetterData data)
@@ -48,7 +49,7 @@ public class MailSlot : RecycleSlotBase
 
     public void OnClickMail()
     {
-
+        m_ParentWindow.OpenMailInfo(CurrentLetterData);
     }
 
     public override float GetHeight()
@@ -68,8 +69,8 @@ public class MailSlot : RecycleSlotBase
         transform.Init(ObjectFactory.Instance.ChatPoolParent);
         m_Scroll.RemoveSlot(this);
 
-        var slotClone = ObjectFactory.Instance.ActivateObject<MailSlot>();
-        slotClone.InitForClone(m_Scroll.transform.parent, CurrentLetterData);
+        var slotClone = ObjectFactory.Instance.ActivateObject<LetterSlot>();
+        slotClone.InitForClone(m_Scroll.transform.parent.parent.parent, CurrentLetterData);
         var pos = slotClone.transform.position;
         var touchPos = UICamera.Instance.Camera.ScreenToWorldPoint(eventData.position);
         pos.x = touchPos.x;
@@ -100,16 +101,23 @@ public class MailSlot : RecycleSlotBase
         var dragObj = target.GetDragObjectTrans();
         if (dragObj != null)
         {
-            var slot = dragObj.GetComponent<MailSlot>();
+            var slot = dragObj.GetComponent<LetterSlot>();
             ObjectFactory.Instance.DeactivateObject(slot);
 
             var targetTrans = m_TargetBag.transform as RectTransform;
+            if (m_ParentWindow.PlayerBag.gameObject.activeSelf)
+                targetTrans = m_ParentWindow.PlayerBag.InventoryScroll.viewport;
+
             if (RectTransformUtility.RectangleContainsScreenPoint(targetTrans, eventData.position, UICamera.Instance.Camera))
             {
-                UserInfo.Instance.AddLetter(CurrentLetterData);
+                UserInfo.Instance.AddInventoryLetter(CurrentLetterData);
+                UserInfo.Instance.RemoveChapterLetter(CurrentLetterData);
                 m_DataList.Remove(CurrentLetterData);
                 ObjectFactory.Instance.DeactivateObject(this);
                 m_Scroll.RefreshScroll(m_DataList);
+                m_ParentWindow.CloseMailInfo();
+                if (m_ParentWindow.PlayerBag.gameObject.activeSelf)
+                    m_ParentWindow.PlayerBag.InventoryScroll.RefreshScroll(new List<IRecycleSlotData>(UserInfo.Instance.GetBagItemList().ToArray()));
             }
             else
             {

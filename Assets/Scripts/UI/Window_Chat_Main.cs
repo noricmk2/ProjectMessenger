@@ -21,6 +21,7 @@ public class Window_Chat_Main : WindowBase
     public BagInventory PlayerBag;
     public CustomButton BackLogButton;
     public CustomButton DragTargetBag;
+    public LetterInfoPanel LetterInfo;
     #endregion
     private System.Action m_AfterOpenAction;
     private System.Action m_MainTouchAction;
@@ -28,7 +29,7 @@ public class Window_Chat_Main : WindowBase
     private GameObject MailSelectObject;
     private ChatObject m_Parent;
 
-    private MailBundle m_MailBundle;
+    private LetterBundle m_MailBundle;
 
     private void Awake()
     {
@@ -47,6 +48,7 @@ public class Window_Chat_Main : WindowBase
         MailSelectObject.SetActive_Check(false);
         BackLogButton.gameObject.SetActive_Check(true);
         PlayerBag.gameObject.SetActive_Check(false);
+        LetterInfo.gameObject.SetActive_Check(false);
     }
 
     private RecycleSlotBase ActiveSlot()
@@ -63,7 +65,7 @@ public class Window_Chat_Main : WindowBase
 
     public void SetMailBundle()
     {
-        m_MailBundle = ObjectFactory.Instance.ActivateObject<MailBundle>();
+        m_MailBundle = ObjectFactory.Instance.ActivateObject<LetterBundle>();
         //TODO: 편지 떨어지는 연출
         m_MailBundle.Init(this, OpenSelectMailPanel);
         m_MailBundle.transform.Init(MailBundlePosition);
@@ -71,6 +73,15 @@ public class Window_Chat_Main : WindowBase
 
     public void CloseMailSelectPanel()
     {
+        if (LetterInfo.gameObject.activeSelf || PlayerBag.gameObject.activeSelf)
+        {
+            if (LetterInfo.gameObject.activeSelf)
+                CloseMailInfo();
+            if (PlayerBag.gameObject.activeSelf)
+                ClosePlayerBag();
+            return;
+        }
+
         MailSelectScroll.Release();
         MailSelectObject.gameObject.SetActive_Check(false);
     }
@@ -78,15 +89,15 @@ public class Window_Chat_Main : WindowBase
     private void OpenSelectMailPanel()
     {
         MailSelectObject.gameObject.SetActive_Check(true);
-        MailSelectScroll.Init(new List<IRecycleSlotData>(UserInfo.Instance.GetChapterMailList().ToArray()), delegate ()
+        MailSelectScroll.Init(new List<IRecycleSlotData>(UserInfo.Instance.GetChapterLetterList().ToArray()), delegate ()
         {
-            return ObjectFactory.Instance.ActivateObject<MailSlot>();
+            return ObjectFactory.Instance.ActivateObject<LetterSlot>();
         });
     }
 
     public void OnMainTouch()
     {
-        if(m_MainTouchAction != null)
+        if (m_MainTouchAction != null)
             m_MainTouchAction();
     }
 
@@ -111,10 +122,16 @@ public class Window_Chat_Main : WindowBase
         PlayerBag.gameObject.SetActive_Check(true);
         PlayerBag.DOKill();
         PlayerBag.BackGroundTrans.localScale = Vector3.zero;
-        PlayerBag.BackGroundTrans.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutSine).OnComplete(() =>
+        PlayerBag.BackGroundTrans.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutSine).OnComplete(() =>
         {
             PlayerBag.Init();
         });
+        if (MailSelectObject.gameObject.activeSelf)
+        {
+            var targetTrans = MailSelectScroll.transform.parent as RectTransform;
+            targetTrans.DOKill();
+            targetTrans.DOAnchorPosX(-135, 0.2f).SetEase(Ease.InSine);
+        }
     }
 
     public void ClosePlayerBag()
@@ -125,6 +142,12 @@ public class Window_Chat_Main : WindowBase
         {
             PlayerBag.gameObject.SetActive_Check(false);
         });
+        if (MailSelectObject.gameObject.activeSelf)
+        {
+            var targetTrans = MailSelectScroll.transform.parent as RectTransform;
+            targetTrans.DOKill();
+            targetTrans.DOAnchorPosX(0, 0.2f).SetEase(Ease.InSine);
+        }
     }
 
     public void OnClickOption()
@@ -141,6 +164,23 @@ public class Window_Chat_Main : WindowBase
     {
         UserInfo.Instance.SetCurrentIngameState(eIngameState.Map);
         MSSceneManager.Instance.EnterScene(SceneBase.eScene.INGAME);
+    }
+
+    public void OpenMailInfo(DataManager.LetterData data)
+    {
+        LetterInfo.gameObject.SetActive_Check(true);
+        LetterInfo.Init(data);
+        var rectTrans = LetterInfo.transform as RectTransform;
+        rectTrans.DOAnchorPosY(0, 0.3f).SetEase(Ease.InSine);
+    }
+
+    public void CloseMailInfo()
+    {
+        var rectTrans = LetterInfo.transform as RectTransform;
+        rectTrans.DOAnchorPosY(-160, 0.3f).SetEase(Ease.InSine).OnComplete(()=>
+        {
+            LetterInfo.gameObject.SetActive_Check(false);
+        });
     }
 
     public void ReleaseWindow()

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class MailBundle : MonoBehaviour, IPoolObjectBase
+public class LetterBundle : MonoBehaviour, IPoolObjectBase
 {
     private Window_Chat_Main m_Parent;
     private List<DataManager.LetterData> m_LetterList;

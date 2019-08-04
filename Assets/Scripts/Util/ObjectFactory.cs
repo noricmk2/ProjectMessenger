@@ -40,8 +40,8 @@ public class ObjectFactory : Singleton<ObjectFactory>
         CreatePool<ItemObject>(1, "Prefab/UI/ItemObject", ChatPoolParent);
         CreatePool<BackLogText>(10, "Prefab/UI/BackLogText", ChatPoolParent);
         CreatePool<BagSlot>(10, "Prefab/UI/BagSlot", ChatPoolParent);
-        CreatePool<MailBundle>(1, "Prefab/UI/MailBundle", ChatPoolParent);
-        CreatePool<MailSlot>(10, "Prefab/UI/MailSlot", ChatPoolParent);
+        CreatePool<LetterBundle>(1, "Prefab/UI/LetterBundle", ChatPoolParent);
+        CreatePool<LetterSlot>(10, "Prefab/UI/LetterSlot", ChatPoolParent);
     }
 
     public void CreateIngameObjectPool(Transform parent)

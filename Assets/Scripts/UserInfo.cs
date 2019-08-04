@@ -19,6 +19,7 @@ public class UserInfo : Singleton<UserInfo>
         public int Cash;
         public int[] InventoryLetterIDs;
         public int CurrentIngameState;
+        public int[] ChapterLetterIDs;
     }
 
     public class ItemData : IRecycleSlotData
@@ -30,6 +31,8 @@ public class UserInfo : Singleton<UserInfo>
 
     public _UserData UserData { get; private set; }
     public _GameData CurrentGameData { get; private set; }
+
+    private List<DataManager.LetterData> m_ChapterMailList = new List<DataManager.LetterData>();
 
     public void InitUserInfo()
     {
@@ -56,24 +59,71 @@ public class UserInfo : Singleton<UserInfo>
             CurrentGameData.CurrentChapterEvent = 1;
             CurrentGameData.Cash = 100;
             CurrentGameData.CurrentIngameState = 0;
+            SetChapterMailList();
         }
     }
 
-    public List<DataManager.LetterData> GetChapterMailList(int chapter = -1)
+    public void SetNextChapter()
     {
-        //TODO:해당 챕터 리스트 가져오기
-        if (chapter >= 0)
+        var chapterData = DataManager.Instance.GetChapterData(CurrentGameData.CurrentChapterID + 1);
+        if (chapterData == null)
         {
-            return null;
+            //TODO: 챕터 정보 없을시 처리
         }
         else
         {
-            var curChapter = DataManager.Instance.GetChapterData((eChapterTag)CurrentGameData.CurrentChapterID);
-            return curChapter.GetLetterList(5);
+            ++CurrentGameData.CurrentChapterID;
+            CurrentGameData.CurrentChapterEvent = 1;
+            CurrentGameData.CurrentIngameState = 0;
+            SetChapterMailList();
         }
     }
 
-    public void AddLetter(DataManager.LetterData data)
+    public List<DataManager.LetterData> GetChapterLetterList()
+    {
+        return new List<DataManager.LetterData>(m_ChapterMailList);
+    }
+
+    public void SetChapterMailList()
+    {
+        var curChapter = DataManager.Instance.GetChapterData((eChapterTag)CurrentGameData.CurrentChapterID);
+        //TODO: 찌라시 정보 구성 공식 추가 
+        m_ChapterMailList = curChapter.GetLetterList(5);
+
+        var idList = new List<int>();
+        for (int i = 0; i < m_ChapterMailList.Count; ++i)
+            idList.Add(m_ChapterMailList[i].ID);
+
+        CurrentGameData.ChapterLetterIDs = idList.ToArray();
+    }
+
+    public void AddChapterLetter(DataManager.LetterData data)
+    {
+        var list = new List<int>();
+        if (CurrentGameData.ChapterLetterIDs != null)
+            list.AddRange(CurrentGameData.ChapterLetterIDs);
+        list.Add(data.ID);
+        CurrentGameData.ChapterLetterIDs = list.ToArray();
+
+        m_ChapterMailList.Add(data);
+        m_ChapterMailList.Sort(new Sort.LetterSort());
+    }
+
+    public void RemoveChapterLetter(DataManager.LetterData data)
+    {
+        if (CurrentGameData.ChapterLetterIDs != null)
+        {
+            var list = new List<int>(CurrentGameData.ChapterLetterIDs);
+            if (list.Contains(data.ID))
+                list.Remove(data.ID);
+            CurrentGameData.ChapterLetterIDs = list.ToArray();
+
+            m_ChapterMailList.Remove(data);
+            m_ChapterMailList.Sort(new Sort.LetterSort());
+        }
+    }
+
+    public void AddInventoryLetter(DataManager.LetterData data)
     {
         var list = new List<int>();
         if (CurrentGameData.InventoryLetterIDs != null)
@@ -82,7 +132,7 @@ public class UserInfo : Singleton<UserInfo>
         CurrentGameData.InventoryLetterIDs = list.ToArray();
     }
 
-    public void RemoveLetter(DataManager.LetterData data)
+    public void RemoveInventoryLetter(DataManager.LetterData data)
     {
         if (CurrentGameData.InventoryLetterIDs != null)
         {

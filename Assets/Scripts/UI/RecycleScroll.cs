@@ -418,6 +418,7 @@ public class RecycleScroll : ScrollRect
             var iter = m_SlotList.GetEnumerator();
             while (iter.MoveNext())
                 ObjectFactory.Instance.DeactivateObject(iter.Current, true);
+            m_SlotList.Clear();
         }
         m_IsFirstUpdate = false;
         if(m_DataList != null)
