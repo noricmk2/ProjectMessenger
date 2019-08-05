@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class UICamera : Singleton<UICamera>
 {
+    #region Inspector
+    public TransitionEffect TransEffect;
+    #endregion
+
     public Camera Camera { get; private set; }
 
     private void Awake()

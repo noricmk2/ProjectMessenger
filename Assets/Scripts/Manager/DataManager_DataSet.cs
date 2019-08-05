@@ -336,7 +336,7 @@ public partial class DataManager : Singleton<DataManager>
                 var mapData = Instance.GetMapData_Point(Destination);
                 var strBuilder = new StringBuilder(TextManager.GetSystemText("TEXT_ADDRESS"));
                 strBuilder.Append(":\n");
-                strBuilder.Append(TextManager.GetStoryText(mapData.Description));
+                strBuilder.Append(TextManager.GetSystemText(mapData.Name));
                 AddressText = strBuilder.ToString();
             }
             return AddressText;

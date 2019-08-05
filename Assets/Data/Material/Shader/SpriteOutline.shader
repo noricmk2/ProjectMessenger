@@ -13,7 +13,6 @@ Shader "Sprites/Outline"
 		[HDR] _OutlineColor("Outline Color", Color) = (1,1,1,1)
 		_OutlineSize("Outline Size", Range(1, 10)) = 1
 		_AlphaThreshold("Alpha Threshold", Range(0, 1)) = 0.01
-		[HideInInspector] _ShutOff("Shut Off", Float) = 0
     }
 
     SubShader
@@ -42,6 +41,7 @@ Shader "Sprites/Outline"
             #pragma multi_compile_instancing
             #pragma multi_compile _ PIXELSNAP_ON
 			#pragma multi_compile _ OUTLINE_OUTSIDE 
+			#pragma multi_compile _ SHUT_OFF 
 
             #ifndef SAMPLE_DEPTH_LIMIT
             #define SAMPLE_DEPTH_LIMIT 10
@@ -168,8 +168,7 @@ Shader "Sprites/Outline"
 				int shouldDrawOutline = ShouldDrawOutlineInside(color, vertexOutput.TexCoord, _IsOutlineEnabled, _OutlineSize, _AlphaThreshold);
 				#endif
 
-				if (_ShutOff == 1)
-				{
+				#ifdef SHUT_OFF
 					float delta = float(shouldDrawOutline) / float(SAMPLE_DEPTH_LIMIT);
 					delta = delta == 0 ? 1 : delta;
 					color.rgb = lerp(_OutlineColor.rgb, _OutlineColor.rgb * 0.7f, 1 - delta) * color.a;
@@ -177,11 +176,9 @@ Shader "Sprites/Outline"
 					color.rgb *= pow(2.0, -2);
 					color.rgb = GammaToLinearSpace(color.rgb);
 					color.rgb *= 0.7;
-				}
-				else
-				{
+				#else
 					color.rgb = lerp(color.rgb, _OutlineColor.rgb * _OutlineColor.a, shouldDrawOutline >= 1 ? 1 : 0);
-				}
+				#endif
                 return color;
             }
 

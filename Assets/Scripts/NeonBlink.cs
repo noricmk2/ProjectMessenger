@@ -30,7 +30,7 @@ public class NeonBlink : MonoBehaviour
 
         if (m_DeltaTime > m_RandomTime)
         {
-            Outline1.SetFloat("_ShutOff", 1);
+            Outline1.EnableKeyword("SHUT_OFF");
             Outline1.SetFloat("_OutlineSize", m_OffOutlineSize);
         }
 
@@ -38,7 +38,7 @@ public class NeonBlink : MonoBehaviour
         {
             m_DeltaTime -= m_BlinkTerm * m_RandomCount;
             --m_RandomCount;
-            Outline1.SetFloat("_ShutOff", 0);
+            Outline1.DisableKeyword("SHUT_OFF");
             Outline1.SetFloat("_OutlineSize", m_OrgOutlineSize);
             if (m_RandomCount < 0)
             {

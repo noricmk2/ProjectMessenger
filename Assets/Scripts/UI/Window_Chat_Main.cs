@@ -22,6 +22,7 @@ public class Window_Chat_Main : WindowBase
     public CustomButton BackLogButton;
     public CustomButton DragTargetBag;
     public LetterInfoPanel LetterInfo;
+    public GameObject InventoryBlock;
     #endregion
     private System.Action m_AfterOpenAction;
     private System.Action m_MainTouchAction;
@@ -120,6 +121,8 @@ public class Window_Chat_Main : WindowBase
     public void OnClickBag()
     {
         PlayerBag.gameObject.SetActive_Check(true);
+        InventoryBlock.SetActive_Check(!MailSelectObject.activeSelf);
+
         PlayerBag.DOKill();
         PlayerBag.BackGroundTrans.localScale = Vector3.zero;
         PlayerBag.BackGroundTrans.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutSine).OnComplete(() =>
@@ -140,6 +143,7 @@ public class Window_Chat_Main : WindowBase
         PlayerBag.DOKill();
         PlayerBag.BackGroundTrans.DOScale(Vector3.zero, 0.3f).SetEase(Ease.OutSine).OnComplete(() =>
         {
+            InventoryBlock.SetActive_Check(false);
             PlayerBag.gameObject.SetActive_Check(false);
         });
         if (MailSelectObject.gameObject.activeSelf)
@@ -171,13 +175,13 @@ public class Window_Chat_Main : WindowBase
         LetterInfo.gameObject.SetActive_Check(true);
         LetterInfo.Init(data);
         var rectTrans = LetterInfo.transform as RectTransform;
-        rectTrans.DOAnchorPosY(0, 0.3f).SetEase(Ease.InSine);
+        rectTrans.DOAnchorPosY(0, 0.2f).SetEase(Ease.InSine);
     }
 
     public void CloseMailInfo()
     {
         var rectTrans = LetterInfo.transform as RectTransform;
-        rectTrans.DOAnchorPosY(-160, 0.3f).SetEase(Ease.InSine).OnComplete(()=>
+        rectTrans.DOAnchorPosY(-160, 0.2f).SetEase(Ease.InSine).OnComplete(()=>
         {
             LetterInfo.gameObject.SetActive_Check(false);
         });

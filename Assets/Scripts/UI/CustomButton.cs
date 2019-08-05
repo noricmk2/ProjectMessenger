@@ -106,7 +106,6 @@ public class CustomButton : MonoBehaviour, IPointerClickHandler, IPointerDownHan
             yield return null;
         }
         m_LongTouchStart = true;
-        MSLog.Log("count over");
         m_IsLongTouch = true;
         m_CurTime = 0;
     }

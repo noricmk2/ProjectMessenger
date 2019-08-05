@@ -93,6 +93,13 @@ namespace MSUtil
         MailSort,
         Map,
     }
+
+    public enum eTransitionType
+    {
+        NONE,
+        CIRCLE,
+        NORMAL,
+    }
     #endregion
 
     #region Func
