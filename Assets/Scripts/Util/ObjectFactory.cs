@@ -49,6 +49,7 @@ public class ObjectFactory : Singleton<ObjectFactory>
         IngamePoolParent = parent;
         Release();
         CreatePool<LetterListObject>(1, "Prefab/UI/LetterObject", IngamePoolParent);
+        CreatePool<MapObject>(1, "Prefab/Map/MapObject", IngamePoolParent);
     }
 
     public Sprite GetUISprite(string spriteName)

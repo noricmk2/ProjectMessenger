@@ -12,10 +12,15 @@ public class LetterListObject : MonoBehaviour, IPoolObjectBase
 
     public Image portraitImage;
 
-    public void SetLetterObject(DataManager.LetterData letterData)
+    private DataManager.LetterData letterData = null;
+    private DataManager.CharacterData fromData = null;
+    private DataManager.MapData_Point mapData = null;
+
+    public void SetLetterObject(DataManager.LetterData letter)
     {
-        DataManager.CharacterData fromData = DataManager.Instance.GetCharacterData(letterData.From);
-        DataManager.MapData_Point mapData = DataManager.Instance.GetMapData_Point(letterData.Destination);
+        letterData = letter;
+        fromData = DataManager.Instance.GetCharacterData(letterData.From);
+        mapData = DataManager.Instance.GetMapData_Point(letterData.Destination);
 
         fromText.text = fromData.GetCharacterName();
         destinationText.text = TextManager.GetSystemText(mapData.Name);
@@ -36,5 +41,12 @@ public class LetterListObject : MonoBehaviour, IPoolObjectBase
     {
         gameObject.SetActive(false);
         transform.SetParent(null);
+    }
+
+    public void OnClickLetter()
+    {
+        Debug.Log("Letter : " + TextManager.GetSystemText(mapData.Name));
+
+        IngameScene.instance.ingameObject.MapWindow.mapObject.GetPointObject();
     }
 }

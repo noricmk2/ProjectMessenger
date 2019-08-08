@@ -11,7 +11,8 @@ public class IngameObject : MonoBehaviour
     public Transform PoolParent;
     #endregion
 
-    private Window_Map m_MapWindow;
+    [System.NonSerialized]
+    public Window_Map MapWindow;
 
     public void Init()
     {
@@ -36,7 +37,7 @@ public class IngameObject : MonoBehaviour
 
     public void StartMap()
     {
-        m_MapWindow = WindowBase.OpenWindow(WindowBase.eWINDOW.Map, WindowParent, false) as Window_Map;
-        m_MapWindow.OpenMap();
+        MapWindow = WindowBase.OpenWindow(WindowBase.eWINDOW.Map, WindowParent, false) as Window_Map;
+        MapWindow.OpenMap();
     }
 }

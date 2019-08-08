@@ -348,13 +348,19 @@ public partial class DataManager : Singleton<DataManager>
     public class MapData_Point : TableDataBase_Int
     {
         public string Name { get; private set; }
+        public string Name_Short { get; private set; }
         public string Description { get; private set; }
+        public float PosX { get; private set; }
+        public float PosY { get; private set; }
 
         public override void Parse(string[] values)
         {
             ID = Func.GetInt(values[1]);
             Name = values[2];
-            Description = values[3];
+            Name_Short = values[3];
+            Description = values[4];
+            PosX = Func.GetFloat(values[5]);
+            PosY = Func.GetFloat(values[6]);
         }
     }
     #endregion

@@ -7,7 +7,8 @@ using DG.Tweening;
 public class Window_Map : WindowBase
 {
     [Header("Object")]
-    public GameObject mapObject;
+    public Transform mapObjectParent;
+    public MapObject mapObject;
     public Image logoImage;
 
     [Header("Icon")]
@@ -42,6 +43,11 @@ public class Window_Map : WindowBase
                 letterObject.SetLetterObject(DataManager.Instance.GetLetterData(bagItemList[i].ID));
             }
         }
+
+        mapObject = ObjectFactory.Instance.ActivateObject<MapObject>();
+        mapObject.transform.SetParent(mapObjectParent);
+        mapObject.transform.localScale = Vector3.one;
+        mapObject.SetData();
 
         //iconCircleImage.rectTransform.sizeDelta = Vector2.zero;
         //iconPinImage.rectTransform.anchoredPosition = new Vector2(10, 60);
@@ -91,8 +97,22 @@ public class Window_Map : WindowBase
         NodeManager.Instance.DisplayNodes();
     }
 
-    public void SelectPoint(int id)
-    {
+    public bool startSelected = false;
 
+    public Vector2 startPoint;
+
+    public void SelectPoint(int id, Vector2 position)
+    {
+        if (startSelected)
+        {
+            NodeManager.Instance.CalculatingStart(startPoint, position);
+            startPoint = position;
+        }
+        else
+        {
+            NodeManager.Instance.roadPositions = new List<Vector3>();
+            startSelected = true;
+            startPoint = position;
+        }
     }
 }
