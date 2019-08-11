@@ -62,7 +62,10 @@ public partial class DataManager : Singleton<DataManager>
                 {
                     var split = matchStr.Split('_');
                     eventData.Tag = Func.GetEnum<eTextEventTag>(split[0]);
-                    eventData.Value = split[1];
+                    for (int i = 1; i < split.Length; ++i)
+                    {
+                        eventData.Value += split[i];
+                    }
                 }
                 else
                     eventData.Tag = Func.GetEnum<eTextEventTag>(match.Groups[1].Value);
@@ -119,6 +122,7 @@ public partial class DataManager : Singleton<DataManager>
         public eChapterTag ChapterTag { get; private set; }
         public List<int> ChapterTextDataIDList { get; private set; }
         public List<int> LetterIDList { get; private set; }
+        private string m_ChapterTitle;
 
         public override void Parse(string[] values)
         {
@@ -136,7 +140,7 @@ public partial class DataManager : Singleton<DataManager>
                 LetterIDList.Add(Func.GetInt(split[i]));
         }
 
-        public ChapterTextData GetChapterTextData(eEventTag eventTag, string dialogueID)
+        public ChapterTextData GetChapterTextData(eStageTag eventTag, string dialogueID)
         {
             var data = Instance.GetChapterTextData(eventTag, dialogueID);
             return data;
@@ -161,6 +165,13 @@ public partial class DataManager : Singleton<DataManager>
 
             return list;
         }
+
+        public string GetChapterTitle()
+        {
+            if (string.IsNullOrEmpty(m_ChapterTitle))
+                m_ChapterTitle = "Chapter : " + ChapterTag.ToString();
+            return m_ChapterTitle;
+        }
     }
     #endregion
 
@@ -169,7 +180,7 @@ public partial class DataManager : Singleton<DataManager>
     {
         const string STORY_TEXT = "TEXT_STORY_";
         public eChapterTag ChapterTag { get; private set; }
-        public eEventTag EventTag { get; private set; }
+        public eStageTag StageTag { get; private set; }
         public string DialogueID { get; private set; }
         public Dictionary<int, string> TextIDDic { get; private set; }
         public string BGResourceName { get; private set; }
@@ -178,7 +189,7 @@ public partial class DataManager : Singleton<DataManager>
         {
             ID = Func.GetInt(values[0]);
             ChapterTag = Func.GetEnum<eChapterTag>(values[1]);
-            EventTag = Func.GetEnum<eEventTag>(values[2]);
+            StageTag = Func.GetEnum<eStageTag>(values[2]);
             DialogueID = values[3];
 
             TextIDDic = new Dictionary<int, string>();

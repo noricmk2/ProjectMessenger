@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using MSUtil;
+using System.IO;
 
 public partial class DataManager : Singleton<DataManager>
 {
@@ -31,6 +32,12 @@ public partial class DataManager : Singleton<DataManager>
     };
 
     public Coroutine LoadFromGoogleSheet(eSheetType type)
+    {
+        return StartCoroutine(LoadFromGoogleSheet_C(type));
+    }
+
+
+    public Coroutine LoadOffline(eSheetType type)
     {
         return StartCoroutine(LoadFromGoogleSheet_C(type));
     }
@@ -69,9 +76,61 @@ public partial class DataManager : Singleton<DataManager>
                     ParseTable_Int(m_MapData_PointDic, www.text, 2);
                     break;
             }
+
+            string folderPath = string.Format(@"{0}\Resources\TableData", Application.dataPath);
+            if (File.Exists(folderPath) == false)
+            {
+                if (!Directory.Exists(folderPath))
+                    Directory.CreateDirectory(folderPath);
+            }
+            string dataPath = folderPath + @"\" + type + ".txt";
+            File.WriteAllText(dataPath, www.text);
+
+            PlayerPrefs.SetInt(ConstValue.SHEET_SAVE, 1);
+            PlayerPrefs.Save();
         }
         else
             MSLog.LogError(type.ToString() + "//" + www.error);
+    }
+
+    private IEnumerator LoadOffline_C(eSheetType type)
+    {
+        string content = "";
+        try
+        {
+            TextAsset loadText = Resources.Load<TextAsset>(string.Format("TableData/{0}", type));
+            content = loadText.text;
+        }
+        catch (System.Exception e)
+        {
+            MSLog.LogError("Sheet Load fail:" + e.Message);
+            yield break;
+        }
+
+        switch (type)
+        {
+            case eSheetType.SystemText:
+                ParseTable_String(m_SystemTextDic, content);
+                break;
+            case eSheetType.StoryText:
+                ParseTable_String(m_StoryTextDic, content);
+                break;
+            case eSheetType.Chapter:
+                ParseTable_Int(m_ChapterDataDic, content);
+                break;
+            case eSheetType.ChapterTextData:
+                ParseTable_Int(m_ChapterTextDataDic, content);
+                break;
+            case eSheetType.Character:
+                ParseTable_Int(m_CharacterDataDic, content);
+                break;
+            case eSheetType.Letter:
+                ParseTable_Int(m_LetterDataDic, content, 2);
+                break;
+            case eSheetType.MapData_Point:
+                ParseTable_Int(m_MapData_PointDic, content, 2);
+                break;
+        }
     }
 
     private void ParseTable_String<T>(Dictionary<string, T> dataDic, string content, int startIdx = 1) where T : TableDataBase_String, new()
@@ -200,13 +259,13 @@ public partial class DataManager : Singleton<DataManager>
         return null;
     }
 
-    public ChapterTextData GetChapterTextData(eEventTag eventTag, string dialogueID)
+    public ChapterTextData GetChapterTextData(eStageTag eventTag, string dialogueID)
     {
         ChapterTextData data = null;
         var iter = m_ChapterTextDataDic.GetEnumerator();
         while (iter.MoveNext())
         {
-            if (iter.Current.Value.EventTag == eventTag && iter.Current.Value.DialogueID == dialogueID)
+            if (iter.Current.Value.StageTag == eventTag && iter.Current.Value.DialogueID == dialogueID)
             {
                 data = iter.Current.Value;
                 break;

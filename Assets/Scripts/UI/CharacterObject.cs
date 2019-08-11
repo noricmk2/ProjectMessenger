@@ -35,7 +35,7 @@ public class CharacterObject : MonoBehaviour, IPoolObjectBase
             if (CurrentCharacterData.CharacterType != eCharacter.NIKA)
             {
                 Bubble.gameObject.SetActive_Check(true);
-                Bubble.ExpandText.Reset();
+                Bubble.ExpandText.ResetText();
                 Bubble.transform.DOScale(Vector3.one, ConstValue.BUBBLE_ANIMATION_TIME).SetEase(Ease.InOutBack).OnComplete(
                     () =>
                     {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using MSUtil;
 using DG.Tweening;
+using System.Text.RegularExpressions;
 
 public class ChatObject : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class ChatObject : MonoBehaviour
     public Canvas ChatCanvas;
     public Transform PoolParent;
     #endregion
+    public static ChatObject Instance;
+
     private IEnumerator m_UpdateCouroutine = null;
     private Window_Chat_Main m_ChatWindow;
     private DataManager.ChapterData m_CurrentChapterData;
@@ -25,6 +28,11 @@ public class ChatObject : MonoBehaviour
 
     private bool m_IsChoice = false;
 
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     public void Init()
     {
         //TODO:챕터 정보 불러오기
@@ -33,23 +41,38 @@ public class ChatObject : MonoBehaviour
         ChatCanvas.renderMode = RenderMode.ScreenSpaceCamera;
         ChatCanvas.worldCamera = UICamera.Instance.Camera;
 
-        m_CurrentChatter = null;
         m_CurrentChapterData = DataManager.Instance.GetChapterData(UserInfo.Instance.CurrentGameData.CurrentChapterID);
+        if (UserInfo.Instance.GetCurrentChapterStage() == eStageTag.START)
+        {
+            var window = WindowBase.OpenWindow(WindowBase.eWINDOW.ChapterStart, WindowParent, true) as Window_Chapter_Start;
+            window.Init(m_CurrentChapterData.GetChapterTitle(), ()=>
+            {
+                OpenMainChatWindow();
+            });
+        }
+        else
+        {
+            OpenMainChatWindow();
+        }
+    }
+
+    public void OpenMainChatWindow()
+    {
+        m_CurrentChatter = null;
         m_ChatWindow = WindowBase.OpenWindowWithFade(WindowBase.eWINDOW.ChatMain, WindowParent, true) as Window_Chat_Main;
         Release();
         SetMainTouch(true);
 
-        m_ChatWindow.Init(this, ()=>
+        m_ChatWindow.Init(() =>
         {
             if (m_UpdateCouroutine == null)
                 m_UpdateCouroutine = Update_C();
             StartCoroutine(m_UpdateCouroutine);
         }, OnMainTouch);
         m_CurrentCharacterDic[m_ChatWindow.MainCharacter.CurrentCharacterData.ID] = m_ChatWindow.MainCharacter;
-        SetChapterDialogue((eEventTag)UserInfo.Instance.CurrentGameData.CurrentChapterEvent, "DL1");
+        SetChapterDialogue((eStageTag)UserInfo.Instance.CurrentGameData.CurrentChapterStage, "DL1");
     }
 
-    int testIdx = 1;
     IEnumerator Update_C()
     {
         var textData = m_CurrentChapterTextData.GetTextData(m_CurrentEventIdx);
@@ -75,18 +98,7 @@ public class ChatObject : MonoBehaviour
             }
             else
             {
-                ++m_CurrentEventIdx;
-                var textData = m_CurrentChapterTextData.GetTextData(m_CurrentEventIdx);
-
-                if (textData != null)
-                    SetTextData(textData);
-                else
-                {
-                    m_ChatWindow.MainTouch.gameObject.SetActive_Check(false);
-                    return;
-                    //임시
-                    MSSceneManager.Instance.EnterScene(SceneBase.eScene.INTRO);
-                }
+                PlayNextText();
             }
         }
     }
@@ -111,6 +123,39 @@ public class ChatObject : MonoBehaviour
 
         var logData = new BackLogTextData(data.GetCharacterName(), TextManager.GetStoryText(data.ID));
         LogTextList.Insert(0, logData);
+    }
+
+    public void CheckOverlapEvent(eOverlapType targetType)
+    {
+        var nextTextData = m_CurrentChapterTextData.GetTextData(m_CurrentEventIdx + 1);
+        if (nextTextData != null)
+        {
+            var dic = nextTextData.GetEventTagDic();
+            var iter = dic.GetEnumerator();
+            while (iter.MoveNext())
+            {
+                if (iter.Current.Value.Tag == eTextEventTag.OVR)
+                {
+                    var overlapType = Func.GetEnum<eOverlapType>(iter.Current.Value.Value);
+                    if(overlapType == targetType)
+                        PlayNextText();
+                }
+            }
+        }
+    }
+
+    public void PlayNextText()
+    {
+        ++m_CurrentEventIdx;
+        var textData = m_CurrentChapterTextData.GetTextData(m_CurrentEventIdx);
+
+        if (textData != null)
+            SetTextData(textData);
+        else
+        {
+            SetMainTouch(false);
+            return;
+        }
     }
 
     public void SetActiveCharacter(int characterID, bool activate, bool focus = false)
@@ -205,7 +250,32 @@ public class ChatObject : MonoBehaviour
                         cObj.Init(m_ChatWindow.ChoiceParent, subSplit[0], subSplit[1], ChoiceEvent);
                         m_ChoiceList.Add(cObj);
                     }
-                    m_ChatWindow.MainTouch.gameObject.SetActive_Check(false);
+                    SetMainTouch(false);
+                }
+                break;
+            case eTextEventTag.OVR:
+                {
+                    m_ChatWindow.MainCharacter.transform.SetAsLastSibling();
+                }
+                break;
+            case eTextEventTag.BACKDOWN:
+                {
+                    m_ChatWindow.MainCharacter.transform.SetAsFirstSibling();
+                }
+                break;
+            case eTextEventTag.TERM:
+                {
+                    var time = Regex.Replace(data.Value, @"\D", "");
+                    var sequence = DOTween.Sequence();
+                    sequence.SetDelay(Func.Msec2sec(Func.GetFloat(time)));
+                    sequence.Play();
+                    while (sequence.IsActive() && !sequence.IsComplete())
+                    {
+                        yield return null;
+                    }
+
+                    if(data.Value.Contains("BACKDOWN"))
+                        m_ChatWindow.MainCharacter.transform.SetAsFirstSibling();
                 }
                 break;
             case eTextEventTag.FONTBIG:
@@ -267,19 +337,19 @@ public class ChatObject : MonoBehaviour
     private void ChoiceEvent(string flag)
     {
         m_IsChoice = false;
-        SetChapterDialogue((eEventTag)UserInfo.Instance.CurrentGameData.CurrentChapterEvent, flag);
+        SetChapterDialogue((eStageTag)UserInfo.Instance.CurrentGameData.CurrentChapterStage, flag);
         for (int i = 0; i < m_ChoiceList.Count; ++i)
             ObjectFactory.Instance.DeactivateObject(m_ChoiceList[i]);
         m_CurrentEventIdx = 1;
         var textData = m_CurrentChapterTextData.GetTextData(m_CurrentEventIdx);
         if (textData != null)
             SetTextData(textData);
-        m_ChatWindow.MainTouch.gameObject.SetActive_Check(true);
+        SetMainTouch(true);
     }
 
-    private void SetChapterDialogue(eEventTag tag, string dialogueID)
+    private void SetChapterDialogue(eStageTag tag, string dialogueID)
     {
-        UserInfo.Instance.CurrentGameData.CurrentChapterEvent = (int)tag;
+        UserInfo.Instance.CurrentGameData.CurrentChapterStage = (int)tag;
         m_CurrentChapterTextData = m_CurrentChapterData.GetChapterTextData(tag, dialogueID);
         if (m_ChatWindow.BackGroundImage.sprite.name != m_CurrentChapterTextData.BGResourceName)
             m_ChatWindow.BackGroundImage.sprite = m_CurrentChapterTextData.GetBackGroundSprite();

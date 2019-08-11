@@ -23,7 +23,7 @@ public class BagSlot : RecycleSlotBase
         base.Init(scroll, parent, dataList);
         Drag.Init(BeginDrag, OnDrag, EndDrag);
         var window = WindowBase.GetWindow<Window_Chat_Main>();
-        m_LetterTargetScroll = window.MailSelectScroll;
+        m_LetterTargetScroll = window.MailSelectPanel.MailSelectScroll;
     }
 
     public void InitForClone(Transform parent, UserInfo.ItemData data)

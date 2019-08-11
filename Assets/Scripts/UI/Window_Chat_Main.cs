@@ -13,40 +13,40 @@ public class Window_Chat_Main : WindowBase
     public RectTransform CharacterPosition;
     public RectTransform ChoiceParent;
     public RectTransform MailBundlePosition;
+
     public CharacterObject MainCharacter;
     public Image BackGroundImage;
     public CustomButton MainTouch;
+
     public RecycleScroll BackLogScroll;
-    public RecycleScroll MailSelectScroll;
-    public BagInventory PlayerBag;
+    //public RecycleScroll MailSelectScroll;
+
     public CustomButton BackLogButton;
     public CustomButton DragTargetBag;
-    public LetterInfoPanel LetterInfo;
+    public UI_LetterInfoPanel LetterInfo;
+    public UI_BagInventory PlayerBag;
+    public UI_MailSelctPanel MailSelectPanel;
     public GameObject InventoryBlock;
     #endregion
     private System.Action m_AfterOpenAction;
     private System.Action m_MainTouchAction;
     private GameObject BackLogObject;
-    private GameObject MailSelectObject;
-    private ChatObject m_Parent;
 
     private LetterBundle m_MailBundle;
 
     private void Awake()
     {
         BackLogObject = BackLogScroll.transform.parent.gameObject;
-        MailSelectObject = MailSelectScroll.transform.parent.parent.gameObject;
     }
 
-    public void Init(ChatObject parent, System.Action afterOpenAction = null, System.Action mainTouchAction = null)
+    public void Init(System.Action afterOpenAction = null, System.Action mainTouchAction = null)
     {
-        m_Parent = parent;
         MainCharacter.Init(ConstValue.CHARACTER_NIKA_ID, MainCharacter.transform.parent);
         m_AfterOpenAction = afterOpenAction;
         m_MainTouchAction = mainTouchAction;
         MainTouch.IsColorHilight = false;
         BackLogObject.SetActive_Check(false);
-        MailSelectObject.SetActive_Check(false);
+        MailSelectPanel.gameObject.SetActive_Check(false);
         BackLogButton.gameObject.SetActive_Check(true);
         PlayerBag.gameObject.SetActive_Check(false);
         LetterInfo.gameObject.SetActive_Check(false);
@@ -83,16 +83,16 @@ public class Window_Chat_Main : WindowBase
             return;
         }
 
-        MailSelectScroll.Release();
-        MailSelectObject.gameObject.SetActive_Check(false);
+        MailSelectPanel.Release();
+        MailSelectPanel.Close(() => MailSelectPanel.gameObject.SetActive_Check(false));
     }
 
     private void OpenSelectMailPanel()
     {
-        MailSelectObject.gameObject.SetActive_Check(true);
-        MailSelectScroll.Init(new List<IRecycleSlotData>(UserInfo.Instance.GetChapterLetterList().ToArray()), delegate ()
+        MailSelectPanel.gameObject.SetActive_Check(true);
+        MailSelectPanel.Init(() =>
         {
-            return ObjectFactory.Instance.ActivateObject<LetterSlot>();
+            ChatObject.Instance.CheckOverlapEvent(eOverlapType.MAILSORT);
         });
     }
 
@@ -113,7 +113,7 @@ public class Window_Chat_Main : WindowBase
         else
         {
             BackLogButton.gameObject.SetActive_Check(false);
-            BackLogScroll.Init(new List<IRecycleSlotData>(m_Parent.LogTextList.ToArray()), ActiveSlot);
+            BackLogScroll.Init(new List<IRecycleSlotData>(ChatObject.Instance.LogTextList.ToArray()), ActiveSlot);
             BackLogObject.SetActive_Check(true);
         }
     }
@@ -121,7 +121,7 @@ public class Window_Chat_Main : WindowBase
     public void OnClickBag()
     {
         PlayerBag.gameObject.SetActive_Check(true);
-        InventoryBlock.SetActive_Check(!MailSelectObject.activeSelf);
+        InventoryBlock.SetActive_Check(!MailSelectPanel.gameObject.activeSelf);
 
         PlayerBag.DOKill();
         PlayerBag.BackGroundTrans.localScale = Vector3.zero;
@@ -129,9 +129,9 @@ public class Window_Chat_Main : WindowBase
         {
             PlayerBag.Init();
         });
-        if (MailSelectObject.gameObject.activeSelf)
+        if (MailSelectPanel.gameObject.activeSelf)
         {
-            var targetTrans = MailSelectScroll.transform.parent as RectTransform;
+            var targetTrans = MailSelectPanel.PanelContentTrans;
             targetTrans.DOKill();
             targetTrans.DOAnchorPosX(-135, 0.2f).SetEase(Ease.InSine);
         }
@@ -146,9 +146,9 @@ public class Window_Chat_Main : WindowBase
             InventoryBlock.SetActive_Check(false);
             PlayerBag.gameObject.SetActive_Check(false);
         });
-        if (MailSelectObject.gameObject.activeSelf)
+        if (MailSelectPanel.gameObject.activeSelf)
         {
-            var targetTrans = MailSelectScroll.transform.parent as RectTransform;
+            var targetTrans = MailSelectPanel.PanelContentTrans;
             targetTrans.DOKill();
             targetTrans.DOAnchorPosX(0, 0.2f).SetEase(Ease.InSine);
         }
@@ -190,7 +190,7 @@ public class Window_Chat_Main : WindowBase
     public void ReleaseWindow()
     {
         BackLogScroll.Release();
-        MailSelectScroll.Release();
+        MailSelectPanel.Release();
         if (m_MailBundle != null)
             ObjectFactory.Instance.DeactivateObject(m_MailBundle);
         PlayerBag.Release();

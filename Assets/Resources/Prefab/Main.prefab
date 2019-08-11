@@ -229,7 +229,7 @@ GameObject:
   - component: {fileID: 4956062257561716382}
   - component: {fileID: 8975023624858773127}
   m_Layer: 5
-  m_Name: AllwaysTopCanvas
+  m_Name: AlwaysTopCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -464,6 +464,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Outline1: {fileID: 2100000, guid: 089afdee1fd8bb54c84322d0382ddcf6, type: 2}
+  RedLight: {fileID: 2100000, guid: 4ceb15cc1da38ad4abc22db3f77cd385, type: 2}
 --- !u!1 &7973834444421686751
 GameObject:
   m_ObjectHideFlags: 0

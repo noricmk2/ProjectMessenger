@@ -6,8 +6,9 @@ using System;
 namespace MSUtil
 {
     #region Enum
-    public enum eEventTag
+    public enum eStageTag
     {
+        NONE,
         START = 1,
         PREV_DELV,
     }
@@ -65,6 +66,9 @@ namespace MSUtil
         CHO,
         HL,
         CNG,
+        OVR,
+        BACKDOWN,
+        TERM,
         APRITEM,
         DPRITEM,
         MAILSORT,
@@ -99,6 +103,12 @@ namespace MSUtil
         NONE,
         CIRCLE,
         NORMAL,
+    }
+
+    public enum eOverlapType
+    {
+        MAILSORT,
+        MAILDROP,
     }
     #endregion
 
@@ -187,6 +197,11 @@ namespace MSUtil
             }
             return result;
         }
+
+        public static float Msec2sec(float milliSec)
+        {
+            return milliSec * 0.001f;
+        }
     }
     #endregion
 
@@ -205,6 +220,8 @@ namespace MSUtil
         public static float BUBBLE_ANIMATION_TIME = 0.3f;
         public static float LONG_CLICK_TIME = 1.0f;
         public static float DEFAULT_ANIM_FPS = 14f;
+
+        public const string SHEET_SAVE = "SheetSave";//시트 세이브 키
     }
 
     public class ColorPalette        //컬러 상수값

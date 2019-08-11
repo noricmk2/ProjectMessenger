@@ -24,7 +24,7 @@ public class SpeechBubble : MonoBehaviour, IPoolObjectBase
     {
         BubbleBG.enabled = false;
         ParentObject = parent;
-        ExpandText.Reset();
+        ExpandText.ResetText();
         TextCursor.DOKill();
         TextCursor.gameObject.SetActive_Check(false);
     }
@@ -32,7 +32,7 @@ public class SpeechBubble : MonoBehaviour, IPoolObjectBase
     public void Init(SpriteAnimation parentAnimation)
     {
         ParentAnimation = parentAnimation;
-        ExpandText.Reset();
+        ExpandText.ResetText();
     }
 
     public void SetTextData(DataManager.StoryTextData data, ExpandTextOutput.TextEventDelegate textTagEvent)
@@ -63,7 +63,7 @@ public class SpeechBubble : MonoBehaviour, IPoolObjectBase
 
     public void Release()
     {
-        ExpandText.Reset();
+        ExpandText.ResetText();
     }
 
     IEnumerator CursorBlink_C()

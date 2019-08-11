@@ -761,6 +761,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3237803956254805381}
+  - component: {fileID: 1830112477014435288}
   m_Layer: 5
   m_Name: MailSelectPanel
   m_TagString: Untagged
@@ -792,6 +793,23 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1830112477014435288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2262917635172326353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e2efcb4bc23335408df95c13d4c21ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PanelContentTrans: {fileID: 2211850335367368895}
+  StartButton: {fileID: 8712645372599566781}
+  BagButton: {fileID: 6589960035973777495}
+  MailSelectScroll: {fileID: 5749840376553665603}
+  Block: {fileID: 8515216868568253961}
 --- !u!1 &3012234277193310655
 GameObject:
   m_ObjectHideFlags: 0
@@ -826,7 +844,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000014866594}
+  m_AnchoredPosition: {x: 0, y: -0.000015363901}
   m_SizeDelta: {x: 100, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &8861033546100528174
@@ -2401,6 +2419,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03f351f3b421ac749bc108dd1bd343ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnStartPlay: 0
+  OnStartTargetFrame: 0
+  OnStartAtlas: {fileID: 0}
 --- !u!1 &6705657311332164765
 GameObject:
   m_ObjectHideFlags: 0
@@ -2517,11 +2538,11 @@ MonoBehaviour:
   BackGroundImage: {fileID: 6175035771046022343}
   MainTouch: {fileID: 5775608494089479882}
   BackLogScroll: {fileID: 3335095379955262068}
-  MailSelectScroll: {fileID: 5749840376553665603}
-  PlayerBag: {fileID: 109817039882632357}
   BackLogButton: {fileID: 9171648735804492898}
   DragTargetBag: {fileID: 6589960035973777495}
   LetterInfo: {fileID: 1376116757328013471}
+  PlayerBag: {fileID: 109817039882632357}
+  MailSelectPanel: {fileID: 1830112477014435288}
   InventoryBlock: {fileID: 7652214090169216934}
 --- !u!1 &6785986189825845660
 GameObject:
@@ -3728,7 +3749,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000014866594}
+  m_AnchoredPosition: {x: 0, y: -0.000015363901}
   m_SizeDelta: {x: 100, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &5154807018098318841

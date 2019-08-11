@@ -118,6 +118,8 @@ public class LetterSlot : RecycleSlotBase
                 m_ParentWindow.CloseMailInfo();
                 if (m_ParentWindow.PlayerBag.gameObject.activeSelf)
                     m_ParentWindow.PlayerBag.InventoryScroll.RefreshScroll(new List<IRecycleSlotData>(UserInfo.Instance.GetBagItemList().ToArray()));
+
+                ChatObject.Instance.CheckOverlapEvent(eOverlapType.MAILDROP);
             }
             else
             {

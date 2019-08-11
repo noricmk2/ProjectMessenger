@@ -8,6 +8,8 @@ public class WindowBase : MonoBehaviour
     {
         Title,
         ChatMain,
+        ChapterStart,
+        ResultPhase,
         Map,
     }
 
@@ -50,6 +52,8 @@ public class WindowBase : MonoBehaviour
         { eWINDOW.ChatMain,     new WindowData(eWINDOW.ChatMain, "Prefab/UI/window_chat_main")  },
         { eWINDOW.Title,        new WindowData(eWINDOW.Title, "Prefab/UI/window_title")         },
         { eWINDOW.Map,          new WindowData(eWINDOW.Map, "Prefab/UI/window_map")             },
+        { eWINDOW.ChapterStart, new WindowData(eWINDOW.ChapterStart, "Prefab/UI/window_chapter_start")},
+        { eWINDOW.ResultPhase,  new WindowData(eWINDOW.ResultPhase, "Prefab/UI/window_result_phase")},
     };
 
     public eWINDOW WindowType { get; private set; }

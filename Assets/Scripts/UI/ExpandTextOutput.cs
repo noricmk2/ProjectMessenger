@@ -21,6 +21,9 @@ public class ExpandTextOutput : MonoBehaviour
     private Coroutine m_TypeWriteCoroutine;
     private Coroutine m_CancelCoroutine;
     private SpeechBubble m_ParentBubble;
+    private string m_PauseTarget;
+    private float m_PauseTime;
+    private float m_LastTerm;
 
     [System.Flags]
     public enum eTextFlag
@@ -38,6 +41,28 @@ public class ExpandTextOutput : MonoBehaviour
     public void SetTextFlag(eTextFlag flag)
     {
         m_TextFlag = m_TextFlag | flag;
+    }
+
+    public void SetTypeWriteSpeed(float speed)
+    {
+        TYPE_WRITE_SPEED = speed;
+    }
+
+    public void SetPauseText(string target, float pauseTime)
+    {
+        m_PauseTarget = target;
+        m_PauseTime = pauseTime;
+    }
+
+    public void SetLastTerm(float term)
+    {
+        m_LastTerm = term;
+    }
+
+    public void SetText(string text, System.Action textEndAction = null)
+    {
+        m_CurrentString = text;
+        m_TextEndAction = textEndAction;
     }
 
     public void SetText(SpeechBubble parent, string content, Dictionary<int, DataManager.TextEventData> tagDic, 
@@ -83,6 +108,7 @@ public class ExpandTextOutput : MonoBehaviour
             if (m_TextEndAction != null)
                 m_TextEndAction();
         }
+        SetPauseText(null, 0);
     }
 
     public void CancelTypeWrite()
@@ -97,10 +123,12 @@ public class ExpandTextOutput : MonoBehaviour
         GameManager.IsPlayText = true;
         int idx = 0;
         var tempStrBuilder = new System.Text.StringBuilder();
+        var writeSpeed = TYPE_WRITE_SPEED;
+        bool pauseText = false;
         while (idx < m_CurrentString.Length && m_CurrentString.Length > 0)
         {
             m_DeltaTime += Time.deltaTime;
-            if (m_DeltaTime >= TYPE_WRITE_SPEED || m_CurrentString[idx] == ' ')
+            if (m_DeltaTime >= writeSpeed || (m_CurrentString[idx] == ' ' && !pauseText))
             {
                 if (m_TextEventTagDic != null && m_EventAction != null)
                 {
@@ -111,7 +139,19 @@ public class ExpandTextOutput : MonoBehaviour
                 if (m_CurrentString[idx] == '^')
                     tempStrBuilder.Append("\n");
                 else
+                {
                     tempStrBuilder.Append(m_CurrentString[idx]);
+                    if (!string.IsNullOrEmpty(m_PauseTarget) && m_PauseTarget.Contains(m_CurrentString[idx].ToString()))
+                    {
+                        writeSpeed = m_PauseTime;
+                        pauseText = true;
+                    }
+                    else
+                    {
+                        writeSpeed = TYPE_WRITE_SPEED;
+                        pauseText = false;
+                    }
+                }
                 ++idx;
 
                 Text.text = tempStrBuilder.ToString();
@@ -128,15 +168,24 @@ public class ExpandTextOutput : MonoBehaviour
                 yield return m_EventAction(m_ParentBubble, m_TextEventTagDic[m_CurrentString.Length]);
             }
         }
+
+        while (m_DeltaTime < m_LastTerm)
+        {
+            m_DeltaTime += Time.deltaTime;
+            yield return null;
+        }
+
         if (m_TextEndAction != null)
             m_TextEndAction();
         GameManager.IsPlayText = false;
+        SetPauseText(null, 0);
     }
 
-    public void Reset()
+    public void ResetText()
     {
         GameManager.IsPlayText = false;
         m_TextFlag = 0;
         Text.text = string.Empty;
+        SetPauseText(null, 0);
     }
 }

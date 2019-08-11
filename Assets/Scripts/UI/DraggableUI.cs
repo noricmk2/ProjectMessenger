@@ -254,7 +254,6 @@ public class DraggableUI : MonoBehaviour, IPointerExitHandler
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        MSLog.Log(gameObject.GetInstanceID());
         if (m_EndDragEvent != null)
             m_EndDragEvent(this, eventData);
 

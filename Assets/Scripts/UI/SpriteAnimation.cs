@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using MSUtil;
 using UnityEngine.UI;
+using UnityEngine.U2D;
 
 public struct AnimationFrameData
 {
@@ -26,6 +27,13 @@ public class SpriteAnimationData
 
 public class SpriteAnimation : MonoBehaviour
 {
+    #region Inspector
+    [Header("OnStartAnimationValue")]
+    public bool OnStartPlay;
+    public int OnStartTargetFrame;
+    public SpriteAtlas OnStartAtlas;
+    #endregion
+
     private float m_targetFPS = 14f;
     public Dictionary<eCharacterState, SpriteAnimationData> TotalAnimationDataDic = new Dictionary<eCharacterState, SpriteAnimationData>();
     public Image TargetImage { get; private set; }
@@ -40,6 +48,26 @@ public class SpriteAnimation : MonoBehaviour
     {
         if (TargetImage == null)
             TargetImage = GetComponent<Image>();
+
+        if (OnStartPlay)
+        {
+            if (OnStartAtlas == null || OnStartTargetFrame <= 0)
+            {
+                MSLog.LogError("sprite animation setting error");
+                return;
+            }
+            var sprites = new Sprite[OnStartAtlas.spriteCount];
+            var list = OnStartAtlas.GetSprites(sprites);
+            var animData = new SpriteAnimationData();
+            animData.SpriteList = new List<Sprite>(sprites);
+            animData.FrameData = new AnimationFrameData(0, sprites.Length, OnStartTargetFrame);
+            TotalAnimationDataDic[eCharacterState.IDLE] = animData;
+
+            TargetImage.sprite = TotalAnimationDataDic[eCharacterState.IDLE].SpriteList[0];
+            TargetImage.SetNativeSize();
+            m_FrameTime = 0;
+            SetAnimation(eCharacterState.IDLE);
+        }
     }
 
     public void Init(DataManager.CharacterData data)
