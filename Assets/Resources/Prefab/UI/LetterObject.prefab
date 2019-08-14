@@ -67,8 +67,8 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_text: "\uBCF4\uB0B4\uB294 \uC774"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 70496ece09ca8eb49b1dc2a669a08bf3, type: 2}
-  m_sharedMaterial: {fileID: 21838285611281976, guid: 70496ece09ca8eb49b1dc2a669a08bf3,
+  m_fontAsset: {fileID: 11400000, guid: f7dba1c30f01a4e4a923311a81ff4eb2, type: 2}
+  m_sharedMaterial: {fileID: 21768885454258012, guid: f7dba1c30f01a4e4a923311a81ff4eb2,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -112,7 +112,7 @@ MonoBehaviour:
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
-  m_firstOverflowCharacterIndex: 0
+  m_firstOverflowCharacterIndex: -1
   m_linkedTextComponent: {fileID: 0}
   m_isLinkedTextComponent: 0
   m_isTextTruncated: 0
@@ -255,6 +255,7 @@ MonoBehaviour:
   destinationText: {fileID: 1390806649509284176}
   fromText: {fileID: 1390806647805545246}
   portraitImage: {fileID: 1390806649457911975}
+  pointObject: {fileID: 0}
 --- !u!114 &704347246
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -538,8 +539,8 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_text: "\uBAA9\uC801\uC9C0"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 70496ece09ca8eb49b1dc2a669a08bf3, type: 2}
-  m_sharedMaterial: {fileID: 21838285611281976, guid: 70496ece09ca8eb49b1dc2a669a08bf3,
+  m_fontAsset: {fileID: 11400000, guid: f7dba1c30f01a4e4a923311a81ff4eb2, type: 2}
+  m_sharedMaterial: {fileID: 21768885454258012, guid: f7dba1c30f01a4e4a923311a81ff4eb2,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
