@@ -13,6 +13,7 @@ public partial class DataManager : Singleton<DataManager>
         SystemText,
         StoryText,
         Chapter,
+        Stage,
         ChapterTextData,
         Character,
         Letter,
@@ -25,6 +26,7 @@ public partial class DataManager : Singleton<DataManager>
         { eSheetType.SystemText , "0" },
         { eSheetType.StoryText , "1675975552" },
         { eSheetType.Chapter , "715858755" },
+        { eSheetType.Stage , "1062650239" },
         { eSheetType.ChapterTextData , "754458555" },
         { eSheetType.Character , "651796308" },
         { eSheetType.Letter , "1623412517" },
@@ -62,6 +64,9 @@ public partial class DataManager : Singleton<DataManager>
                     break;
                 case eSheetType.Chapter:
                     ParseTable_Int(m_ChapterDataDic, www.text);
+                    break;
+                case eSheetType.Stage:
+                    ParseTable_Int(m_StageDataDic, www.text);
                     break;
                 case eSheetType.ChapterTextData:
                     ParseTable_Int(m_ChapterTextDataDic, www.text);
@@ -117,6 +122,9 @@ public partial class DataManager : Singleton<DataManager>
                 break;
             case eSheetType.Chapter:
                 ParseTable_Int(m_ChapterDataDic, content);
+                break;
+            case eSheetType.Stage:
+                ParseTable_Int(m_StageDataDic, content);
                 break;
             case eSheetType.ChapterTextData:
                 ParseTable_Int(m_ChapterTextDataDic, content);
@@ -240,6 +248,32 @@ public partial class DataManager : Singleton<DataManager>
         while (iter.MoveNext())
         {
             if (iter.Current.Value.ChapterTag == chapter)
+            {
+                data = iter.Current.Value;
+                break;
+            }
+        }
+        return data;
+    }
+    #endregion
+
+    #region StageData
+    private Dictionary<int, StageData> m_StageDataDic = new Dictionary<int, StageData>();
+
+    public StageData GetStageData(int id)
+    {
+        if (m_StageDataDic.ContainsKey(id))
+            return m_StageDataDic[id];
+        return null;
+    }
+
+    public StageData GetStageData(eStageTag stage)
+    {
+        StageData data = null;
+        var iter = m_StageDataDic.GetEnumerator();
+        while (iter.MoveNext())
+        {
+            if (iter.Current.Value.StageTag == stage)
             {
                 data = iter.Current.Value;
                 break;

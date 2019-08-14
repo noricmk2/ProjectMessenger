@@ -56,7 +56,7 @@ public class UserInfo : Singleton<UserInfo>
             //TODO:첫 실행시 게임 정보 초기화
             CurrentGameData = new _GameData();
             CurrentGameData.CurrentChapterID = 1;
-            CurrentGameData.CurrentChapterStage = 1;
+            CurrentGameData.CurrentChapterStage = (int)eStageTag.START;
             CurrentGameData.Cash = 100;
             CurrentGameData.CurrentIngameState = 0;
             SetChapterMailList();
@@ -76,6 +76,20 @@ public class UserInfo : Singleton<UserInfo>
             CurrentGameData.CurrentChapterStage = 1;
             CurrentGameData.CurrentIngameState = 0;
             SetChapterMailList();
+        }
+    }
+
+    public void SetNextStage()
+    {
+        var chapterData = DataManager.Instance.GetChapterData(CurrentGameData.CurrentChapterID);
+        var stageData = DataManager.Instance.GetStageData((eStageTag)CurrentGameData.CurrentChapterStage);
+
+        if (!chapterData.IsLastStage(stageData))
+            ++CurrentGameData.CurrentChapterStage;
+        else
+        {
+            var nextChapter = DataManager.Instance.GetChapterData(CurrentGameData.CurrentChapterID + 1);
+            CurrentGameData.CurrentChapterStage = (int)nextChapter.GetFirstStage();
         }
     }
 

@@ -64,6 +64,7 @@ GameObject:
   - component: {fileID: 8937449187301080469}
   - component: {fileID: 1195543663701986212}
   - component: {fileID: 3762056796488069605}
+  - component: {fileID: 6519632280255639926}
   m_Layer: 5
   m_Name: TextMeshPro Text
   m_TagString: Untagged
@@ -120,8 +121,8 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_text: "\uBC31\uB85C\uADF8 \uD14D\uC2A4\uD2B8"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 70496ece09ca8eb49b1dc2a669a08bf3, type: 2}
-  m_sharedMaterial: {fileID: 21838285611281976, guid: 70496ece09ca8eb49b1dc2a669a08bf3,
+  m_fontAsset: {fileID: 11400000, guid: f7dba1c30f01a4e4a923311a81ff4eb2, type: 2}
+  m_sharedMaterial: {fileID: 21036350195280364, guid: f7dba1c30f01a4e4a923311a81ff4eb2,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -165,7 +166,7 @@ MonoBehaviour:
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
-  m_firstOverflowCharacterIndex: 2
+  m_firstOverflowCharacterIndex: 4
   m_linkedTextComponent: {fileID: 0}
   m_isLinkedTextComponent: 0
   m_isTextTruncated: 0
@@ -214,6 +215,18 @@ MonoBehaviour:
   - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6519632280255639926
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6805957334434042478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 417de9423158b2f49a911b991f188000, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6867812464130360349
 GameObject:
   m_ObjectHideFlags: 0
@@ -261,6 +274,7 @@ GameObject:
   - component: {fileID: 5128408810790979299}
   - component: {fileID: 7635581338182311096}
   - component: {fileID: 1124461721479468590}
+  - component: {fileID: 5890045088433984091}
   m_Layer: 5
   m_Name: TextMeshPro Text
   m_TagString: Untagged
@@ -317,8 +331,8 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_text: "\uB2C8\uCE74"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 70496ece09ca8eb49b1dc2a669a08bf3, type: 2}
-  m_sharedMaterial: {fileID: 21838285611281976, guid: 70496ece09ca8eb49b1dc2a669a08bf3,
+  m_fontAsset: {fileID: 11400000, guid: f7dba1c30f01a4e4a923311a81ff4eb2, type: 2}
+  m_sharedMaterial: {fileID: 21036350195280364, guid: f7dba1c30f01a4e4a923311a81ff4eb2,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -411,6 +425,18 @@ MonoBehaviour:
   - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5890045088433984091
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7862412976357034137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 417de9423158b2f49a911b991f188000, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8250412202179857942
 GameObject:
   m_ObjectHideFlags: 0

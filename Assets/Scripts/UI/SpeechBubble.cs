@@ -20,27 +20,22 @@ public class SpeechBubble : MonoBehaviour, IPoolObjectBase
     public SpriteAnimation ParentAnimation { get; private set; }
     private Coroutine m_CursorCoroutine;
 
-    public void Init(CharacterObject parent)
+    public void Init(CharacterObject parent, bool enabled = false)
     {
-        BubbleBG.enabled = false;
+        BubbleBG.enabled = enabled;
         ParentObject = parent;
         ExpandText.ResetText();
         TextCursor.DOKill();
         TextCursor.gameObject.SetActive_Check(false);
     }
 
-    public void Init(SpriteAnimation parentAnimation)
-    {
-        ParentAnimation = parentAnimation;
-        ExpandText.ResetText();
-    }
-
-    public void SetTextData(DataManager.StoryTextData data, ExpandTextOutput.TextEventDelegate textTagEvent)
+    public void SetTextData(DataManager.StoryTextData data, ExpandTextOutput.TextEventDelegate textTagEvent, bool setCursor = true)
     {
         SetCursor(false);
         ExpandText.SetText(this, TextManager.GetStoryText(data.ID), data.GetEventTagDic(), textTagEvent, () =>
         {
-            SetCursor(true);
+            if(setCursor)
+                SetCursor(true);
         });
         ExpandText.PlayText();
     }
@@ -59,6 +54,15 @@ public class SpeechBubble : MonoBehaviour, IPoolObjectBase
         ExpandText.CancelTypeWrite();
         transform.DOKill();
         transform.localScale = Vector3.one;
+    }
+
+    public void SetActive(bool active, bool alsoCursor = false)
+    {
+        BubbleBG.enabled = active;
+        if (alsoCursor)
+            SetCursor(active);
+        if (!active)
+            ExpandText.ResetText();
     }
 
     public void Release()

@@ -20,6 +20,7 @@ public class ObjectFactory : Singleton<ObjectFactory>
     public Transform ChatPoolParent { get; private set; }
     public Transform IngamePoolParent { get; private set; }
     public Material SpriteOutlineMaterial { get; private set; }
+    public Material GrayScaleMaterial { get; private set; }
 
     public void CreateAllPool()
     {
@@ -29,6 +30,7 @@ public class ObjectFactory : Singleton<ObjectFactory>
         SpriteOutlineMaterial = new Material(Shader.Find("Sprites/Outline"));
         SpriteOutlineMaterial.SetColor("_OutlineColor", Color.red);
         SpriteOutlineMaterial.SetFloat("_IsOutlineEnabled", 1);
+        GrayScaleMaterial = new Material(Shader.Find("Custom/GrayScale"));
     }
 
     public void CreateChatObjectPool(Transform parent)

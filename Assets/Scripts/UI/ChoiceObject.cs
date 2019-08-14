@@ -12,12 +12,14 @@ public class ChoiceObject : MonoBehaviour, IPoolObjectBase
     public TextMeshProUGUI Text;
     public CustomButton ChoiceButton;
     #endregion
-    private System.Action<string> m_ClickEvent;
+    private System.Action<string, string> m_ClickEvent;
     private string m_DialogueFlag;
+    private string m_Content;
 
-    public void Init(Transform parent, string content, string flag, System.Action<string> clickEvent)
+    public void Init(Transform parent, string content, string flag, System.Action<string, string> clickEvent)
     {
-        Text.text = "-" + content;
+        m_Content = ">" + content;
+        Text.text = m_Content;
         m_ClickEvent = clickEvent;
         m_DialogueFlag = flag;
         transform.Init(parent);
@@ -27,7 +29,7 @@ public class ChoiceObject : MonoBehaviour, IPoolObjectBase
     public void OnClickButton()
     {
         if (m_ClickEvent != null)
-            m_ClickEvent(m_DialogueFlag);
+            m_ClickEvent(m_Content, m_DialogueFlag);
     }
 
     public void PopAction()

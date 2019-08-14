@@ -159,6 +159,7 @@ GameObject:
   - component: {fileID: 5952326224784711284}
   - component: {fileID: 9132543132651475412}
   - component: {fileID: 7617911048361333346}
+  - component: {fileID: 3981465945489950263}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -216,8 +217,8 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_text: "-\uC120\uD0DD\uC9C01"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 70496ece09ca8eb49b1dc2a669a08bf3, type: 2}
-  m_sharedMaterial: {fileID: 21838285611281976, guid: 70496ece09ca8eb49b1dc2a669a08bf3,
+  m_fontAsset: {fileID: 11400000, guid: f7dba1c30f01a4e4a923311a81ff4eb2, type: 2}
+  m_sharedMaterial: {fileID: 21036350195280364, guid: f7dba1c30f01a4e4a923311a81ff4eb2,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -261,7 +262,7 @@ MonoBehaviour:
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
-  m_firstOverflowCharacterIndex: 1
+  m_firstOverflowCharacterIndex: 2
   m_linkedTextComponent: {fileID: 0}
   m_isLinkedTextComponent: 0
   m_isTextTruncated: 0
@@ -291,7 +292,7 @@ MonoBehaviour:
     linkCount: 0
     lineCount: 5
     pageCount: 1
-    materialCount: 2
+    materialCount: 1
   m_havePropertiesChanged: 0
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
@@ -310,6 +311,18 @@ MonoBehaviour:
   - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3981465945489950263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3524079461498206327}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 417de9423158b2f49a911b991f188000, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5481607165260786730
 GameObject:
   m_ObjectHideFlags: 0
@@ -409,4 +422,3 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  IsColorHilight: 0

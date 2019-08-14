@@ -1,6 +1,7 @@
 Library/
 Temp/
 UnityPackageManager/
+TableData/
 .vs/
 obj/
 *.csproj

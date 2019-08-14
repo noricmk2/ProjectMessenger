@@ -36,6 +36,7 @@ public partial class DataManager : Singleton<DataManager>
     public class StoryTextData : TextData
     {
         public int CharacterID { get; private set; }
+        public Vector3 BubblePos { get; private set; }
         Dictionary<eLanguage, string> m_TextDic = new Dictionary<eLanguage, string>();
         Dictionary<int, TextEventData> m_EventTagDic = new Dictionary<int, TextEventData>();
 
@@ -43,12 +44,19 @@ public partial class DataManager : Singleton<DataManager>
         {
             ID = values[0];
             CharacterID = Func.GetInt(values[1]);
+
+            var posSplit = values[2].Split(';');
+            if (posSplit.Length > 1)
+                BubblePos = new Vector3(Func.GetFloat(posSplit[0]), Func.GetFloat(posSplit[1]), Func.GetFloat(posSplit[2]));
+            else
+                BubblePos = Vector3.zero;
+
             Regex regex;
-            if (values[2].Contains("[CHO"))
+            if (values[3].Contains("[CHO"))
                 regex = new Regex(@"\[(.+)\]");
             else
                 regex = new Regex(@"\[(\w+)\]");
-            var result = regex.Matches(values[2]);
+            var result = regex.Matches(values[3]);
 
             var iter = result.GetEnumerator();
             var prevIdx = 0;
@@ -73,12 +81,13 @@ public partial class DataManager : Singleton<DataManager>
                 m_EventTagDic[match.Index - prevIdx] = eventData;
                 prevIdx += match.Groups[0].Length;
 
+                values[3] = values[3].Replace(match.Groups[0].Value, "");
                 for (int i = 0; i < (int)eLanguage.Length; ++i)
-                    values[2 + i] = values[2 + i].Replace(match.Groups[0].Value, "");
+                    values[3 + i] = values[3 + i].Replace("^", "\n");
             }
 
             for (int i = 0; i < (int)eLanguage.Length; ++i)
-                m_TextDic[(eLanguage)i] = values[2 + i];
+                m_TextDic[(eLanguage)i] = values[3 + i];
         }
 
         public override string GetText(eLanguage langType)
@@ -120,7 +129,7 @@ public partial class DataManager : Singleton<DataManager>
     public class ChapterData : TableDataBase_Int
     {
         public eChapterTag ChapterTag { get; private set; }
-        public List<int> ChapterTextDataIDList { get; private set; }
+        public List<int> StageDataIDList { get; private set; }
         public List<int> LetterIDList { get; private set; }
         private string m_ChapterTitle;
 
@@ -130,9 +139,11 @@ public partial class DataManager : Singleton<DataManager>
             ChapterTag = Func.GetEnum<eChapterTag>(values[1]);
 
             var split = values[2].Split(';');
-            ChapterTextDataIDList = new List<int>();
-            for (int i = 0; i < split.Length; ++i)
-                ChapterTextDataIDList.Add(Func.GetInt(split[i]));
+            StageDataIDList = new List<int>();
+            var minID = Func.GetInt(split[0]);
+            var maxID = Func.GetInt(split[1]);
+            for (int i = minID; i <= maxID; ++i)
+                StageDataIDList.Add(i);
 
             split = values[3].Split(';');
             LetterIDList = new List<int>();
@@ -140,18 +151,24 @@ public partial class DataManager : Singleton<DataManager>
                 LetterIDList.Add(Func.GetInt(split[i]));
         }
 
-        public ChapterTextData GetChapterTextData(eStageTag eventTag, string dialogueID)
+        public eStageTag GetFirstStage()
         {
-            var data = Instance.GetChapterTextData(eventTag, dialogueID);
-            return data;
+            return Instance.GetStageData(StageDataIDList[0]).StageTag;
         }
 
-        public List<ChapterTextData> GetAllChapterTextData()
+        public bool IsLastStage(StageData curStage)
         {
-            var list = new List<ChapterTextData>();
-            for (int i = 0; i < ChapterTextDataIDList.Count; ++i)
-                list.Add(Instance.GetChapterTextData(ChapterTextDataIDList[i]));
-            return list;
+            var nextStage = GetNextStageData(curStage);
+            return nextStage == null;
+        }
+
+        public StageData GetNextStageData(StageData curStage)
+        {
+            var idx = StageDataIDList.IndexOf(curStage.ID);
+
+            if (idx + 1 < StageDataIDList.Count)
+                return Instance.GetStageData(StageDataIDList[idx + 1]);
+            return null;
         }
 
         public List<LetterData> GetLetterList(int randomCount = 0)
@@ -175,15 +192,66 @@ public partial class DataManager : Singleton<DataManager>
     }
     #endregion
 
+    #region StageData
+    public class StageData : TableDataBase_Int
+    {
+        public eStageTag StageTag { get; private set; }
+        public List<int> ChapterTextDataIDList { get; private set; }
+
+        public override void Parse(string[] values)
+        {
+            ID = Func.GetInt(values[0]);
+            StageTag = Func.GetEnum<eStageTag>(values[1]);
+
+            ChapterTextDataIDList = new List<int>();
+            var split = values[2].Split(';');
+            if (split.Length > 1)
+            {
+                var minID = Func.GetInt(split[0]);
+                var maxID = Func.GetInt(split[1]);
+                for (int i = minID; i <= maxID; ++i)
+                    ChapterTextDataIDList.Add(i);
+            }
+            else
+                ChapterTextDataIDList.Add(Func.GetInt(values[2]));
+        }
+
+        public ChapterTextData GetChapterTextData(string dialogueID)
+        {
+            var data = Instance.GetChapterTextData(StageTag, dialogueID);
+            return data;
+        }
+
+        public ChapterTextData GetNextChapterTextData(ChapterTextData curChapterText)
+        {
+            var idx = ChapterTextDataIDList.IndexOf(curChapterText.ID);
+
+            if (idx + 1 < ChapterTextDataIDList.Count)
+                return Instance.GetChapterTextData(ChapterTextDataIDList[idx + 1]);
+            return null;
+        }
+
+        public List<ChapterTextData> GetAllChapterTextData()
+        {
+            var list = new List<ChapterTextData>();
+            for (int i = 0; i < ChapterTextDataIDList.Count; ++i)
+                list.Add(Instance.GetChapterTextData(ChapterTextDataIDList[i]));
+            return list;
+        }
+    }
+    #endregion
+
     #region ChapterTextData
     public class ChapterTextData : TableDataBase_Int
     {
         const string STORY_TEXT = "TEXT_STORY_";
         public eChapterTag ChapterTag { get; private set; }
         public eStageTag StageTag { get; private set; }
+        public eChatType ChatType { get; private set; }
         public string DialogueID { get; private set; }
         public Dictionary<int, string> TextIDDic { get; private set; }
         public string BGResourceName { get; private set; }
+        public eEventEffect EffectType { get; private set; }
 
         public override void Parse(string[] values)
         {
@@ -211,6 +279,8 @@ public partial class DataManager : Singleton<DataManager>
                 TextIDDic[min + i] = strBuilder.ToString();
             }
             BGResourceName = values[6];
+            ChatType = Func.GetEnum<eChatType>(values[7]);
+            EffectType = Func.GetEnum<eEventEffect>(values[8]);
         }
 
         public List<StoryTextData> GetAllTextData()
@@ -227,7 +297,7 @@ public partial class DataManager : Singleton<DataManager>
             if (TextIDDic.ContainsKey(idx))
                 return Instance.GetStoryTextData(TextIDDic[idx]);
             else
-                MSLog.LogError("text id not exist:" + idx);
+                MSLog.Log("textdata is not exist:" + idx);
 
             return null;
         }
@@ -237,7 +307,7 @@ public partial class DataManager : Singleton<DataManager>
             if (TextIDDic.ContainsKey(idx))
                 return TextManager.GetStoryText(TextIDDic[idx]);
             else
-                MSLog.LogError("text id not exist:" + idx);
+                MSLog.Log("text id not exist:" + idx);
 
             return "";
         }
