@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: RedLight
   m_Shader: {fileID: 4800000, guid: 37fdc211b8bc35240aca1ccba361e65b, type: 3}
-  m_ShaderKeywords: _ISOUTLINEENABLED_ON
+  m_ShaderKeywords: SHUT_OFF _ISOUTLINEENABLED_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -70,7 +70,7 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _OutlineOutside: 0
-    - _OutlineSize: 2
+    - _OutlineSize: 4
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
