@@ -42,15 +42,15 @@ public class ChatObject : MonoBehaviour
         ChatCanvas.worldCamera = UICamera.Instance.Camera;
 
         m_CurrentChapterData = DataManager.Instance.GetChapterData(UserInfo.Instance.CurrentGameData.CurrentChapterID);
-        if (UserInfo.Instance.GetCurrentChapterStage() == eStageTag.START)
-        {
-            var window = WindowBase.OpenWindow(WindowBase.eWINDOW.ChapterStart, WindowParent, true) as Window_Chapter_Start;
-            window.Init(m_CurrentChapterData.GetChapterTitle(), ()=>
-            {
-                OpenMainChatWindow();
-            });
-        }
-        else
+        //if (UserInfo.Instance.GetCurrentChapterStage() == eStageTag.START)
+        //{
+        //    var window = WindowBase.OpenWindow(WindowBase.eWINDOW.ChapterStart, WindowParent, true) as Window_Chapter_Start;
+        //    window.Init(m_CurrentChapterData.GetChapterTitle(), ()=>
+        //    {
+        //        OpenMainChatWindow();
+        //    });
+        //}
+        //else
         {
             OpenMainChatWindow();
         }

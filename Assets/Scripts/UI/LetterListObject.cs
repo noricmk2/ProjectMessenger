@@ -15,6 +15,7 @@ public class LetterListObject : MonoBehaviour, IPoolObjectBase
     private DataManager.LetterData letterData = null;
     private DataManager.CharacterData fromData = null;
     private DataManager.MapData_Point mapData = null;
+    public Map_PointObject pointObject = null;
 
     public void SetLetterObject(DataManager.LetterData letter)
     {
@@ -27,6 +28,7 @@ public class LetterListObject : MonoBehaviour, IPoolObjectBase
 
         eCharacter characterType = DataManager.Instance.GetCharacterData(letterData.From).CharacterType;
 
+        pointObject = IngameScene.instance.ingameObject.MapWindow.mapObject.GetPointObject(mapData);
         //var isPortrait = CharacterType == MSUtil.eCharacter.NIKA ? "portrait" : "stand";
         //var resourceName = CharacterType.ToString().ToLower() + "_" + isPortrait + "_" + state.ToString().ToLower() + "_" + i;
         //portraitImage.sprite = ObjectFactory.Instance.GetCharacterSprite(characterType, resourceName);
@@ -47,6 +49,6 @@ public class LetterListObject : MonoBehaviour, IPoolObjectBase
     {
         Debug.Log("Letter : " + TextManager.GetSystemText(mapData.Name));
 
-        IngameScene.instance.ingameObject.MapWindow.mapObject.GetPointObject();
+        IngameScene.instance.ingameObject.MapWindow.mapObject.HighlightPointObject(mapData);
     }
 }

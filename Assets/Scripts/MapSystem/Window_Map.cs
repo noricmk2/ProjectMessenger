@@ -22,17 +22,21 @@ public class Window_Map : WindowBase
     [Header("LetterList")]
     public Transform LetterObjectsParent;
     public List<LetterListObject> letterObjectList;
-    //p
-    //[Header("Map")]
+
+    [Header("ETC")]
+    public Transform startButtonLayout;
     public Transform markerParent;
-    //public MarkerObject 
 
     public void OpenMap()
     {
-        List<UserInfo.ItemData> bagItemList = UserInfo.Instance.GetBagItemList();
+        //MapObject Setting
+        mapObject = ObjectFactory.Instance.ActivateObject<MapObject>();
+        mapObject.transform.SetParent(mapObjectParent);
+        mapObject.transform.localScale = Vector3.one;
+        mapObject.SetData();
 
+        List<UserInfo.ItemData> bagItemList = UserInfo.Instance.GetBagItemList();
         letterObjectList = new List<LetterListObject>();
-        Debug.Log(bagItemList.Count);
         for (int i = 0; i < bagItemList.Count; i++)
         {
             if (bagItemList[i].Type == MSUtil.eItemType.Letter)
@@ -41,20 +45,19 @@ public class Window_Map : WindowBase
                 letterObject.transform.SetParent(LetterObjectsParent);
                 letterObject.transform.localScale = Vector3.one;
                 letterObject.SetLetterObject(DataManager.Instance.GetLetterData(bagItemList[i].ID));
+                letterObjectList.Add(letterObject);
             }
         }
 
-        mapObject = ObjectFactory.Instance.ActivateObject<MapObject>();
-        mapObject.transform.SetParent(mapObjectParent);
-        mapObject.transform.localScale = Vector3.one;
-        mapObject.SetData();
+        mapObject.roadPositions = new List<Vector3>();
+        startSelected = true;
+        //startPoint = position;
+        //시작지점 정하기, 
+
 
         //iconCircleImage.rectTransform.sizeDelta = Vector2.zero;
         //iconPinImage.rectTransform.anchoredPosition = new Vector2(10, 60);
         //logoImage.gameObject.SetActive(true);
-
-
-
         //Sequence iconSeq = DOTween.Sequence();
         //iconSeq.Append(logoImage.rectTransform.DOAnchorMin(Vector2.zero, 0.5f).SetEase(Ease.OutQuint));
         //iconSeq.Join(logoImage.rectTransform.DOAnchorMax(Vector2.one, 0.5f).SetEase(Ease.OutQuint));
@@ -94,7 +97,7 @@ public class Window_Map : WindowBase
     public void OnClickCheckPin()
     {
         //출발지, 경유지, 도착지 선택
-        NodeManager.Instance.DisplayNodes();
+        mapObject.DisplayNodes();
     }
 
     public bool startSelected = false;
@@ -105,14 +108,19 @@ public class Window_Map : WindowBase
     {
         if (startSelected)
         {
-            NodeManager.Instance.CalculatingStart(startPoint, position);
+            mapObject.CalculatingStart(startPoint, position);
             startPoint = position;
         }
         else
         {
-            NodeManager.Instance.roadPositions = new List<Vector3>();
+            mapObject.roadPositions = new List<Vector3>();
             startSelected = true;
             startPoint = position;
         }
+    }
+
+    public void OnClickStart()
+    {
+
     }
 }

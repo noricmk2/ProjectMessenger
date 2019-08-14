@@ -77,7 +77,7 @@ public class MapObject : MonoBehaviour, IPoolObjectBase
             for (int j = 0; j < allNodeList[i].nodeDataList.Count; j++)
             {
                 Debug.Log(allNodeList[i].nodeDataList[j].nodeObject);
-                Debug.DrawLine(allNodeList[i].transform.position, allNodeList[i].nodeDataList[j].nodeObject.transform.position, Color.green, 2f);
+                Debug.DrawLine(allNodeList[i].transform.position, allNodeList[i].nodeDataList[j].nodeObject.transform.position, Color.red, 2f);
             }
         }
     }
@@ -178,6 +178,7 @@ public class MapObject : MonoBehaviour, IPoolObjectBase
         roadPositions.Add(endPosition);
         lineRenderer.positionCount = roadPositions.Count;
         lineRenderer.SetPositions(roadPositions.ToArray());
+        lineRenderer.Simplify(0.3f);
     }
 
     private Vector2 NearestPos(Vector2 startPos, params Vector2[] positions)
@@ -200,9 +201,23 @@ public class MapObject : MonoBehaviour, IPoolObjectBase
     }
     #endregion
 
-
-    public Map_PointObject GetPointObject()
+    public Map_PointObject GetPointObject(DataManager.MapData_Point pointData)
     {
+        for (int i = 0; i < allPointList.Count; i++)
+        {
+            if (pointData.ID == allPointList[i].pointID)
+                return allPointList[i];
+        }
+
+        return null;
+    }
+
+    public Map_PointObject HighlightPointObject(DataManager.MapData_Point pointData)
+    {
+        for (int i = 0; i < allPointList.Count; i++)
+        {
+            allPointList[i].Highlight(pointData.ID == allPointList[i].pointID);
+        }
         return null;
     }
 
