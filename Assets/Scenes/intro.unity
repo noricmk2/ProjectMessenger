@@ -318,6 +318,16 @@ PrefabInstance:
       propertyPath: m_ForceIntoRT
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6925144660940743617, guid: a5dc58e6bf036664e89f44a3692bc639,
+        type: 3}
+      propertyPath: m_Name
+      value: AlwaysTopCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 219391583059271699, guid: a5dc58e6bf036664e89f44a3692bc639,
+        type: 3}
+      propertyPath: RedLight
+      value: 
+      objectReference: {fileID: 2100000, guid: 4ceb15cc1da38ad4abc22db3f77cd385, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a5dc58e6bf036664e89f44a3692bc639, type: 3}
 --- !u!1 &1284626775

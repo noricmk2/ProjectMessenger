@@ -53,6 +53,18 @@ MonoBehaviour:
   CharacterAnimation: {fileID: 4693577991101241574}
   BubbleParent: {fileID: 9132920788917479593}
   Bubble: {fileID: 4490883782349934986}
+--- !u!114 &5523468958990574749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1911113392225778693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 417de9423158b2f49a911b991f188000, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4288081255549346009
 GameObject:
   m_ObjectHideFlags: 0
@@ -86,7 +98,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -300, y: 306}
+  m_AnchoredPosition: {x: -300, y: 300}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &5359573758544670020
@@ -176,6 +188,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03f351f3b421ac749bc108dd1bd343ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnStartPlay: 0
+  OnStartTargetFrame: 0
+  OnStartAtlas: {fileID: 0}
 --- !u!1001 &7274425312579271646
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -296,12 +311,29 @@ PrefabInstance:
     - target: {fileID: 5574770560685158988, guid: c82332fbb5961714982659df2ca999de,
         type: 3}
       propertyPath: m_havePropertiesChanged
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5574770560685158988, guid: c82332fbb5961714982659df2ca999de,
         type: 3}
       propertyPath: m_isInputParsingRequired
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5574770560685158988, guid: c82332fbb5961714982659df2ca999de,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: f7dba1c30f01a4e4a923311a81ff4eb2,
+        type: 2}
+    - target: {fileID: 5574770560685158988, guid: c82332fbb5961714982659df2ca999de,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 21036350195280364, guid: f7dba1c30f01a4e4a923311a81ff4eb2,
+        type: 2}
+    - target: {fileID: 5574770560685158988, guid: c82332fbb5961714982659df2ca999de,
+        type: 3}
+      propertyPath: m_textInfo.lineCount
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c82332fbb5961714982659df2ca999de, type: 3}
@@ -323,3 +355,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0e334cd81c55e74e991a476d8c6cd8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1911113392225778693 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9112559709654501339, guid: c82332fbb5961714982659df2ca999de,
+    type: 3}
+  m_PrefabInstance: {fileID: 7274425312579271646}
+  m_PrefabAsset: {fileID: 0}

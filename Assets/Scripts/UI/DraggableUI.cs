@@ -45,6 +45,7 @@ public class DraggableUI : MonoBehaviour, IPointerExitHandler
 
         if (Input.GetMouseButtonUp(0))
         {
+            m_Timer = HoldTime;
             if (m_HoldingCoroutine != null)
             {
                 StopCoroutine(m_HoldingCoroutine);
@@ -58,8 +59,6 @@ public class DraggableUI : MonoBehaviour, IPointerExitHandler
                 if (m_CanDrag)
                 {
                     m_CanDrag = false;
-                    m_Timer = HoldTime;
-
                     var data = new PointerEventData(EventSystem.current);
                     data.position = Input.mousePosition;
                     OnEndDrag(data);

@@ -35,7 +35,7 @@ public class BackLogText : RecycleSlotBase
         base.Refresh(idx);
         m_CurrentData = m_DataList[idx] as BackLogTextData;
         HeaderText.text = m_CurrentData.CharacterName;
-        ContentText.text = m_CurrentData.Content.Replace('^', '\n');
+        ContentText.text = m_CurrentData.Content;
     }
 
     public override float GetHeight()

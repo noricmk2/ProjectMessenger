@@ -68,6 +68,7 @@ public class ExpandTextOutput : MonoBehaviour
     public void SetText(SpeechBubble parent, string content, Dictionary<int, DataManager.TextEventData> tagDic, 
         TextEventDelegate eventAction = null, System.Action textEndAction = null)
     {
+        GameManager.IsPlayText = false;
         m_ParentBubble = parent;
         m_EventAction = eventAction;
         m_CurrentString = content;
@@ -77,7 +78,6 @@ public class ExpandTextOutput : MonoBehaviour
 
     public void PlayText()
     {
-        GameManager.IsPlayText = false;
         m_DeltaTime = 0;
         if (m_TypeWriteCoroutine != null)
             StopCoroutine(m_TypeWriteCoroutine);
@@ -95,13 +95,12 @@ public class ExpandTextOutput : MonoBehaviour
 
     IEnumerator CancelTypeWrite_C()
     {
+        GameManager.IsPlayText = false;
         if (m_CurrentString.Length > 0)
         {
             StopCoroutine(m_TypeWriteCoroutine);
             m_TypeWriteCoroutine = null;
-            var content = m_CurrentString.Replace('^', '\n');
-            Text.text = content;
-            GameManager.IsPlayText = false;
+            Text.text = m_CurrentString;
 
             if (m_TextEventTagDic != null && m_EventAction != null && m_TextEventTagDic.ContainsKey(m_CurrentString.Length))
                 yield return m_EventAction(m_ParentBubble, m_TextEventTagDic[m_CurrentString.Length]);
@@ -183,7 +182,6 @@ public class ExpandTextOutput : MonoBehaviour
 
     public void ResetText()
     {
-        GameManager.IsPlayText = false;
         m_TextFlag = 0;
         Text.text = string.Empty;
         SetPauseText(null, 0);

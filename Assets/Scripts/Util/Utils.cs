@@ -10,7 +10,9 @@ namespace MSUtil
     {
         NONE,
         START = 1,
-        PREV_DELV,
+        PREDELV,
+        ONDELVLESS,
+        DAYEND,
     }
 
     public enum eChapterTag
@@ -110,6 +112,20 @@ namespace MSUtil
         MAILSORT,
         MAILDROP,
     }
+
+    public enum eChatType
+    {
+        NONE,
+        NORMAL,
+        EVENT,
+        CHOICE,
+    }
+
+    public enum eEventEffect
+    {
+        NONE,
+        SHAKE,
+    }
     #endregion
 
     #region Func
@@ -128,7 +144,7 @@ namespace MSUtil
         {
             transform.SetParent(parent);
             transform.localScale = new Vector3(1f, 1f, 1f);
-            transform.localPosition = new Vector3();
+            transform.localPosition = Vector3.zero;
         }
         #endregion
 
@@ -214,14 +230,20 @@ namespace MSUtil
         public static readonly string CHARACTER_GETTER_ID = "CHARACTER_NAME_";
         public static readonly string CHARACTER_NIKA = "nika"; //니카 캐릭터명;
         public static readonly int CHARACTER_NIKA_ID = 10001; //니카 캐릭터 ID;
+        public static readonly string FIRST_DIALOUGE_ID = "DL1";
+
+        public static readonly Vector2 BUBBLE_DEFAULT_POS = new Vector2(-300, 300);
 
         public static float CHARACTER_APPEAR_TIME = 0.5f;
         public static float CURSOR_BLINK_TIME = 0.5f;
-        public static float BUBBLE_ANIMATION_TIME = 0.3f;
+        public static float BUBBLE_ANIMATION_TIME = 0.2f;
         public static float LONG_CLICK_TIME = 1.0f;
         public static float DEFAULT_ANIM_FPS = 14f;
 
         public const string SHEET_SAVE = "SheetSave";//시트 세이브 키
+        public const string BUBBLE_SPRITE_NAME_1 = "ui_speech_bubble1";
+        public const string BUBBLE_SPRITE_NAME_2 = "ui_speech_bubble2";
+        public const string SELECT_TEXT = "TEXT_SELECT";
     }
 
     public class ColorPalette        //컬러 상수값

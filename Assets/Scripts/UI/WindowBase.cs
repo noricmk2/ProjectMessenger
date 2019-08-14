@@ -8,6 +8,7 @@ public class WindowBase : MonoBehaviour
     {
         Title,
         ChatMain,
+        ChatEvent,
         ChapterStart,
         ResultPhase,
         Map,
@@ -50,6 +51,7 @@ public class WindowBase : MonoBehaviour
     static Dictionary<eWINDOW, WindowData> m_WindowInfoDic = new Dictionary<eWINDOW, WindowData>()
     {
         { eWINDOW.ChatMain,     new WindowData(eWINDOW.ChatMain, "Prefab/UI/window_chat_main")  },
+        { eWINDOW.ChatEvent,    new WindowData(eWINDOW.ChatEvent, "Prefab/UI/window_chat_event")  },
         { eWINDOW.Title,        new WindowData(eWINDOW.Title, "Prefab/UI/window_title")         },
         { eWINDOW.Map,          new WindowData(eWINDOW.Map, "Prefab/UI/window_map")             },
         { eWINDOW.ChapterStart, new WindowData(eWINDOW.ChapterStart, "Prefab/UI/window_chapter_start")},
@@ -101,7 +103,7 @@ public class WindowBase : MonoBehaviour
         return addObj;
     }
 
-    public static WindowBase OpenWindowWithFade(eWINDOW eWindow, Transform parent, bool bOverlap)
+    public static WindowBase OpenWindowWithTransition(eWINDOW eWindow, MSUtil.eTransitionType transitionType, Transform parent, bool bOverlap)
     {
 #if UNITY_EDITOR
         if (!m_WindowInfoDic.ContainsKey(eWindow))
@@ -111,7 +113,7 @@ public class WindowBase : MonoBehaviour
         }
 #endif
         WindowBase addObj = m_WindowInfoDic[eWindow].Instance;
-        AlwaysTopCanvas.Instance.SetFadeAnimation(0.5f, true, MSUtil.eTransitionType.NORMAL, () =>
+        AlwaysTopCanvas.Instance.SetFadeAnimation(0.5f, true, transitionType, () =>
         {
             var window = OpenWindow(eWindow, parent, bOverlap);
             window.AfterOpen();

@@ -13,14 +13,10 @@ public class Window_Chat_Main : WindowBase
     public RectTransform CharacterPosition;
     public RectTransform ChoiceParent;
     public RectTransform MailBundlePosition;
-
     public CharacterObject MainCharacter;
     public Image BackGroundImage;
-    public CustomButton MainTouch;
-
     public RecycleScroll BackLogScroll;
-    //public RecycleScroll MailSelectScroll;
-
+    public CustomButton MainTouch;
     public CustomButton BackLogButton;
     public CustomButton DragTargetBag;
     public UI_LetterInfoPanel LetterInfo;
@@ -41,7 +37,7 @@ public class Window_Chat_Main : WindowBase
 
     public void Init(System.Action afterOpenAction = null, System.Action mainTouchAction = null)
     {
-        MainCharacter.Init(ConstValue.CHARACTER_NIKA_ID, MainCharacter.transform.parent);
+        MainCharacter.Init(ConstValue.CHARACTER_NIKA_ID);
         m_AfterOpenAction = afterOpenAction;
         m_MainTouchAction = mainTouchAction;
         MainTouch.IsColorHilight = false;
@@ -83,8 +79,8 @@ public class Window_Chat_Main : WindowBase
             return;
         }
 
-        MailSelectPanel.Release();
-        MailSelectPanel.Close(() => MailSelectPanel.gameObject.SetActive_Check(false));
+        //MailSelectPanel.Release();
+        //MailSelectPanel.Close(() => MailSelectPanel.gameObject.SetActive_Check(false));
     }
 
     private void OpenSelectMailPanel()

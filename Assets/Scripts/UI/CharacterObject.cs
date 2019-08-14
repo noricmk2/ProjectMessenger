@@ -14,29 +14,60 @@ public class CharacterObject : MonoBehaviour, IPoolObjectBase
     #endregion
     public DataManager.CharacterData CurrentCharacterData { get; private set; }
     public bool CharacterActivate { get; set; }
+    private bool m_IsEvent;
 
-    public void Init(int characterID, Transform parent)
+    public void Init(int characterID, Transform parent = null)
     {
-        transform.Init(parent);
+        m_IsEvent = false;
+        CharacterAnimation.gameObject.SetActive_Check(true);
         CurrentCharacterData = DataManager.Instance.GetCharacterData(characterID);
         CharacterActivate = false;
-        Bubble.Init(this);
-        if(CurrentCharacterData.CharacterType != eCharacter.NIKA)
+        if (CurrentCharacterData.CharacterType != eCharacter.NIKA)
+        {
+            transform.Init(parent);
+            Bubble.Init(this);
+            Bubble.BubbleBG.sprite = ObjectFactory.Instance.GetUISprite(ConstValue.BUBBLE_SPRITE_NAME_1);
+            BubbleParent.anchoredPosition = ConstValue.BUBBLE_DEFAULT_POS;
             Bubble.transform.localScale = Vector3.zero;
+        }
+        else
+            Bubble.Init(this, true);
         CharacterAnimation.Init(CurrentCharacterData);
     }
 
-    public void SetFocus(bool focus, System.Action endAction = null)
+    public void Init(int characterID, Transform parent, Vector3 bubblePos)
+    {
+        Init(characterID, parent);
+        BubbleParent.anchoredPosition = new Vector2(bubblePos.x, bubblePos.y);
+        var resName = bubblePos.z == -1 ? ConstValue.BUBBLE_SPRITE_NAME_2 : ConstValue.BUBBLE_SPRITE_NAME_1;
+        Bubble.BubbleBG.sprite = ObjectFactory.Instance.GetUISprite(resName);
+    }
+
+    public void InitForEvent(int characterID, Transform parent, Vector3 bubblePos)
+    {
+        m_IsEvent = true;
+        transform.Init(parent);
+        CharacterAnimation.gameObject.SetActive_Check(false);
+        BubbleParent.anchoredPosition = new Vector2(bubblePos.x, bubblePos.y);
+        CurrentCharacterData = DataManager.Instance.GetCharacterData(characterID);
+        CharacterActivate = true;
+        Bubble.Init(this, true);
+        var resName = bubblePos.z == -1 ? ConstValue.BUBBLE_SPRITE_NAME_2 : ConstValue.BUBBLE_SPRITE_NAME_1;
+        Bubble.BubbleBG.sprite = ObjectFactory.Instance.GetUISprite(resName);
+    }
+
+    public void SetFocus(bool focus, bool bubbleEnable = true, System.Action endAction = null)
     {
         Bubble.transform.DOKill();
         if (focus)
         {
+            Bubble.SetActive(bubbleEnable);
             CharacterAnimation.SetColor(Color.white);
-            if (CurrentCharacterData.CharacterType != eCharacter.NIKA)
+            if (m_IsEvent || CurrentCharacterData.CharacterType != eCharacter.NIKA)
             {
-                Bubble.gameObject.SetActive_Check(true);
+                Bubble.transform.localScale = Vector3.zero;
                 Bubble.ExpandText.ResetText();
-                Bubble.transform.DOScale(Vector3.one, ConstValue.BUBBLE_ANIMATION_TIME).SetEase(Ease.InOutBack).OnComplete(
+                Bubble.transform.DOScale(Vector3.one, ConstValue.BUBBLE_ANIMATION_TIME).SetEase(Ease.InSine).OnComplete(
                     () =>
                     {
                         if (endAction != null)
@@ -50,10 +81,12 @@ public class CharacterObject : MonoBehaviour, IPoolObjectBase
         else
         {
             CharacterAnimation.SetColor(ColorPalette.CHARACTER_HILIGHT_COLOR);
-            if (CurrentCharacterData.CharacterType != eCharacter.NIKA)
+            if (m_IsEvent || CurrentCharacterData.CharacterType != eCharacter.NIKA)
             {
-                Bubble.transform.DOScale(Vector3.zero, ConstValue.BUBBLE_ANIMATION_TIME).SetEase(Ease.InOutBack).OnComplete(() => Bubble.gameObject.SetActive_Check(false));
-                Bubble.gameObject.SetActive_Check(false);
+                Bubble.transform.DOScale(Vector3.zero, ConstValue.BUBBLE_ANIMATION_TIME).SetEase(Ease.OutSine).OnComplete(() =>
+                {
+                    Bubble.SetActive(false, true);
+                });
             }
         }
     }
