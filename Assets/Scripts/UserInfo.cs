@@ -79,18 +79,14 @@ public class UserInfo : Singleton<UserInfo>
         }
     }
 
-    public void SetNextStage()
+    public void SetNextStage(eStageTag targetStage)
     {
         var chapterData = DataManager.Instance.GetChapterData(CurrentGameData.CurrentChapterID);
-        var stageData = DataManager.Instance.GetStageData((eStageTag)CurrentGameData.CurrentChapterStage);
-
-        if (!chapterData.IsLastStage(stageData))
-            ++CurrentGameData.CurrentChapterStage;
+        var targetStageData = chapterData.GetTargetStageData(targetStage);
+        if (targetStageData != null)
+            CurrentGameData.CurrentChapterStage = (int)targetStageData.StageTag;
         else
-        {
-            var nextChapter = DataManager.Instance.GetChapterData(CurrentGameData.CurrentChapterID + 1);
-            CurrentGameData.CurrentChapterStage = (int)nextChapter.GetFirstStage();
-        }
+            MSLog.LogError("not exist stage data");
     }
 
     public List<DataManager.LetterData> GetChapterLetterList()
