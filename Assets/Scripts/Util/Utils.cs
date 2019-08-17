@@ -12,6 +12,7 @@ namespace MSUtil
         START = 1,
         PREDELV,
         ONDELVLESS,
+        UNUSAL,
         DAYEND,
     }
 
@@ -51,13 +52,13 @@ namespace MSUtil
 
     public enum eCharacter
     {
+        NONE,
         NIKA,
         LUCIA,
         RINTA,
         LESS,
         JACQUES,
         ARUE,
-        LENGTH
     }
 
     public enum eTextEventTag
@@ -78,6 +79,9 @@ namespace MSUtil
         FONTSML,
         FONTCOL,
         NOTIFY,
+        SHAKE,
+        FLASH,
+        TRANSITION,
         LENGTH
     }
 
@@ -122,7 +126,7 @@ namespace MSUtil
         CHOICE,
     }
 
-    public enum eEventEffect
+    public enum eEnterEffect
     {
         NONE,
         SHAKE,
@@ -233,19 +237,25 @@ namespace MSUtil
         public static readonly int CHARACTER_NIKA_ID = 10001; //니카 캐릭터 ID;
         public static readonly string FIRST_DIALOUGE_ID = "DL1";
 
+        public static readonly int NONE_CHARACTER_ID = 99999;
         public static readonly Vector2 BUBBLE_DEFAULT_POS = new Vector2(-300, 300);
+        public static readonly Rect LINE_ORG_RECT = new Rect(3, 17, 265, 118);
+        public static readonly Rect LINE_OUTSIDE_RECT = new Rect(21, -6, 226, 147);
+        public static readonly Rect LINE_IMPACT_RECT= new Rect(3, -6, 220, 102);
+        public static readonly Vector2 BUBBLE_ORG_SIZE = new Vector2(300, 160);
+        public static readonly Vector2 BUBBLE_IMPACT_SIZE = new Vector2(500, 160);
 
-        public static float CHARACTER_APPEAR_TIME = 0.5f;
-        public static float CURSOR_BLINK_TIME = 0.5f;
-        public static float BUBBLE_ANIMATION_TIME = 0.2f;
-        public static float LONG_CLICK_TIME = 1.0f;
-        public static float DEFAULT_ANIM_FPS = 14f;
-
-        public const string SHEET_SAVE = "SheetSave";//시트 세이브 키
-        public const string BUBBLE_SPRITE_NAME_1 = "ui_speech_bubble1";
-        public const string BUBBLE_SPRITE_NAME_2 = "ui_speech_bubble2";
-        public const string SELECT_TEXT = "TEXT_SELECT";
-        public const string NOTIFY_TEXT = "TEXT_NOTIFY_";
+        public static readonly float CHARACTER_APPEAR_TIME = 0.5f;
+        public static readonly float CURSOR_BLINK_TIME = 0.5f;
+        public static readonly float BUBBLE_ANIMATION_TIME = 0.2f;
+        public static readonly float LONG_CLICK_TIME = 1.0f;
+        public static readonly float DEFAULT_ANIM_FPS = 14f;
+        public static readonly string SHEET_SAVE = "SheetSave";//시트 세이브 키
+        public static readonly string DEFAULT_BUBBLE_SPRITE_NAME = "ui_speech_bubble_01";
+        public static readonly string IMPACT_BUBBLE_SPRITE_NAME = "ui_speech_bubble_05";
+        public static readonly string OUTSIDE_BUBBLE_SPRITE_NAME = "ui_speech_bubble_06";
+        public static readonly string SELECT_TEXT = "TEXT_SELECT";
+        public static readonly string NOTIFY_TEXT = "TEXT_NOTIFY_";
     }
 
     public class ColorPalette        //컬러 상수값

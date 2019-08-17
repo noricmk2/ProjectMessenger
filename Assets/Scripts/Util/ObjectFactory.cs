@@ -80,8 +80,6 @@ public class ObjectFactory : Singleton<ObjectFactory>
                 break;
             case eCharacter.ARUE:
                 break;
-            case eCharacter.LENGTH:
-                break;
         }
 
         if (CharacterAtlas_Nika != null)

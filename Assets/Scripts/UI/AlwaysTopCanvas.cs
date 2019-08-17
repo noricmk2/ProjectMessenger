@@ -11,7 +11,7 @@ public class AlwaysTopCanvas : Singleton<AlwaysTopCanvas>
     #region Inspector
     public Image FadeImage;
     #endregion
-    public bool IsOnFade { get; private set; }
+    public bool IsOnFade { get; set; }
 
     private void Awake()
     {
@@ -27,7 +27,6 @@ public class AlwaysTopCanvas : Singleton<AlwaysTopCanvas>
             case eTransitionType.CIRCLE:
                 UICamera.Instance.TransEffect.SetTransitionEffect(true, reset, effectType, 1, ()=>
                 {
-                    IsOnFade = false;
                     if (fadeEndAction != null)
                         fadeEndAction();
                 });

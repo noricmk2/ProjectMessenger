@@ -72,7 +72,7 @@ public class ChatObject : MonoBehaviour
         {
             case eChatType.NORMAL:
                 {
-                    m_ChatWindow = WindowBase.OpenWindowWithTransition(WindowBase.eWINDOW.ChatMain, eTransitionType.NORMAL, WindowParent, true) as Window_Chat_Main;
+                    m_ChatWindow = WindowBase.OpenWindowWithTransition(WindowBase.eWINDOW.ChatMain, m_CurrentChapterTextData.TransitionType, WindowParent, true) as Window_Chat_Main;
                     m_ChatWindow.Init(m_CurrentChapterTextData, () =>
                     {
 #if UNITY_EDITOR || UNITY_STANDALONE
@@ -87,7 +87,7 @@ public class ChatObject : MonoBehaviour
                 break;
             case eChatType.EVENT:
                 {
-                    m_EventWindow = WindowBase.OpenWindowWithTransition(WindowBase.eWINDOW.ChatEvent, eTransitionType.NORMAL, WindowParent, true) as Window_Chat_Event;
+                    m_EventWindow = WindowBase.OpenWindowWithTransition(WindowBase.eWINDOW.ChatEvent, m_CurrentChapterTextData.TransitionType, WindowParent, true) as Window_Chat_Event;
                     m_EventWindow.Init(() =>
                     {
 #if UNITY_EDITOR || UNITY_STANDALONE
@@ -96,7 +96,7 @@ public class ChatObject : MonoBehaviour
                         m_UpdateCouroutine = StartCoroutine(Update_C());
 #endif
                         PlayNextText();
-                    }, OnMainTouch, m_CurrentChapterTextData.EffectType);
+                    }, OnMainTouch, m_CurrentChapterTextData.EnterEffectType);
                 }
                 break;
         }
@@ -117,7 +117,8 @@ public class ChatObject : MonoBehaviour
 
     private void OnMainTouch()
     {
-        if (m_CurrentChatType != eChatType.CHOICE && m_CurrentChatter != null && m_CurrentChatter.CharacterActivate)
+        if (!AlwaysTopCanvas.Instance.IsOnFade && m_CurrentChatType != eChatType.CHOICE
+            && m_CurrentChatter != null && m_CurrentChatter.CharacterActivate)
         {
             if (GameManager.IsPlayText)
             {
@@ -143,7 +144,7 @@ public class ChatObject : MonoBehaviour
         var charData = DataManager.Instance.GetCharacterData(data.CharacterID);
         if (!m_CurrentCharacterDic.ContainsKey(data.CharacterID))
         {
-            ActiveCharacter(data.CharacterID, data.BubblePos, true);
+            ActiveCharacter(data.CharacterID, data.BubblePos, data.BubbleResource, true);
             charCreate = true;
         }
         m_CurrentChatter = m_CurrentCharacterDic[data.CharacterID];
@@ -196,6 +197,12 @@ public class ChatObject : MonoBehaviour
 
     public void PlayNextText()
     {
+        if (m_ItemObject != null)
+        {
+            ObjectFactory.Instance.DeactivateObject(m_ItemObject);
+            m_ItemObject = null;
+        }
+
         ++m_CurrentTextIdx;
         var textData = m_CurrentChapterTextData.GetTextData(m_CurrentTextIdx);
 
@@ -229,7 +236,7 @@ public class ChatObject : MonoBehaviour
         }
     }
 
-    public void ActiveCharacter(int characterID, Vector3 bubblePos, bool focus = false)
+    public void ActiveCharacter(int characterID, Vector3 bubblePos, string bubbleRes = null, bool focus = false)
     {
         CharacterObject charObj = null;
         if (m_ChatWindow != null)
@@ -241,8 +248,10 @@ public class ChatObject : MonoBehaviour
 
             if (bubblePos == Vector3.zero)
                 charObj.Init(characterID, m_ChatWindow.CharacterPosition);
+            else if (bubblePos != Vector3.zero && characterID != ConstValue.NONE_CHARACTER_ID)
+                charObj.Init(characterID, m_ChatWindow.CharacterPosition, bubblePos, bubbleRes);
             else
-                charObj.Init(characterID, m_ChatWindow.CharacterPosition, bubblePos);
+                charObj.InitForBubbleOnly(characterID, m_ChatWindow.OutsidePosition, bubblePos, bubbleRes);
         }
         else
         {
@@ -251,7 +260,7 @@ public class ChatObject : MonoBehaviour
             else
                 charObj = m_CurrentCharacterDic[characterID];
 
-            charObj.InitForEvent(characterID, m_EventWindow.BackGroundImage.transform, bubblePos);
+            charObj.InitForBubbleOnly(characterID, m_EventWindow.BackGroundImage.transform, bubblePos, bubbleRes);
         }
         m_CurrentCharacterDic[characterID] = charObj;
     }
@@ -415,6 +424,38 @@ public class ChatObject : MonoBehaviour
                         var content = TextManager.GetSystemText(ConstValue.NOTIFY_TEXT + data.Value);
                         m_ChatWindow.NotifyPanel.gameObject.SetActive_Check(true);
                         m_ChatWindow.NotifyPanel.Init(content);
+                    }
+                }
+                break;
+            case eTextEventTag.SHAKE:
+                {
+                    var deltaTime = 0f;
+                    var targetTime = Func.Msec2sec(Func.GetFloat(data.Value));
+                    UICamera.Instance.CameraShake(WindowParent, 10f, targetTime, () =>
+                    {
+                    });
+                    while (targetTime >= deltaTime)
+                    {
+                        deltaTime += Time.deltaTime;
+                        yield return null;
+                    }
+                }
+                break;
+            case eTextEventTag.FLASH:
+                {
+                    var count = Func.GetInt(data.Value);
+                    UICamera.Instance.Flash(count);
+                }
+                break;
+            case eTextEventTag.TRANSITION:
+                {
+                    var deltaTime = 0f;
+                    var targetTime = 0.5f;
+                    AlwaysTopCanvas.Instance.SetFadeAnimation(targetTime, true, eTransitionType.NORMAL);
+                    while (targetTime >= deltaTime)
+                    {
+                        deltaTime += Time.deltaTime;
+                        yield return null;
                     }
                 }
                 break;

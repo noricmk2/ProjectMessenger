@@ -41,7 +41,7 @@ public partial class DataManager : Singleton<DataManager>
 
     public Coroutine LoadOffline(eSheetType type)
     {
-        return StartCoroutine(LoadFromGoogleSheet_C(type));
+        return StartCoroutine(LoadOffline_C(type));
     }
 
     private IEnumerator LoadFromGoogleSheet_C(eSheetType type)

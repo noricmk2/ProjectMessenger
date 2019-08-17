@@ -13,6 +13,7 @@ public class Window_Chat_Main : WindowBase
     public RectTransform CharacterPosition;
     public RectTransform ChoiceParent;
     public RectTransform MailBundlePosition;
+    public RectTransform OutsidePosition;
     public CharacterObject MainCharacter;
     public Image BackGroundImage;
     public RecycleScroll BackLogScroll;
