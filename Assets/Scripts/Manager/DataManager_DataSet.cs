@@ -36,7 +36,8 @@ public partial class DataManager : Singleton<DataManager>
     public class StoryTextData : TextData
     {
         public int CharacterID { get; private set; }
-        public Vector3 BubblePos { get; private set; }
+        public Vector2 BubblePos { get; private set; }
+        public string BubbleResource { get; private set; }
         Dictionary<eLanguage, string> m_TextDic = new Dictionary<eLanguage, string>();
         Dictionary<int, TextEventData> m_EventTagDic = new Dictionary<int, TextEventData>();
 
@@ -47,16 +48,18 @@ public partial class DataManager : Singleton<DataManager>
 
             var posSplit = values[2].Split(';');
             if (posSplit.Length > 1)
-                BubblePos = new Vector3(Func.GetFloat(posSplit[0]), Func.GetFloat(posSplit[1]), Func.GetFloat(posSplit[2]));
+                BubblePos = new Vector2(Func.GetFloat(posSplit[0]), Func.GetFloat(posSplit[1]));
             else
-                BubblePos = Vector3.zero;
+                BubblePos = Vector2.zero;
+
+            BubbleResource = values[3];
 
             Regex regex;
-            if (values[3].Contains("[CHO"))
+            if (values[4].Contains("[CHO"))
                 regex = new Regex(@"\[(.+)\]");
             else
                 regex = new Regex(@"\[(\w+)\]");
-            var result = regex.Matches(values[3]);
+            var result = regex.Matches(values[4]);
 
             var iter = result.GetEnumerator();
             var prevIdx = 0;
@@ -78,16 +81,24 @@ public partial class DataManager : Singleton<DataManager>
                 else
                     eventData.Tag = Func.GetEnum<eTextEventTag>(match.Groups[1].Value);
 
-                m_EventTagDic[match.Index - prevIdx] = eventData;
-                prevIdx += match.Groups[0].Length;
+                if (m_EventTagDic.ContainsKey(match.Index - prevIdx))
+                {
+                    m_EventTagDic[match.Index - prevIdx + 1] = eventData;
+                    prevIdx += match.Groups[0].Length + 1;
+                }
+                else
+                {
+                    m_EventTagDic[match.Index - prevIdx] = eventData;
+                    prevIdx += match.Groups[0].Length;
+                }
 
-                values[3] = values[3].Replace(match.Groups[0].Value, "");
+                values[4] = values[4].Replace(match.Groups[0].Value, "");
                 for (int i = 0; i < (int)eLanguage.Length; ++i)
-                    values[3 + i] = values[3 + i].Replace("^", "\n");
+                    values[4 + i] = values[4 + i].Replace("^", "\n");
             }
 
             for (int i = 0; i < (int)eLanguage.Length; ++i)
-                m_TextDic[(eLanguage)i] = values[3 + i];
+                m_TextDic[(eLanguage)i] = values[4 + i].Replace("^", "\n");
         }
 
         public override string GetText(eLanguage langType)
@@ -271,7 +282,8 @@ public partial class DataManager : Singleton<DataManager>
         public Dictionary<int, string> TextIDDic { get; private set; }
         public string BGResourceName { get; private set; }
         public string PlaceTextID { get; private set; }
-        public eEventEffect EffectType { get; private set; }
+        public eEnterEffect EnterEffectType { get; private set; }
+        public eTransitionType TransitionType { get; private set; }
 
         public override void Parse(string[] values)
         {
@@ -301,7 +313,8 @@ public partial class DataManager : Singleton<DataManager>
             BGResourceName = values[6];
             PlaceTextID = values[7];
             ChatType = Func.GetEnum<eChatType>(values[8]);
-            EffectType = Func.GetEnum<eEventEffect>(values[9]);
+            EnterEffectType = Func.GetEnum<eEnterEffect>(values[9]);
+            TransitionType = Func.GetEnum<eTransitionType>(values[10]);
         }
 
         public List<StoryTextData> GetAllTextData()

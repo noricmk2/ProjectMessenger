@@ -48,11 +48,13 @@ public class TransitionEffect : MonoBehaviour
                             m_IsEffectActive = false;
                             m_DeltaTime = 0;
                             curMaterial.DisableKeyword("REVERSE_ON");
-                            if(m_EndAction != null)
+                            if (m_EndAction != null)
                             {
                                 m_EndAction();
                                 m_EndAction = null;
                             }
+                            else
+                                AlwaysTopCanvas.Instance.IsOnFade = false;
                             return;
                         }
                         else if (m_DeltaTime > m_TargetTime && m_IsReset)
@@ -80,8 +82,6 @@ public class TransitionEffect : MonoBehaviour
             Graphics.Blit(source, destination, curMaterial);
         }
         else
-        {
             Graphics.Blit(source, destination);
-        }
     }
 }

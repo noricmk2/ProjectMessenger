@@ -18,14 +18,14 @@ public class Window_Chat_Event : WindowBase
     private System.Action m_AfterOpenAction;
     private System.Action m_MainTouchAction;
     private GameObject BackLogObject;
-    private eEventEffect m_EnterEffect;
+    private eEnterEffect m_EnterEffect;
 
     private void Awake()
     {
         BackLogObject = BackLogScroll.transform.parent.gameObject;
     }
 
-    public void Init(System.Action afterOpenAction = null, System.Action mainTouchAction = null, eEventEffect effect = eEventEffect.NONE)
+    public void Init(System.Action afterOpenAction = null, System.Action mainTouchAction = null, eEnterEffect effect = eEnterEffect.NONE)
     {
         m_AfterOpenAction = afterOpenAction;
         m_MainTouchAction = mainTouchAction;
@@ -40,13 +40,13 @@ public class Window_Chat_Event : WindowBase
 
         switch (m_EnterEffect)
         {
-            case eEventEffect.NONE:
+            case eEnterEffect.NONE:
                 {
                     if (m_AfterOpenAction != null)
                         m_AfterOpenAction();
                 }
                 break;
-            case eEventEffect.SHAKE:
+            case eEnterEffect.SHAKE:
                 {
                     UICamera.Instance.CameraShake(ChatObject.Instance.WindowParent, 10f, 0.5f, () =>
                     {

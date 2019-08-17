@@ -12,13 +12,21 @@ public class UICamera : Singleton<UICamera>
     private Vector3 m_OriginPos;
     private float m_Intensity;
     private float m_Duration;
+    private float m_FlashCount;
     private Transform m_ShakeTarget;
     private Coroutine m_ShakeCoroutine;
     private Action m_ShakeEndAction;
+    private Material m_FlashMaterial;
 
     private void Awake()
     {
         Camera = GetComponent<Camera>();
+        m_FlashMaterial = new Material(Shader.Find("Custom/CameraFlash"));
+    }
+
+    public void Flash(float count)
+    {
+        m_FlashCount = count;
     }
 
     public void CameraShake(Transform target, float intentsity, float duration, Action endAction = null)
@@ -34,7 +42,7 @@ public class UICamera : Singleton<UICamera>
         m_ShakeCoroutine = StartCoroutine(Shake_C());
     }
 
-    public IEnumerator Shake_C()
+    IEnumerator Shake_C()
     {
         float timer = 0;
         while (timer <= m_Duration)
@@ -47,5 +55,28 @@ public class UICamera : Singleton<UICamera>
         m_ShakeTarget.localPosition = m_OriginPos;
         if (m_ShakeEndAction != null)
             m_ShakeEndAction();
+    }
+
+    float deltaTime;
+    float flashTime = 0.2f;
+    private void OnRenderImage(RenderTexture source, RenderTexture destination)
+    {
+        if (m_FlashCount > 0)
+        {
+            deltaTime += Time.deltaTime;
+            if (deltaTime < flashTime * 0.5f)
+                m_FlashMaterial.SetFloat("_Threshold", Mathf.Lerp(0, 1, deltaTime));
+            else if (deltaTime >= flashTime * 0.5f && deltaTime < flashTime)
+                m_FlashMaterial.SetFloat("_Threshold", Mathf.Lerp(1, 0, deltaTime));
+            else
+            {
+                --m_FlashCount;
+                deltaTime = 0;
+            }
+
+            Graphics.Blit(source, destination, m_FlashMaterial);
+        }
+        else
+            Graphics.Blit(source, destination);
     }
 }

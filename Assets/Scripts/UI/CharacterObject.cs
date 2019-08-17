@@ -26,7 +26,8 @@ public class CharacterObject : MonoBehaviour, IPoolObjectBase
         {
             transform.Init(parent);
             Bubble.Init(this);
-            Bubble.BubbleBG.sprite = ObjectFactory.Instance.GetUISprite(ConstValue.BUBBLE_SPRITE_NAME_1);
+            Bubble.BubbleBG.sprite = ObjectFactory.Instance.GetUISprite(ConstValue.DEFAULT_BUBBLE_SPRITE_NAME);
+            SetBubbleRect(ConstValue.DEFAULT_BUBBLE_SPRITE_NAME);
             BubbleParent.anchoredPosition = ConstValue.BUBBLE_DEFAULT_POS;
             Bubble.transform.localScale = Vector3.zero;
         }
@@ -35,15 +36,15 @@ public class CharacterObject : MonoBehaviour, IPoolObjectBase
         CharacterAnimation.Init(CurrentCharacterData);
     }
 
-    public void Init(int characterID, Transform parent, Vector3 bubblePos)
+    public void Init(int characterID, Transform parent, Vector2 bubblePos, string bubbleRes)
     {
         Init(characterID, parent);
         BubbleParent.anchoredPosition = new Vector2(bubblePos.x, bubblePos.y);
-        var resName = bubblePos.z == -1 ? ConstValue.BUBBLE_SPRITE_NAME_2 : ConstValue.BUBBLE_SPRITE_NAME_1;
-        Bubble.BubbleBG.sprite = ObjectFactory.Instance.GetUISprite(resName);
+        Bubble.BubbleBG.sprite = ObjectFactory.Instance.GetUISprite(bubbleRes);
+        SetBubbleRect(bubbleRes);
     }
 
-    public void InitForEvent(int characterID, Transform parent, Vector3 bubblePos)
+    public void InitForBubbleOnly(int characterID, Transform parent, Vector2 bubblePos, string bubbleRes)
     {
         m_IsEvent = true;
         transform.Init(parent);
@@ -52,8 +53,31 @@ public class CharacterObject : MonoBehaviour, IPoolObjectBase
         CurrentCharacterData = DataManager.Instance.GetCharacterData(characterID);
         CharacterActivate = true;
         Bubble.Init(this, true);
-        var resName = bubblePos.z == -1 ? ConstValue.BUBBLE_SPRITE_NAME_2 : ConstValue.BUBBLE_SPRITE_NAME_1;
-        Bubble.BubbleBG.sprite = ObjectFactory.Instance.GetUISprite(resName);
+        Bubble.BubbleBG.sprite = ObjectFactory.Instance.GetUISprite(bubbleRes);
+        SetBubbleRect(bubbleRes);
+    }
+
+    private void SetBubbleRect(string bubbleName)
+    {
+        var rectTrans = Bubble.ExpandText.transform as RectTransform;
+        var bubbleTrans = Bubble.transform as RectTransform;
+        bubbleTrans.sizeDelta = ConstValue.BUBBLE_ORG_SIZE;
+        if (bubbleName == ConstValue.OUTSIDE_BUBBLE_SPRITE_NAME)
+        {
+            rectTrans.anchoredPosition = ConstValue.LINE_OUTSIDE_RECT.position;
+            rectTrans.sizeDelta = ConstValue.LINE_OUTSIDE_RECT.size;
+        }
+        else if (bubbleName == ConstValue.IMPACT_BUBBLE_SPRITE_NAME)
+        {
+            bubbleTrans.sizeDelta = ConstValue.BUBBLE_IMPACT_SIZE;
+            rectTrans.anchoredPosition = ConstValue.LINE_IMPACT_RECT.position;
+            rectTrans.sizeDelta = ConstValue.LINE_IMPACT_RECT.size;
+        }
+        else
+        {
+            rectTrans.anchoredPosition = ConstValue.LINE_ORG_RECT.position;
+            rectTrans.sizeDelta = ConstValue.LINE_ORG_RECT.size;
+        }
     }
 
     public void SetFocus(bool focus, bool bubbleEnable = true, System.Action endAction = null)

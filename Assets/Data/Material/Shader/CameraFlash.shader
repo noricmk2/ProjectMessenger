@@ -1,10 +1,9 @@
-﻿Shader "Custom/DiagonalLineTransition"
+﻿Shader "Custom/CameraFlash"
 {
 	Properties
 	{
 		_MainTex("Texture", 2D) = "white" {}
-		_DiagonalDegree("DiagonalDegree", Range(0,1)) = 0
-		[HideInInspector] _Color("Color", Color) = (0,0,0,1)
+		_Threshold("Threshold", Float) = 0
 	}
 		SubShader
 		{
@@ -25,7 +24,6 @@
 				#pragma vertex vert
 				#pragma fragment frag
 				#include "UnityCG.cginc"
-				#pragma multi_compile _ REVERSE_ON 
 
 				struct appdata
 				{
@@ -40,8 +38,8 @@
 				};
 
 				sampler2D _MainTex;
-				fixed4 _Color;
 				float4 _MainTex_TexelSize;
+				float _Threshold;
 
 				v2f vert(appdata v)
 				{
@@ -53,13 +51,7 @@
 
 				fixed4 frag(v2f i) : SV_Target
 				{
-
-
-	#ifdef REVERSE_ON
-					fixed4 col = tex2D(_MainTex, i.uv);
-	#else
-					fixed4 col = tex2D(_MainTex, i.uv);
-	#endif
+					fixed4 col = lerp(tex2D(_MainTex, i.uv), float4(1,1,1,1), _Threshold);
 					return col;
 				}
 				ENDCG
