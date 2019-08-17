@@ -77,6 +77,7 @@ namespace MSUtil
         FONTBIG,
         FONTSML,
         FONTCOL,
+        NOTIFY,
         LENGTH
     }
 
@@ -244,6 +245,7 @@ namespace MSUtil
         public const string BUBBLE_SPRITE_NAME_1 = "ui_speech_bubble1";
         public const string BUBBLE_SPRITE_NAME_2 = "ui_speech_bubble2";
         public const string SELECT_TEXT = "TEXT_SELECT";
+        public const string NOTIFY_TEXT = "TEXT_NOTIFY_";
     }
 
     public class ColorPalette        //컬러 상수값

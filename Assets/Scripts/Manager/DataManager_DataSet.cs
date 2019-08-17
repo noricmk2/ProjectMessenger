@@ -115,7 +115,7 @@ public partial class DataManager : Singleton<DataManager>
         {
             ID = values[0];
             for (int i = 0; i < (int)eLanguage.Length; ++i)
-                m_TextDic[(eLanguage)i] = values[1 + i];
+                m_TextDic[(eLanguage)i] = values[1 + i].Replace("^", "\n");
         }
 
         public override string GetText(eLanguage langType)
@@ -270,6 +270,7 @@ public partial class DataManager : Singleton<DataManager>
         public string DialogueID { get; private set; }
         public Dictionary<int, string> TextIDDic { get; private set; }
         public string BGResourceName { get; private set; }
+        public string PlaceTextID { get; private set; }
         public eEventEffect EffectType { get; private set; }
 
         public override void Parse(string[] values)
@@ -298,8 +299,9 @@ public partial class DataManager : Singleton<DataManager>
                 TextIDDic[min + i] = strBuilder.ToString();
             }
             BGResourceName = values[6];
-            ChatType = Func.GetEnum<eChatType>(values[7]);
-            EffectType = Func.GetEnum<eEventEffect>(values[8]);
+            PlaceTextID = values[7];
+            ChatType = Func.GetEnum<eChatType>(values[8]);
+            EffectType = Func.GetEnum<eEventEffect>(values[9]);
         }
 
         public List<StoryTextData> GetAllTextData()
@@ -334,6 +336,11 @@ public partial class DataManager : Singleton<DataManager>
         public Sprite GetBackGroundSprite()
         {
             return ObjectFactory.Instance.GetBackGroundSprite(BGResourceName);
+        }
+
+        public string GetPlaceText()
+        {
+            return TextManager.GetSystemText(PlaceTextID);
         }
     }
     #endregion
