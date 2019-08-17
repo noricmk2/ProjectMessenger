@@ -13,9 +13,8 @@ public class IntroScene : SceneBase
     public override IEnumerator Enter_C()
     {
         //TODO: 시트 로딩 & 데이터 처리
-
-#if UNITY_EDITOR
         var count = (int)DataManager.eSheetType.Length;
+#if UNITY_EDITOR
         int sheetLoaded = PlayerPrefs.GetInt(ConstValue.SHEET_SAVE, 0);
         if (sheetLoaded == 1)
         {
