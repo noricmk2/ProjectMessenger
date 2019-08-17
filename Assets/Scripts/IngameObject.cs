@@ -13,6 +13,7 @@ public class IngameObject : MonoBehaviour
 
     [System.NonSerialized]
     public Window_Map MapWindow;
+    public MapObject mapObject;
 
     public void Init()
     {

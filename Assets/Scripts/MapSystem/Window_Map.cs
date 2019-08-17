@@ -27,6 +27,8 @@ public class Window_Map : WindowBase
     public Transform startButtonLayout;
     public Transform markerParent;
 
+    public CharacterObject MainCharacter;
+
     public void OpenMap()
     {
         //MapObject Setting
@@ -48,12 +50,6 @@ public class Window_Map : WindowBase
                 letterObjectList.Add(letterObject);
             }
         }
-
-        mapObject.roadPositions = new List<Vector3>();
-        startSelected = true;
-        //startPoint = position;
-        //시작지점 정하기, 
-
 
         //iconCircleImage.rectTransform.sizeDelta = Vector2.zero;
         //iconPinImage.rectTransform.anchoredPosition = new Vector2(10, 60);
@@ -98,25 +94,6 @@ public class Window_Map : WindowBase
     {
         //출발지, 경유지, 도착지 선택
         mapObject.DisplayNodes();
-    }
-
-    public bool startSelected = false;
-
-    public Vector2 startPoint;
-
-    public void SelectPoint(int id, Vector2 position)
-    {
-        if (startSelected)
-        {
-            mapObject.CalculatingStart(startPoint, position);
-            startPoint = position;
-        }
-        else
-        {
-            mapObject.roadPositions = new List<Vector3>();
-            startSelected = true;
-            startPoint = position;
-        }
     }
 
     public void OnClickStart()

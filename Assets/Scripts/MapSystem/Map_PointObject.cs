@@ -34,7 +34,7 @@ public class Map_PointObject : MonoBehaviour
         pointData = data;
         pointID = pointData.ID;
         pointName.text = TextManager.GetSystemText(pointData.Name_Short);
-        rectTransform.anchoredPosition = new Vector2(pointData.PosX, pointData.PosY);
+        rectTransform.anchoredPosition = pointData.Position;
         highlightTransform.gameObject.SetActive(false);
     }
 
@@ -45,7 +45,7 @@ public class Map_PointObject : MonoBehaviour
         Debug.Log("Select Point : " + pointName.text);
         //MapManager.Instance.SelectPoint(id, pointList[id].anchoredPosition);
 
-        IngameScene.instance.ingameObject.MapWindow.SelectPoint(pointID, rectTransform.anchoredPosition);
+        IngameScene.instance.ingameObject.MapWindow.mapObject.SelectPoint(this);
     }
 
     [ContextMenu("Vali")]

@@ -382,6 +382,7 @@ public partial class DataManager : Singleton<DataManager>
         public int To { get; private set; }
         public int Destination { get; private set; }
         public int Reward { get; private set; }
+        public int Stage { get; private set; }
         public int Flag { get; private set; }
         private string AddresseeText;
         private string AddressText;
@@ -394,7 +395,8 @@ public partial class DataManager : Singleton<DataManager>
             To = Func.GetInt(values[4]);
             Destination = Func.GetInt(values[5]);
             Reward = Func.GetInt(values[6]);
-            Flag = Func.GetInt(values[7]);
+            Stage = Func.GetInt(values[7]);
+            Flag = Func.GetInt(values[8]);
         }
 
         public string GetAddresseeText()
@@ -431,8 +433,7 @@ public partial class DataManager : Singleton<DataManager>
         public string Name { get; private set; }
         public string Name_Short { get; private set; }
         public string Description { get; private set; }
-        public float PosX { get; private set; }
-        public float PosY { get; private set; }
+        public Vector2 Position { get; private set; }
 
         public override void Parse(string[] values)
         {
@@ -440,8 +441,7 @@ public partial class DataManager : Singleton<DataManager>
             Name = values[2];
             Name_Short = values[3];
             Description = values[4];
-            PosX = Func.GetFloat(values[5]);
-            PosY = Func.GetFloat(values[6]);
+            Position = new Vector2(Func.GetFloat(values[5]), Func.GetFloat(values[6]));
         }
     }
     #endregion

@@ -30,6 +30,7 @@ public class MapObject : MonoBehaviour, IPoolObjectBase
 
     private Vector3 startPosition;
     private Vector3 endPosition;
+    private List<Map_PointObject> selectedPointList;
 
     [ContextMenu("InspectorRedload")]
     public void InspectorReload()
@@ -68,6 +69,12 @@ public class MapObject : MonoBehaviour, IPoolObjectBase
         {
             allPointList[i].SetPointData(DataManager.Instance.GetMapData_Point(i));
         }
+
+        roadPositions = new List<Vector3>();
+        selectedPointList = new List<Map_PointObject>();
+        startPosition = DataManager.Instance.GetMapData_Point(0).Position;
+        playerMarker.anchoredPosition = startPosition;
+        selectedPointList.Add(allPointList[0]);
     }
 
     public void DisplayNodes()
@@ -82,11 +89,25 @@ public class MapObject : MonoBehaviour, IPoolObjectBase
         }
     }
 
-    //시작점에서 도로까지 이어주는 메소드
-    public void CalculatingStart(Vector2 start, Vector2 endPos)
+    private bool CheckMapPoint(int pointID)
     {
-        startPosition = start;
-        endPosition = endPos;
+        for (int i = 0; i < selectedPointList.Count; i++)
+        {
+            if (selectedPointList[i].pointID == pointID)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //시작점에서 도로까지 이어주는 메소드
+    public void SelectPoint(Map_PointObject point)
+    {
+        if (CheckMapPoint(point.pointID))
+            return;
+
+        endPosition = point.pointData.Position;
 
         nodeList = new List<Vector3>();
         roadList = new List<NodeObject>();
@@ -110,7 +131,9 @@ public class MapObject : MonoBehaviour, IPoolObjectBase
 
         roadList.Add(tempNodeObject);
         nodeList.Add(startPosition);
+        selectedPointList.Add(point);
         CalculatingRoad(tempNodeObject);
+        startPosition = endPosition;
     }
 
     //목적지까지의 길을 계산하는 재귀함수
@@ -200,6 +223,11 @@ public class MapObject : MonoBehaviour, IPoolObjectBase
         return nextPos;
     }
     #endregion
+
+    public Map_PointObject GetPointObject(int pointID)
+    {
+        return allPointList[pointID];
+    }
 
     public Map_PointObject GetPointObject(DataManager.MapData_Point pointData)
     {
