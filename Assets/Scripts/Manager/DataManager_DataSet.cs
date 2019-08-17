@@ -171,6 +171,25 @@ public partial class DataManager : Singleton<DataManager>
             return null;
         }
 
+        public StageData GetTargetStageData(eStageTag targetStage)
+        {
+            var list = GetAllStageData();
+            for (int i = 0; i < list.Count; ++i)
+            {
+                if (list[i].StageTag == targetStage)
+                    return list[i];
+            }
+            return null;
+        }
+
+        public List<StageData> GetAllStageData()
+        {
+            var list = new List<StageData>();
+            for(int i=0; i<StageDataIDList.Count; ++i)
+                list.Add(Instance.GetStageData(StageDataIDList[i]));
+            return list;
+        }
+
         public List<LetterData> GetLetterList(int randomCount = 0)
         {
             var list = new List<LetterData>();

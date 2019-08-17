@@ -211,10 +211,10 @@ public class ChatObject : MonoBehaviour
             {
                 //TODO: 스테이지 끝났을때의 처리
                 SetMainTouch(false);
-                UserInfo.Instance.SetNextStage();
                 switch (m_CurrentStageData.StageTag)
                 {
                     case eStageTag.START:
+                        UserInfo.Instance.SetNextStage(eStageTag.PREDELV);
                         Init();
                         break;
                     case eStageTag.PREDELV:
