@@ -38,10 +38,9 @@ public partial class DataManager : Singleton<DataManager>
         return StartCoroutine(LoadFromGoogleSheet_C(type));
     }
 
-
     public Coroutine LoadOffline(eSheetType type)
     {
-        return StartCoroutine(LoadFromGoogleSheet_C(type));
+        return StartCoroutine(LoadOffline_C(type));
     }
 
     private IEnumerator LoadFromGoogleSheet_C(eSheetType type)
@@ -350,6 +349,10 @@ public partial class DataManager : Singleton<DataManager>
         while (iter.MoveNext() && count > 0)
         {
             var letter = iter.Current.Value;
+
+            if (letter.ID == 1001)//임시 테스트용
+                continue;
+
             if (letter.LetterType == eLetterType.Junk)
             {
                 var rand = Random.Range(0, 2) == 0 ? true : false;

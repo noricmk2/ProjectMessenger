@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class MapObject : MonoBehaviour, IPoolObjectBase
 {
@@ -23,14 +24,17 @@ public class MapObject : MonoBehaviour, IPoolObjectBase
     public bool startSelected = false;
 
     public List<Vector3> roadPositions;
-    public float totalDist;
 
     private List<Vector3> nodeList;
     private List<NodeObject> roadList;
 
     private Vector3 startPosition;
     private Vector3 endPosition;
-    private List<Map_PointObject> selectedPointList;
+    public List<Map_PointObject> selectedPointList;
+    private List<int> pointIdxList;
+    private int startIdx = 0;
+
+    private bool isMoving = false;
 
     [ContextMenu("InspectorRedload")]
     public void InspectorReload()
@@ -63,6 +67,45 @@ public class MapObject : MonoBehaviour, IPoolObjectBase
         }
     }
 
+    public void PlayNode()
+    {
+        if (isMoving)
+            return;
+        isMoving = true;
+
+        //다음 목표로 출발 or 없으면 밤 페이즈
+        if (UserInfo.Instance.CurrentGameData.CurrentMapProgress - 1 < pointIdxList.Count)
+        {
+            StartCoroutine(MovingUpdate(UserInfo.Instance.CurrentGameData.CurrentMapProgress - 1));
+        }
+        else
+        {
+            IngameScene.instance.ingameObject.MapWindow.EndPhase();
+        }
+    }
+
+    private IEnumerator MovingUpdate(int destIdx)
+    {
+        bool markerMove = false;
+        int posIdx = startIdx;
+        while (posIdx <= pointIdxList[destIdx])
+        {
+            if (!markerMove)
+            {
+                markerMove = true;
+                playerMarker.DOAnchorPos(lineRenderer.GetPosition(posIdx), 0.1f).OnComplete(delegate ()
+                {
+                    markerMove = false;
+                    posIdx++;
+                });
+            }
+            yield return null;
+        }
+        isMoving = false;
+        IngameScene.instance.ingameObject.MapWindow.ArrivalPoint();
+        startIdx = pointIdxList[destIdx];
+    }
+
     public void SetData()
     {
         for (int i = 0; i < allPointList.Count; i++)
@@ -70,11 +113,15 @@ public class MapObject : MonoBehaviour, IPoolObjectBase
             allPointList[i].SetPointData(DataManager.Instance.GetMapData_Point(i));
         }
 
+        //우체국 시작
         roadPositions = new List<Vector3>();
         selectedPointList = new List<Map_PointObject>();
         startPosition = DataManager.Instance.GetMapData_Point(0).Position;
         playerMarker.anchoredPosition = startPosition;
         selectedPointList.Add(allPointList[0]);
+        pointIdxList = new List<int>();
+        startIdx = 0;
+        UserInfo.Instance.CurrentGameData.CurrentMapProgress = 1;
     }
 
     public void DisplayNodes()
@@ -104,15 +151,12 @@ public class MapObject : MonoBehaviour, IPoolObjectBase
     //시작점에서 도로까지 이어주는 메소드
     public void SelectPoint(Map_PointObject point)
     {
-        if (CheckMapPoint(point.pointID))
+        if (CheckMapPoint(point.pointID) || isMoving)
             return;
 
         endPosition = point.pointData.Position;
-
         nodeList = new List<Vector3>();
         roadList = new List<NodeObject>();
-        totalDist = 0;
-
         float tempDist = float.MaxValue;
         NodeObject tempNodeObject = null;
         float dist = 0;
@@ -176,7 +220,6 @@ public class MapObject : MonoBehaviour, IPoolObjectBase
 
     private void DisplayRoad()
     {
-        roadPositions = new List<Vector3>();
         roadPositions.Add(startPosition);
 
         for (int i = 0; i < roadList.Count; i++)
@@ -202,6 +245,7 @@ public class MapObject : MonoBehaviour, IPoolObjectBase
         lineRenderer.positionCount = roadPositions.Count;
         lineRenderer.SetPositions(roadPositions.ToArray());
         lineRenderer.Simplify(0.3f);
+        pointIdxList.Add(lineRenderer.positionCount - 1);
     }
 
     private Vector2 NearestPos(Vector2 startPos, params Vector2[] positions)

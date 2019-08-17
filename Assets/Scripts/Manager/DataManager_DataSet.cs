@@ -408,7 +408,7 @@ public partial class DataManager : Singleton<DataManager>
         public int To { get; private set; }
         public int Destination { get; private set; }
         public int Reward { get; private set; }
-        public int Stage { get; private set; }
+        public eStageTag Stage { get; private set; }
         public int Flag { get; private set; }
         private string AddresseeText;
         private string AddressText;
@@ -421,7 +421,7 @@ public partial class DataManager : Singleton<DataManager>
             To = Func.GetInt(values[4]);
             Destination = Func.GetInt(values[5]);
             Reward = Func.GetInt(values[6]);
-            Stage = Func.GetInt(values[7]);
+            Stage = Func.GetEnum<eStageTag>(values[7]);
             Flag = Func.GetInt(values[8]);
         }
 

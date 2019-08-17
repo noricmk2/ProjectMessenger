@@ -84,6 +84,8 @@ public class SpriteAnimation : MonoBehaviour
                 TotalAnimationDataDic[iter.Current.Key] = animData;
             }
         }
+        if (TargetImage == null)
+            TargetImage = GetComponent<Image>();
         TargetImage.sprite = TotalAnimationDataDic[eCharacterState.IDLE].SpriteList[0];
         TargetImage.SetNativeSize();
         SetAnimation(eCharacterState.NONE);

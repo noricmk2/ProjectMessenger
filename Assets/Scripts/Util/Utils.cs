@@ -12,6 +12,7 @@ namespace MSUtil
         START = 1,
         PREDELV,
         ONDELVLESS,
+        UNUSAL,
         DAYEND,
     }
 
@@ -99,6 +100,7 @@ namespace MSUtil
         Title = 0,
         MailSort,
         Map,
+        Result,
     }
 
     public enum eTransitionType

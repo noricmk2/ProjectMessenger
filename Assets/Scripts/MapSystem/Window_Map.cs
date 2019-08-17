@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using MSUtil;
 
 public class Window_Map : WindowBase
 {
@@ -28,12 +29,16 @@ public class Window_Map : WindowBase
     public Transform markerParent;
 
     public CharacterObject MainCharacter;
+    public GameObject chatTriggerObject;
+
+    private DataManager.LetterData currentPointLetterData = null;
 
     public void OpenMap()
     {
         //MapObject Setting
         mapObject = ObjectFactory.Instance.ActivateObject<MapObject>();
         mapObject.transform.SetParent(mapObjectParent);
+        mapObject.transform.localPosition = Vector3.zero;
         mapObject.transform.localScale = Vector3.one;
         mapObject.SetData();
 
@@ -41,7 +46,7 @@ public class Window_Map : WindowBase
         letterObjectList = new List<LetterListObject>();
         for (int i = 0; i < bagItemList.Count; i++)
         {
-            if (bagItemList[i].Type == MSUtil.eItemType.Letter)
+            if (bagItemList[i].Type == eItemType.Letter)
             {
                 LetterListObject letterObject = ObjectFactory.Instance.ActivateObject<LetterListObject>();
                 letterObject.transform.SetParent(LetterObjectsParent);
@@ -50,54 +55,115 @@ public class Window_Map : WindowBase
                 letterObjectList.Add(letterObject);
             }
         }
-
-        //iconCircleImage.rectTransform.sizeDelta = Vector2.zero;
-        //iconPinImage.rectTransform.anchoredPosition = new Vector2(10, 60);
-        //logoImage.gameObject.SetActive(true);
-        //Sequence iconSeq = DOTween.Sequence();
-        //iconSeq.Append(logoImage.rectTransform.DOAnchorMin(Vector2.zero, 0.5f).SetEase(Ease.OutQuint));
-        //iconSeq.Join(logoImage.rectTransform.DOAnchorMax(Vector2.one, 0.5f).SetEase(Ease.OutQuint));
-        //iconSeq.Join(logoImage.rectTransform.DOSizeDelta(Vector2.zero, 0.5f).SetEase(Ease.OutQuint));
-        //iconSeq.Join(logoImage.rectTransform.DOAnchorPos(Vector2.zero, 0.5f).SetEase(Ease.OutQuint));
-
-        //iconSeq.Append(Window_Tablet.instance.tabletTransform.DOSizeDelta(new Vector2(2560f, 1440f), 0.5f));
-        //iconSeq.Join(Window_Tablet.instance.handImage.DOFade(0, 0.5f));
-        //iconSeq.AppendCallback(delegate ()
-        //{
-        //    Window_Tablet.instance.appStartFadeTransform.gameObject.SetActive(false);
-        //});
-        ////iconSeq.AppendInterval(0.2f);
-        //iconSeq.Append(iconMapImage.rectTransform.DOSizeDelta(Vector2.one * 100, 0.2f));
-        //iconSeq.Join(iconMapImage.DOFade(1, 0.2f));
-        //iconSeq.AppendInterval(0.1f);
-        //iconSeq.Append(iconPinImage.rectTransform.DOAnchorPosY(30f, 0.2f));
-        //iconSeq.Join(iconPinImage.DOFade(1, 0.2f));
-        //iconSeq.Append(iconCircleImage.rectTransform.DOSizeDelta(new Vector2(18, 8), 0.2f));
-        //iconSeq.Join(iconCircleImage.DOFade(1, 0.2f));
-        //iconSeq.AppendCallback(delegate ()
-        //{
-        //    mapObject.SetActive(true);
-        //});
-        //iconSeq.AppendInterval(2f);
-        //iconSeq.Append(iconMapImage.DOFade(0, 0.5f));
-        //iconSeq.Join(iconPinImage.DOFade(0, 0.5f));
-        //iconSeq.Join(iconCircleImage.DOFade(0, 0.5f));
-        //iconSeq.Join(logoImage.DOFade(0, 0.5f));
-        //iconSeq.Play();
-        //iconSeq.OnComplete(delegate ()
-        //{
-        //    logoImage.gameObject.SetActive(false);
-        //});
+        MainCharacter.Init(ConstValue.CHARACTER_NIKA_ID);
+        MainCharacter.Bubble.SetActive(false);
+        chatTriggerObject.SetActive(false);
     }
 
-    public void OnClickCheckPin()
+    public void ArrivalPoint()
     {
-        //출발지, 경유지, 도착지 선택
-        mapObject.DisplayNodes();
+        //도착
+        chatTriggerObject.SetActive(true);
+        MainCharacter.Bubble.SetActive(true);
+        MainCharacter.CharacterAnimation.SetAnimation(eCharacterState.IDLE, true, ConstValue.DEFAULT_ANIM_FPS);
+
+        currentPointLetterData = null;
+        currentPointLetterData = SearchLetterData(UserInfo.Instance.CurrentGameData.CurrentMapProgress);
+
+        if (currentPointLetterData == null)
+        {
+            MainCharacter.Bubble.SetText("여기 왜 왔지..");
+            return;
+        }
+        else
+        {
+            MainCharacter.Bubble.SetText("목적지에 도착했다.");
+        }
+
     }
+
+    public void EnterPoint()
+    {
+        if (currentPointLetterData == null)
+        {
+            StartNextPoint();
+            return;
+        }
+
+        if (currentPointLetterData.Stage == eStageTag.NONE)
+        {
+            if (currentPointLetterData.LetterType == eLetterType.Junk)
+            {
+                Debug.Log("찌라시 보상");
+            }
+            else
+            {
+                Debug.LogError("Stage Not Included Event LetterData");
+            }
+        }
+        else
+        {
+            if (UserInfo.Instance.SetNextStage(currentPointLetterData.Stage) != null)
+            {
+                //이벤트 입장
+            }
+            else
+            {
+                StartNextPoint();
+            }
+        }
+    }
+
+    private DataManager.LetterData SearchLetterData(int idx)
+    {
+        List<UserInfo.ItemData> bagItemList = UserInfo.Instance.GetBagItemList();
+        for (int i = 0; i < bagItemList.Count; i++)
+        {
+            if (bagItemList[i].Type == eItemType.Letter)
+            {
+                DataManager.LetterData letterData = DataManager.Instance.GetLetterData(bagItemList[i].ID);
+                if (letterData.Destination == mapObject.selectedPointList[idx].pointID)
+                {
+                    return letterData;
+                }
+            }
+        }
+        return null;
+    }
+
+    public void StartNextPoint()
+    {
+        //맵에 다시 오고, 다음 스테이지로 이동하는 부분
+        UserInfo.Instance.CurrentGameData.CurrentMapProgress++;
+        mapObject.PlayNode();
+    }
+
+    public void EndPhase()
+    {
+        MainCharacter.Bubble.SetText(TextManager.GetSystemText("INGAME_CHAPTER_END_DIALOGUE"));
+        UserInfo.Instance.SetCurrentIngameState(eIngameState.Result);
+    }
+
+    //public void OnClickCheckPin()
+    //{
+    //    //출발지, 경유지, 도착지 선택
+    //    mapObject.DisplayNodes();
+    //}
 
     public void OnClickStart()
     {
+        //시작
+        mapObject.PlayNode();
+    }
 
+    public void OnClickChatEnd()
+    {
+        chatTriggerObject.SetActive(false);
+        if (UserInfo.Instance.GetCurrentIngameState() == eIngameState.Result)
+        {
+            IngameScene.instance.ingameObject.StartResult();
+            return;
+        }
+        EnterPoint();
     }
 }

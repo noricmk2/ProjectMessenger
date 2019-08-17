@@ -11,9 +11,13 @@ public class IngameObject : MonoBehaviour
     public Transform PoolParent;
     #endregion
 
+    [Header("Map")]
     [System.NonSerialized]
     public Window_Map MapWindow;
     public MapObject mapObject;
+
+    [Header("Result")]
+    public Window_Result_Phase ResultWindow;
 
     public void Init()
     {
@@ -32,6 +36,9 @@ public class IngameObject : MonoBehaviour
             case eIngameState.Map:
                 StartMap();
                 break;
+            case eIngameState.Result:
+                StartResult();
+                break;
         }
 
     }
@@ -40,5 +47,11 @@ public class IngameObject : MonoBehaviour
     {
         MapWindow = WindowBase.OpenWindow(WindowBase.eWINDOW.Map, WindowParent, false) as Window_Map;
         MapWindow.OpenMap();
+    }
+
+    public void StartResult()
+    {
+        ResultWindow = WindowBase.OpenWindow(WindowBase.eWINDOW.ResultPhase, WindowParent, false) as Window_Result_Phase;
+        ResultWindow.Init();
     }
 }

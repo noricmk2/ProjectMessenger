@@ -9,7 +9,7 @@ public class SpeechBubble : MonoBehaviour, IPoolObjectBase
 {
     #region Inspector
     public RectTransform BubbleTrans;
-    public Image BubbleBG; 
+    public Image BubbleBG;
     public ExpandTextOutput ExpandText;
     public Image TextCursor;
     #endregion
@@ -29,12 +29,23 @@ public class SpeechBubble : MonoBehaviour, IPoolObjectBase
         TextCursor.gameObject.SetActive_Check(false);
     }
 
+    public void SetText(string text, bool setCursor = true)
+    {
+        SetCursor(false);
+        ExpandText.SetText(text, delegate ()
+        {
+            if (setCursor)
+                SetCursor(true);
+        });
+        ExpandText.PlayText();
+    }
+
     public void SetTextData(DataManager.StoryTextData data, ExpandTextOutput.TextEventDelegate textTagEvent, bool setCursor = true)
     {
         SetCursor(false);
         ExpandText.SetText(this, TextManager.GetStoryText(data.ID), data.GetEventTagDic(), textTagEvent, () =>
         {
-            if(setCursor)
+            if (setCursor)
                 SetCursor(true);
         });
         ExpandText.PlayText();

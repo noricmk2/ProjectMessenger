@@ -40,11 +40,7 @@ public class Map_PointObject : MonoBehaviour
 
     public void OnClickPoint()
     {
-
-        //MapManager.Instance.SelectPoint(id, );
         Debug.Log("Select Point : " + pointName.text);
-        //MapManager.Instance.SelectPoint(id, pointList[id].anchoredPosition);
-
         IngameScene.instance.ingameObject.MapWindow.mapObject.SelectPoint(this);
     }
 

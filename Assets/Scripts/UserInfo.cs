@@ -20,6 +20,7 @@ public class UserInfo : Singleton<UserInfo>
         public int[] InventoryLetterIDs;
         public int CurrentIngameState;
         public int[] ChapterLetterIDs;
+        public int CurrentMapProgress;
     }
 
     public class ItemData : IRecycleSlotData
@@ -59,6 +60,7 @@ public class UserInfo : Singleton<UserInfo>
             CurrentGameData.CurrentChapterStage = (int)eStageTag.START;
             CurrentGameData.Cash = 100;
             CurrentGameData.CurrentIngameState = 0;
+            CurrentGameData.CurrentMapProgress = 0;
             SetChapterMailList();
         }
     }
@@ -79,14 +81,20 @@ public class UserInfo : Singleton<UserInfo>
         }
     }
 
-    public void SetNextStage(eStageTag targetStage)
+    public DataManager.StageData SetNextStage(eStageTag targetStage)
     {
         var chapterData = DataManager.Instance.GetChapterData(CurrentGameData.CurrentChapterID);
         var targetStageData = chapterData.GetTargetStageData(targetStage);
         if (targetStageData != null)
+        {
             CurrentGameData.CurrentChapterStage = (int)targetStageData.StageTag;
+            return targetStageData;
+        }
         else
+        {
             MSLog.LogError("not exist stage data");
+            return null;
+        }
     }
 
     public List<DataManager.LetterData> GetChapterLetterList()

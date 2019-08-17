@@ -31,6 +31,9 @@ public class IngameScene : SceneBase
             case eIngameState.Map:
                 ingameObject.StartMap();
                 break;
+            case eIngameState.Result:
+
+                break;
         }
     }
 
