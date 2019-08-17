@@ -73,7 +73,7 @@ public class ChatObject : MonoBehaviour
             case eChatType.NORMAL:
                 {
                     m_ChatWindow = WindowBase.OpenWindowWithTransition(WindowBase.eWINDOW.ChatMain, eTransitionType.NORMAL, WindowParent, true) as Window_Chat_Main;
-                    m_ChatWindow.Init(() =>
+                    m_ChatWindow.Init(m_CurrentChapterTextData, () =>
                     {
 #if UNITY_EDITOR || UNITY_STANDALONE
                         if (m_UpdateCouroutine != null)
@@ -406,6 +406,16 @@ public class ChatObject : MonoBehaviour
                 {
                     SetMainTouch(false);
                     m_ChatWindow.SetMailBundle();
+                }
+                break;
+            case eTextEventTag.NOTIFY:
+                {
+                    if (m_ChatWindow != null)
+                    {
+                        var content = TextManager.GetSystemText(ConstValue.NOTIFY_TEXT + data.Value);
+                        m_ChatWindow.NotifyPanel.gameObject.SetActive_Check(true);
+                        m_ChatWindow.NotifyPanel.Init(content);
+                    }
                 }
                 break;
         }

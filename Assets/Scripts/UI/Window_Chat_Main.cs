@@ -22,11 +22,14 @@ public class Window_Chat_Main : WindowBase
     public UI_LetterInfoPanel LetterInfo;
     public UI_BagInventory PlayerBag;
     public UI_MailSelctPanel MailSelectPanel;
+    public UI_CurrentPlace CurrentPlace;
+    public UI_NotifyPanel NotifyPanel;
     public GameObject InventoryBlock;
     #endregion
     private System.Action m_AfterOpenAction;
     private System.Action m_MainTouchAction;
     private GameObject BackLogObject;
+    private DataManager.ChapterTextData m_CurrentChapterTextData;
 
     private LetterBundle m_MailBundle;
 
@@ -35,8 +38,9 @@ public class Window_Chat_Main : WindowBase
         BackLogObject = BackLogScroll.transform.parent.gameObject;
     }
 
-    public void Init(System.Action afterOpenAction = null, System.Action mainTouchAction = null)
+    public void Init(DataManager.ChapterTextData data, System.Action afterOpenAction = null, System.Action mainTouchAction = null)
     {
+        m_CurrentChapterTextData = data;
         MainCharacter.Init(ConstValue.CHARACTER_NIKA_ID);
         m_AfterOpenAction = afterOpenAction;
         m_MainTouchAction = mainTouchAction;
@@ -56,8 +60,13 @@ public class Window_Chat_Main : WindowBase
     protected override void AfterOpen()
     {
         base.AfterOpen();
-        if (m_AfterOpenAction != null)
-            m_AfterOpenAction();
+
+        CurrentPlace.gameObject.SetActive_Check(true);
+        CurrentPlace.Init(m_CurrentChapterTextData.GetPlaceText(), () =>
+        {
+            if (m_AfterOpenAction != null)
+                m_AfterOpenAction();
+        });
     }
 
     public void SetMailBundle()

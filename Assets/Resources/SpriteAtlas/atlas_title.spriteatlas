@@ -15,7 +15,7 @@ SpriteAtlas:
       compressionQuality: 50
       maxTextureSize: 2048
       textureCompression: 0
-      filterMode: 1
+      filterMode: 0
       generateMipMaps: 0
       readable: 0
       crunchedCompression: 0
@@ -31,17 +31,21 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: c12497b97cf24924994714866cad2804, type: 3}
-    totalSpriteSurfaceArea: 84642
+    totalSpriteSurfaceArea: 163770
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: 6c2921a12c1acd74c8fdbc57c2aa43d4, type: 3}
+  - {fileID: 21300000, guid: 8227c483c8f547c45b7e4daa22849190, type: 3}
   - {fileID: 21300000, guid: 886420763a5bdc24c8e5493c634bedf2, type: 3}
+  - {fileID: 21300000, guid: e55e5a8792ad2894dbbcd85e1915ebdb, type: 3}
   - {fileID: 21300000, guid: 8c78e92a3e1126847912c4d5144d6bbd, type: 3}
   - {fileID: 21300000, guid: 9150bcee9273d234085b5aee06838f88, type: 3}
   m_PackedSpriteNamesToIndex:
   - title_rect
+  - title_logo_2
   - title_character
+  - title_logo_1
   - title_light
   - title_megacorp
   m_Tag: atlas_title
