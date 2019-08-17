@@ -25,6 +25,7 @@ public class Window_Result_Phase : WindowBase
     {
         //임시
         UserInfo.Instance.SetNextChapter();
-        MSSceneManager.Instance.EnterScene(SceneBase.eScene.CHAT);
+        //MSSceneManager.Instance.EnterScene(SceneBase.eScene.CHAT);
+        Application.Quit();
     }
 }

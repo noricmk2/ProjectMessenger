@@ -121,7 +121,6 @@ public class MapObject : MonoBehaviour, IPoolObjectBase
         selectedPointList.Add(allPointList[0]);
         pointIdxList = new List<int>();
         startIdx = 0;
-        UserInfo.Instance.CurrentGameData.CurrentMapProgress = 1;
     }
 
     public void DisplayNodes()

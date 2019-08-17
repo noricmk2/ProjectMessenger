@@ -41,6 +41,7 @@ public class Window_Map : WindowBase
         mapObject.transform.localPosition = Vector3.zero;
         mapObject.transform.localScale = Vector3.one;
         mapObject.SetData();
+        UserInfo.Instance.CurrentGameData.CurrentMapProgress++;
 
         List<UserInfo.ItemData> bagItemList = UserInfo.Instance.GetBagItemList();
         letterObjectList = new List<LetterListObject>();
@@ -58,6 +59,11 @@ public class Window_Map : WindowBase
         MainCharacter.Init(ConstValue.CHARACTER_NIKA_ID);
         MainCharacter.Bubble.SetActive(false);
         chatTriggerObject.SetActive(false);
+
+        if (UserInfo.Instance.CurrentGameData.CurrentMapProgress > 1)
+        {
+            EndPhase();
+        }
     }
 
     public void ArrivalPoint()
@@ -106,6 +112,7 @@ public class Window_Map : WindowBase
             if (UserInfo.Instance.SetNextStage(currentPointLetterData.Stage) != null)
             {
                 //이벤트 입장
+                MSSceneManager.Instance.EnterScene(SceneBase.eScene.CHAT);
             }
             else
             {
@@ -140,6 +147,7 @@ public class Window_Map : WindowBase
 
     public void EndPhase()
     {
+        chatTriggerObject.SetActive(true);
         MainCharacter.Bubble.SetText(TextManager.GetSystemText("INGAME_CHAPTER_END_DIALOGUE"));
         UserInfo.Instance.SetCurrentIngameState(eIngameState.Result);
     }

@@ -228,6 +228,9 @@ public class ChatObject : MonoBehaviour
                         break;
                     case eStageTag.ONDELVLESS:
                         break;
+                    case eStageTag.UNUSAL:
+                        MSSceneManager.Instance.EnterScene(SceneBase.eScene.INGAME);
+                        break;
                     case eStageTag.DAYEND:
                         break;
                 }
