@@ -166,6 +166,12 @@ public class ExpandTextOutput : MonoBehaviour
                     Text.text = "";
                 yield return m_EventAction(m_ParentBubble, m_TextEventTagDic[m_CurrentString.Length]);
             }
+
+            while (m_TextEventTagDic.ContainsKey(idx))
+            {
+                yield return m_EventAction(m_ParentBubble, m_TextEventTagDic[idx]);
+                ++idx;
+            }
         }
 
         while (m_DeltaTime < m_LastTerm)
