@@ -16,6 +16,7 @@ public class ObjectFactory : Singleton<ObjectFactory>
     private SpriteAtlas UIAtlas;
     private SpriteAtlas CharacterAtlas_Nika;
     private SpriteAtlas CharacterAtlas_Less;
+    private Dictionary<eTransitionType, Texture2D> m_TransitionMaskDic = new Dictionary<eTransitionType, Texture2D>();
 
     public Transform ChatPoolParent { get; private set; }
     public Transform IngamePoolParent { get; private set; }
@@ -26,17 +27,27 @@ public class ObjectFactory : Singleton<ObjectFactory>
     {
         UIAtlas = ResourcesManager.LoadObject<SpriteAtlas>("SpriteAtlas/atlas_ui");
         CharacterAtlas_Nika = ResourcesManager.LoadObject<SpriteAtlas>("SpriteAtlas/atlas_character_nika");
-        CharacterAtlas_Less = ResourcesManager.LoadObject<SpriteAtlas>("SpriteAtlas/atlas_character_less");
+
         SpriteOutlineMaterial = new Material(Shader.Find("Sprites/Outline"));
         SpriteOutlineMaterial.SetColor("_OutlineColor", Color.red);
         SpriteOutlineMaterial.SetFloat("_IsOutlineEnabled", 1);
         GrayScaleMaterial = new Material(Shader.Find("Custom/GrayScale"));
+
+        for(int i=0; i<(int)eTransitionType.LENGTH; ++i)
+        {
+            var type = (eTransitionType)i;
+            if (type != eTransitionType.NORMAL)
+            {
+                var texture = ResourcesManager.LoadObject<Texture>("Masks/Mask_" + type.ToString());
+                m_TransitionMaskDic[type] = (Texture2D)texture;
+            }
+        }
     }
 
     public void CreateChatObjectPool(Transform parent)
     {
         ChatPoolParent = parent;
-        Release();
+        CharacterAtlas_Less = ResourcesManager.LoadObject<SpriteAtlas>("SpriteAtlas/atlas_character_less");
         CreatePool<CharacterObject>(3, "Prefab/UI/CharacterObject", ChatPoolParent);
         CreatePool<ChoiceObject>(3, "Prefab/UI/ChoiceObject", ChatPoolParent);
         CreatePool<ItemObject>(1, "Prefab/UI/ItemObject", ChatPoolParent);
@@ -49,9 +60,15 @@ public class ObjectFactory : Singleton<ObjectFactory>
     public void CreateIngameObjectPool(Transform parent)
     {
         IngamePoolParent = parent;
-        Release();
         CreatePool<LetterListObject>(1, "Prefab/UI/LetterObject", IngamePoolParent);
         CreatePool<MapObject>(1, "Prefab/Map/MapObject", IngamePoolParent);
+    }
+
+    public Texture2D GetTransitonMask(eTransitionType type)
+    {
+        if (m_TransitionMaskDic.ContainsKey(type))
+            return m_TransitionMaskDic[type];
+        return null;
     }
 
     public Sprite GetUISprite(string spriteName)
@@ -90,6 +107,11 @@ public class ObjectFactory : Singleton<ObjectFactory>
     public Sprite GetBackGroundSprite(string spriteName)
     {
         return ResourcesManager.LoadObject<Sprite>("BG/" + spriteName);
+    }
+
+    public AudioClip GetAudioClip(string clipName)
+    {
+        return ResourcesManager.LoadObject<AudioClip>("Sound/" + clipName);
     }
 
     public T ActivateObject<T>() where T : class, IPoolObjectBase
@@ -139,5 +161,6 @@ public class ObjectFactory : Singleton<ObjectFactory>
         while (iter.MoveNext())
             iter.Current.Value.Release();
         m_TotalPoolDic.Clear();
+        CharacterAtlas_Less = null;
     }
 }

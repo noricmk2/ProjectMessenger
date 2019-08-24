@@ -24,13 +24,6 @@ public class AlwaysTopCanvas : Singleton<AlwaysTopCanvas>
         IsOnFade = true;
         switch (effectType)
         {
-            case eTransitionType.CIRCLE:
-                UICamera.Instance.TransEffect.SetTransitionEffect(true, reset, effectType, 1, ()=>
-                {
-                    if (fadeEndAction != null)
-                        fadeEndAction();
-                });
-                break;
             case eTransitionType.NORMAL:
                 FadeImage.gameObject.SetActive_Check(true);
                 var sequence = DOTween.Sequence();
@@ -46,6 +39,15 @@ public class AlwaysTopCanvas : Singleton<AlwaysTopCanvas>
                     IsOnFade = false;
                     FadeImage.gameObject.SetActive_Check(false);
                 });
+                break;
+            default:
+                {
+                    UICamera.Instance.TransEffect.SetTransitionEffect(reset, effectType, time, () =>
+                    {
+                        if (fadeEndAction != null)
+                            fadeEndAction();
+                    });
+                }
                 break;
         }
     }

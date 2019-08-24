@@ -40,6 +40,7 @@ namespace MSUtil
         SIGH,
         QUESTION,
         SURPRISE,
+        FEAR,
         LENGTH
     }
 
@@ -108,9 +109,11 @@ namespace MSUtil
 
     public enum eTransitionType
     {
-        NONE,
+        NONE = -1,
         CIRCLE,
+        NOISE,
         NORMAL,
+        LENGTH,
     }
 
     public enum eOverlapType

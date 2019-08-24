@@ -113,6 +113,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WindowParent: {fileID: 95279536841685086}
   ChatCanvas: {fileID: 2653058539699716186}
+  Scaler: {fileID: 6673007910582947046}
   PoolParent: {fileID: 5669076634033049894}
 --- !u!1 &4510549947318542299
 GameObject:

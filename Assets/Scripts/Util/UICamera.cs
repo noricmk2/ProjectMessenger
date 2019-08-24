@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using MSUtil;
 
 public class UICamera : Singleton<UICamera>
 {
@@ -18,12 +19,122 @@ public class UICamera : Singleton<UICamera>
     private Action m_ShakeEndAction;
     private Material m_FlashMaterial;
 
+
     private void Awake()
     {
         Camera = GetComponent<Camera>();
+        if (Camera == null)
+            Camera = Camera.main;
+        if (Camera == null)
+        {
+            MSLog.LogError("No camera available");
+            return;
+        }
         m_FlashMaterial = new Material(Shader.Find("Custom/CameraFlash"));
+        SetCamera();
     }
 
+    #region CameraRatio
+    private Camera backgroundCam;
+
+    public int ScreenHeight
+    {
+        get
+        {
+            return (int)(Screen.height * Camera.rect.height);
+        }
+    }
+    public int ScreenWidth
+    {
+        get
+        {
+            return (int)(Screen.width * Camera.rect.width);
+        }
+    }
+    public int XOffset
+    {
+        get
+        {
+            return (int)(Screen.width * Camera.rect.x);
+        }
+    }
+    public int YOffset
+    {
+        get
+        {
+            return (int)(Screen.height * Camera.rect.y);
+        }
+    }
+    public Rect ScreenRect
+    {
+        get
+        {
+            return new Rect(Camera.rect.x * Screen.width, Camera.rect.y * Screen.height, Camera.rect.width * Screen.width, Camera.rect.height * Screen.height);
+        }
+    }
+    public Vector3 MousePosition
+    {
+        get
+        {
+            Vector3 mousePos = Input.mousePosition;
+            mousePos.y -= (int)(Camera.rect.y * Screen.height);
+            mousePos.x -= (int)(Camera.rect.x * Screen.width);
+            return mousePos;
+        }
+    }
+    public Vector2 GUIMousePosition
+    {
+        get
+        {
+            Vector2 mousePos = Event.current.mousePosition;
+            mousePos.y = Mathf.Clamp(mousePos.y, Camera.rect.y * Screen.height, Camera.rect.y * Screen.height + Camera.rect.height * Screen.height);
+            mousePos.x = Mathf.Clamp(mousePos.x, Camera.rect.x * Screen.width, Camera.rect.x * Screen.width + Camera.rect.width * Screen.width);
+            return mousePos;
+        }
+    }
+    public bool HasPillarBox { get; private set; }
+
+    public void SetCamera()
+    {
+        var targetAspectRatio = ConstValue.DEFULT_SCREEN_SIZE.x / ConstValue.DEFULT_SCREEN_SIZE.y;
+        float currentAspectRatio = (float)Screen.width / Screen.height;
+        // If the current aspect ratio is already approximately equal to the desired aspect ratio,
+        // use a full-screen Rect (in case it was set to something else previously)
+        if ((int)(currentAspectRatio * 100) / 100.0f == (int)(targetAspectRatio * 100) / 100.0f)
+        {
+            Camera.rect = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
+            if (backgroundCam)
+                Destroy(backgroundCam.gameObject);
+            return;
+        }
+        // Pillarbox
+        if (currentAspectRatio > targetAspectRatio)
+        {
+            HasPillarBox = true;
+            float inset = 1.0f - targetAspectRatio / currentAspectRatio;
+            Camera.rect = new Rect(inset / 2, 0.0f, 1.0f - inset, 1.0f);
+        }
+        // Letterbox
+        else
+        {
+            HasPillarBox = false;
+            float inset = 1.0f - currentAspectRatio / targetAspectRatio;
+            Camera.rect = new Rect(0.0f, inset / 2, 1.0f, 1.0f - inset);
+        }
+
+        if (!backgroundCam)
+        {
+            // Make a new camera behind the normal camera which displays black; otherwise the unused space is undefined
+            backgroundCam = new GameObject("BackgroundCam", typeof(Camera)).GetComponent<Camera>();
+            backgroundCam.depth = int.MinValue;
+            backgroundCam.clearFlags = CameraClearFlags.SolidColor;
+            backgroundCam.backgroundColor = Color.black;
+            backgroundCam.cullingMask = 0;
+        }
+    }
+    #endregion
+
+    #region CameraEffect
     public void Flash(float count)
     {
         m_FlashCount = count;
@@ -79,4 +190,5 @@ public class UICamera : Singleton<UICamera>
         else
             Graphics.Blit(source, destination);
     }
+    #endregion
 }

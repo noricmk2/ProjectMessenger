@@ -42,52 +42,34 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 070514d3b56849241b480790394e8395, type: 3}
-    totalSpriteSurfaceArea: 382536
+    totalSpriteSurfaceArea: 218592
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
-  - {fileID: 21300000, guid: 7a166260ef464414eb89d77d6986cb1c, type: 3}
-  - {fileID: 21300000, guid: 4a856911365cc144f990d28ce73a5b78, type: 3}
-  - {fileID: 21300000, guid: 8035312135ba0f14f878488364176339, type: 3}
   - {fileID: 21300000, guid: 5ae2f4910544bf14a834b5a944397b96, type: 3}
   - {fileID: 21300000, guid: 203a3313569447145afaf732bc771433, type: 3}
   - {fileID: 21300000, guid: eedf83d394398f949830587b3911f9ee, type: 3}
   - {fileID: 21300000, guid: 17352b04700f1834a9aab9303bf80c1d, type: 3}
-  - {fileID: 21300000, guid: a6471ac4ab2a63349b738fcc0fab0540, type: 3}
   - {fileID: 21300000, guid: 6ac25cc489549c64b9aa9580537d30f4, type: 3}
   - {fileID: 21300000, guid: 1774e175c24f765459797cb478c353fb, type: 3}
   - {fileID: 21300000, guid: cea14327f040383468b1ad812287b363, type: 3}
   - {fileID: 21300000, guid: 6d524048ae2cf05429e6c79310fc0921, type: 3}
   - {fileID: 21300000, guid: 2b3cbee895e49af4baaa16edebe08c9c, type: 3}
-  - {fileID: 21300000, guid: f82f7089c91e67c4b9d06bf71b2697d9, type: 3}
-  - {fileID: 21300000, guid: 87960f1b81310234ca75d7a6a8de7c67, type: 3}
   - {fileID: 21300000, guid: c1c65adba186c1c45a6a94b5cd3a60f9, type: 3}
-  - {fileID: 21300000, guid: bd91384cb5417844f82702fbdff64e0f, type: 3}
-  - {fileID: 21300000, guid: 9886a7eca74f43b47855024a9878b403, type: 3}
   - {fileID: 21300000, guid: 8a459cbd99188744d87cd8c9ea3baae5, type: 3}
   - {fileID: 21300000, guid: bc4e2f7e283f7914292f332b42499732, type: 3}
-  - {fileID: 21300000, guid: a162555fafd86ad4b9fd0885443e9b61, type: 3}
   m_PackedSpriteNamesToIndex:
-  - nika_portrait_idle_16
-  - nika_portrait_idle_11
-  - nika_portrait_idle_9
   - nika_portrait_idle_6
   - nika_portrait_idle_4
   - nika_portrait_angry_1
   - nika_portrait_confuse_1
-  - nika_portrait_idle_13
   - nika_portrait_idle_2
   - nika_portrait_laugh_1
   - nika_portrait_idle_1
   - nika_portrait_idle_3
   - nika_portrait_sigh_1
-  - nika_portrait_idle_12
-  - nika_portrait_idle_17
   - nika_portrait_idle_5
-  - nika_portrait_idle_15
-  - nika_portrait_idle_14
   - nika_portrait_idle_7
   - nika_portrait_idle_8
-  - nika_portrait_idle_10
   m_Tag: atlas_character_nika
   m_IsVariant: 0

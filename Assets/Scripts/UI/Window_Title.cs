@@ -9,7 +9,7 @@ public class Window_Title : WindowBase
         if (AlwaysTopCanvas.Instance.IsOnFade)
             return;
 
-        AlwaysTopCanvas.Instance.SetFadeAnimation(0.5f, false, MSUtil.eTransitionType.NORMAL, () =>
+        AlwaysTopCanvas.Instance.SetFadeAnimation(1, false, MSUtil.eTransitionType.NORMAL, () =>
         {
             CloseWindow();
             IngameScene.instance.StartIngame();

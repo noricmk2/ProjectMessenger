@@ -103,7 +103,7 @@ public class WindowBase : MonoBehaviour
         return addObj;
     }
 
-    public static WindowBase OpenWindowWithTransition(eWINDOW eWindow, MSUtil.eTransitionType transitionType, Transform parent, bool bOverlap)
+    public static WindowBase OpenWindowWithTransition(eWINDOW eWindow, MSUtil.eTransitionType transitionType, Transform parent, System.Action fadeAction = null, bool bOverlap = false)
     {
 #if UNITY_EDITOR
         if (!m_WindowInfoDic.ContainsKey(eWindow))
@@ -113,12 +113,13 @@ public class WindowBase : MonoBehaviour
         }
 #endif
         WindowBase addObj = m_WindowInfoDic[eWindow].Instance;
-        AlwaysTopCanvas.Instance.SetFadeAnimation(0.5f, true, transitionType, () =>
+        AlwaysTopCanvas.Instance.SetFadeAnimation(1, true, transitionType, () =>
         {
+            if (fadeAction != null)
+                fadeAction();
             var window = OpenWindow(eWindow, parent, bOverlap);
             window.AfterOpen();
         });
-
         return addObj;
     }
 

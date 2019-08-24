@@ -23,6 +23,7 @@ public class ChatScene : SceneBase
     {
         if (m_ChatObject != null)
             m_ChatObject.Release();
+        AudioManager.Instance.StopAllSound();
         ObjectFactory.Instance.Release();
         yield break;
     }

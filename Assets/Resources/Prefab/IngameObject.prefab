@@ -143,7 +143,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WindowParent: {fileID: 95279536841685086}
   IngameCanvas: {fileID: 2653058539699716186}
+  Scaler: {fileID: 6673007910582947046}
   PoolParent: {fileID: 3277741726700955840}
+  mapObject: {fileID: 0}
+  ResultWindow: {fileID: 0}
 --- !u!1 &4510549947318542299
 GameObject:
   m_ObjectHideFlags: 0

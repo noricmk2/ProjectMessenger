@@ -41,6 +41,7 @@ public class Window_Chat_Main : WindowBase
 
     public void Init(DataManager.ChapterTextData data, System.Action afterOpenAction = null, System.Action mainTouchAction = null)
     {
+        ReleaseWindow();
         m_CurrentChapterTextData = data;
         MainCharacter.Init(ConstValue.CHARACTER_NIKA_ID);
         m_AfterOpenAction = afterOpenAction;

@@ -27,6 +27,7 @@ public class Window_Chat_Event : WindowBase
 
     public void Init(System.Action afterOpenAction = null, System.Action mainTouchAction = null, eEnterEffect effect = eEnterEffect.NONE)
     {
+        ReleaseWindow();
         m_AfterOpenAction = afterOpenAction;
         m_MainTouchAction = mainTouchAction;
         m_EnterEffect = effect;

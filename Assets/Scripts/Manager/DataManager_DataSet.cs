@@ -282,6 +282,7 @@ public partial class DataManager : Singleton<DataManager>
         public Dictionary<int, string> TextIDDic { get; private set; }
         public string BGResourceName { get; private set; }
         public string PlaceTextID { get; private set; }
+        public string SoundResourceName { get; private set; }
         public eEnterEffect EnterEffectType { get; private set; }
         public eTransitionType TransitionType { get; private set; }
 
@@ -315,6 +316,7 @@ public partial class DataManager : Singleton<DataManager>
             ChatType = Func.GetEnum<eChatType>(values[8]);
             EnterEffectType = Func.GetEnum<eEnterEffect>(values[9]);
             TransitionType = Func.GetEnum<eTransitionType>(values[10]);
+            SoundResourceName = values[11];
         }
 
         public List<StoryTextData> GetAllTextData()

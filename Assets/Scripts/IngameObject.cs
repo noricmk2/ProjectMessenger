@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using MSUtil;
+using UnityEngine.UI;
 
 public class IngameObject : MonoBehaviour
 {
     #region Inspector
     public Transform WindowParent;
     public Canvas IngameCanvas;
+    public CanvasScaler Scaler;
     public Transform PoolParent;
     #endregion
 
@@ -23,6 +25,7 @@ public class IngameObject : MonoBehaviour
     {
         IngameCanvas.renderMode = RenderMode.ScreenSpaceCamera;
         IngameCanvas.worldCamera = UICamera.Instance.Camera;
+        Scaler.matchWidthOrHeight = UICamera.Instance.HasPillarBox ? 1 : 0;
 
         switch (UserInfo.Instance.GetCurrentIngameState())
         {

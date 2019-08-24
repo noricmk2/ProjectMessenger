@@ -102,8 +102,18 @@ public class ExpandTextOutput : MonoBehaviour
             m_TypeWriteCoroutine = null;
             Text.text = m_CurrentString;
 
-            if (m_TextEventTagDic != null && m_EventAction != null && m_TextEventTagDic.ContainsKey(m_CurrentString.Length))
-                yield return m_EventAction(m_ParentBubble, m_TextEventTagDic[m_CurrentString.Length]);
+            if (m_TextEventTagDic != null && m_EventAction != null)
+            {
+                var idx = m_CurrentString.Length;
+                while (m_TextEventTagDic.ContainsKey(idx))
+                {
+                    if (m_TextEventTagDic[m_CurrentString.Length].Tag == eTextEventTag.CHO)
+                        Text.text = "";
+
+                    yield return m_EventAction(m_ParentBubble, m_TextEventTagDic[idx]);
+                    ++idx;
+                }
+            }
             if (m_TextEndAction != null)
                 m_TextEndAction();
         }
@@ -160,15 +170,11 @@ public class ExpandTextOutput : MonoBehaviour
         }
         if (m_TextEventTagDic != null && m_EventAction != null)
         {
-            if (m_TextEventTagDic.ContainsKey(m_CurrentString.Length))
+            while (m_TextEventTagDic.ContainsKey(idx))
             {
                 if (m_TextEventTagDic[m_CurrentString.Length].Tag == eTextEventTag.CHO)
                     Text.text = "";
-                yield return m_EventAction(m_ParentBubble, m_TextEventTagDic[m_CurrentString.Length]);
-            }
 
-            while (m_TextEventTagDic.ContainsKey(idx))
-            {
                 yield return m_EventAction(m_ParentBubble, m_TextEventTagDic[idx]);
                 ++idx;
             }

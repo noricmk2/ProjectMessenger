@@ -126,11 +126,15 @@ public class SpriteAnimation : MonoBehaviour
         }
     }
 
+    int targetPer = 3;
     IEnumerator Update_C()
     {
         var targetAnimData = TotalAnimationDataDic[m_CurrentState];
         int frameIdx = 0;
         TargetImage.sprite = targetAnimData.SpriteList[frameIdx];
+        //임시
+        var maxCount = targetAnimData.FrameData.FrameCount;
+        var rndNum = targetPer;
         while (true)
         {
             m_FrameTime += Time.deltaTime;
@@ -139,10 +143,24 @@ public class SpriteAnimation : MonoBehaviour
             {
                 frameIdx += Mathf.RoundToInt(m_FrameTime * m_targetFPS);
 
-                if (frameIdx >= targetAnimData.FrameData.FrameCount)
+                if (frameIdx >= maxCount)
                 {
                     if (m_IsRepeat)
-                        frameIdx = frameIdx % targetAnimData.FrameData.FrameCount;
+                    {
+                        //임시
+                        if (m_CurrentState == eCharacterState.IDLE)
+                        {
+                            if (maxCount == targetAnimData.FrameData.FrameCount)
+                                rndNum *= rndNum;
+                            else
+                                rndNum = targetPer;
+                            var rand = Random.Range(0, rndNum);
+                            frameIdx = rand == 0? targetAnimData.FrameData.FrameCount / 2 : 0;
+                            maxCount = rand == 0 ? targetAnimData.FrameData.FrameCount: targetAnimData.FrameData.FrameCount / 2;
+                        }
+                        else
+                            frameIdx = frameIdx % targetAnimData.FrameData.FrameCount;
+                    }
                     else
                         yield break;
                 }

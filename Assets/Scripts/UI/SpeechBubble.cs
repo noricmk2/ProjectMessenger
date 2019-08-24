@@ -78,6 +78,7 @@ public class SpeechBubble : MonoBehaviour, IPoolObjectBase
 
     public void Release()
     {
+        SetCursor(false);
         ExpandText.ResetText();
     }
 
