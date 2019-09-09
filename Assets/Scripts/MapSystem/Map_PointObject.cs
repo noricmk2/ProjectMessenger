@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
+using MSUtil;
 
 public class Map_PointObject : MonoBehaviour
 {
@@ -15,8 +16,17 @@ public class Map_PointObject : MonoBehaviour
 
     public RectTransform highlightTransform;
 
+    [Header("BubbleObject")]
+    public GameObject bubbleObject;
+    public Image bubbleIcon;
+    public GameObject bubblePortraitObject;
+    public Image bubblePortraitImage;
+
     [NonSerialized]
     public DataManager.MapData_Point pointData;
+
+    [NonSerialized]
+    public DataManager.LetterData letterData = null;
 
     private void Reset()
     {
@@ -26,7 +36,6 @@ public class Map_PointObject : MonoBehaviour
     private void OnValidate()
     {
         pointID = transform.GetSiblingIndex();
-
     }
 
     public void SetPointData(DataManager.MapData_Point data)
@@ -36,6 +45,31 @@ public class Map_PointObject : MonoBehaviour
         pointName.text = TextManager.GetSystemText(pointData.Name_Short);
         rectTransform.anchoredPosition = pointData.Position;
         highlightTransform.gameObject.SetActive(false);
+        letterData = null;
+        bubbleObject.SetActive(false);
+    }
+
+    public void SetPointLetterData(DataManager.LetterData data)
+    {
+        letterData = data;
+        bubbleObject.SetActive(true);
+        
+
+        switch (letterData.LetterType)
+        {
+            case eLetterType.Event:
+                bubbleIcon.gameObject.SetActive(false);
+                bubblePortraitObject.SetActive(true);
+                eCharacter characterType = DataManager.Instance.GetCharacterData(letterData.From).CharacterType;
+                //ObjectFactory.Instance.GetCharacterSprite(characterType, );
+                bubblePortraitImage.sprite = null;
+                break;
+            case eLetterType.Junk:
+                bubbleIcon.gameObject.SetActive(true);
+                bubblePortraitObject.SetActive(false);
+                bubblePortraitImage.sprite = null;
+                break;
+        }
     }
 
     public void OnClickPoint()

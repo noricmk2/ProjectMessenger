@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using MSUtil;
+using TMPro;
 
 public class Window_Map : WindowBase
 {
@@ -19,6 +20,7 @@ public class Window_Map : WindowBase
 
     [Header("FuelObject")]
     public Image fuelGauge;
+    public TextMeshProUGUI fuelText;
 
     [Header("LetterList")]
     public Transform LetterObjectsParent;
@@ -44,18 +46,32 @@ public class Window_Map : WindowBase
         UserInfo.Instance.CurrentGameData.CurrentMapProgress++;
 
         List<UserInfo.ItemData> bagItemList = UserInfo.Instance.GetBagItemList();
+        Dictionary<int, DataManager.LetterData> letterDataDic = new Dictionary<int, DataManager.LetterData>();
+
         letterObjectList = new List<LetterListObject>();
         for (int i = 0; i < bagItemList.Count; i++)
         {
             if (bagItemList[i].Type == eItemType.Letter)
             {
-                LetterListObject letterObject = ObjectFactory.Instance.ActivateObject<LetterListObject>();
-                letterObject.transform.SetParent(LetterObjectsParent);
-                letterObject.transform.localScale = Vector3.one;
-                letterObject.SetLetterObject(DataManager.Instance.GetLetterData(bagItemList[i].ID));
-                letterObjectList.Add(letterObject);
+                //LetterListObject letterObject = ObjectFactory.Instance.ActivateObject<LetterListObject>();
+                //letterObject.transform.SetParent(LetterObjectsParent);
+                //letterObject.transform.localScale = Vector3.one;
+                //letterObject.SetLetterObject(DataManager.Instance.GetLetterData(bagItemList[i].ID));
+                //letterObjectList.Add(letterObject);
+
+                DataManager.LetterData letterData = DataManager.Instance.GetLetterData(bagItemList[i].ID);
+                letterDataDic.Add(letterData.Destination, letterData);
             }
         }
+
+        for (int i = 0; i < mapObject.allPointList.Count; i++)
+        {
+            if (letterDataDic.ContainsKey(mapObject.allPointList[i].pointID))
+            {
+                mapObject.allPointList[i].SetPointLetterData(letterDataDic[mapObject.allPointList[i].pointID]);
+            }
+        }
+
         MainCharacter.Init(ConstValue.CHARACTER_NIKA_ID);
         MainCharacter.Bubble.SetActive(false);
         chatTriggerObject.SetActive(false);
@@ -173,5 +189,20 @@ public class Window_Map : WindowBase
             return;
         }
         EnterPoint();
+    }
+
+    public void OnClickResetRoad()
+    {
+        //경로 리셋
+    }
+
+    public void OnClickClose()
+    {
+        //게임 종료
+    }
+
+    public void OnClickOption()
+    {
+        //옵션
     }
 }
