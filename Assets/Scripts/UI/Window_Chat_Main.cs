@@ -52,6 +52,7 @@ public class Window_Chat_Main : WindowBase
         BackLogButton.gameObject.SetActive_Check(true);
         PlayerBag.gameObject.SetActive_Check(false);
         LetterInfo.gameObject.SetActive_Check(false);
+        NotifyPanel.gameObject.SetActive_Check(false);
     }
 
     private RecycleSlotBase ActiveSlot()

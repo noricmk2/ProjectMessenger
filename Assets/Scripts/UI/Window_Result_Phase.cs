@@ -13,7 +13,7 @@ public class Window_Result_Phase : WindowBase
 
     private void Awake()
     {
-        DayResultPanel.gameObject.SetActive_Check(false);
+
     }
 
     public void Init()

@@ -169,7 +169,11 @@ public class Window_Map : WindowBase
         chatTriggerObject.SetActive(false);
         if (UserInfo.Instance.GetCurrentIngameState() == eIngameState.Result)
         {
-            IngameScene.instance.ingameObject.StartResult();
+            AlwaysTopCanvas.Instance.SetFadeAnimation(1, true, eTransitionType.CIRCLE, () =>
+            {
+                IngameScene.instance.ingameObject.StartResult();
+            });
+
             return;
         }
         EnterPoint();

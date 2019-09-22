@@ -176,6 +176,7 @@ public class RecycleScroll : ScrollRect
                     iter.Current.RefreshData(m_DataList, idx);
                     ++idx;
                 }
+                m_LastIdx = idx - 1;
             }
             else
             {
