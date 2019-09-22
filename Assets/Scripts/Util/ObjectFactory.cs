@@ -16,6 +16,7 @@ public class ObjectFactory : Singleton<ObjectFactory>
     private SpriteAtlas UIAtlas;
     private SpriteAtlas CharacterAtlas_Nika;
     private SpriteAtlas CharacterAtlas_Less;
+    private SpriteAtlas TileAtlas;
     private Dictionary<eTransitionType, Texture2D> m_TransitionMaskDic = new Dictionary<eTransitionType, Texture2D>();
 
     public Transform ChatPoolParent { get; private set; }
@@ -27,6 +28,7 @@ public class ObjectFactory : Singleton<ObjectFactory>
     {
         UIAtlas = ResourcesManager.LoadObject<SpriteAtlas>("SpriteAtlas/atlas_ui");
         CharacterAtlas_Nika = ResourcesManager.LoadObject<SpriteAtlas>("SpriteAtlas/atlas_character_nika");
+        TileAtlas = ResourcesManager.LoadObject<SpriteAtlas>("SpriteAtlas/atlas_tile");
 
         SpriteOutlineMaterial = new Material(Shader.Find("Sprites/Outline"));
         SpriteOutlineMaterial.SetColor("_OutlineColor", Color.red);
@@ -75,6 +77,13 @@ public class ObjectFactory : Singleton<ObjectFactory>
     {
         if (UIAtlas != null)
             return UIAtlas.GetSprite(spriteName);
+        return null;
+    }
+
+    public Sprite GetTileSprite(string spriteName)
+    {
+        if (TileAtlas != null)
+            return TileAtlas.GetSprite(spriteName);
         return null;
     }
 

@@ -227,6 +227,31 @@ namespace MSUtil
         {
             return milliSec * 0.001f;
         }
+
+        public static Vector2 Cart2Iso(Vector2 cartesianPosition)
+        {
+            var result = new Vector2();
+            result.x = cartesianPosition.x - cartesianPosition.y;
+            result.y = (cartesianPosition.x + cartesianPosition.y) * 0.5f;
+            return result;
+        }
+
+        public static Vector2 Iso2Cart(Vector2 isometricPosition)
+        {
+            var result = new Vector2();
+            result.x = (2 * isometricPosition.y + isometricPosition.x) * 0.5f;
+            result.y = (2 * isometricPosition.y - isometricPosition.x) * 0.5f;
+            return result;
+        }
+
+        public static Vector2 GetTileCoord(Vector2 screenPos, float tileSize)
+        {
+            var result = new Vector2();
+            var cartPos = Iso2Cart(screenPos);
+            result.x = Mathf.FloorToInt(cartPos.x / tileSize);
+            result.y = Mathf.FloorToInt(cartPos.y / tileSize);
+            return result;
+        }
     }
     #endregion
 

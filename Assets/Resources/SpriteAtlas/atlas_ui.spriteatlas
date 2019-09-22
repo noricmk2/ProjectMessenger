@@ -42,25 +42,27 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 7a16d2f5f8c3c68498649a3edd0bd3f9, type: 3}
-    totalSpriteSurfaceArea: 2612840
+    totalSpriteSurfaceArea: 2332922
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: 9411e090fac062d43a9737c648b6b7c9, type: 3}
+  - {fileID: 21300000, guid: c46974912155c684e8ccef3c15ba2481, type: 3}
   - {fileID: 21300000, guid: 03ab2ae10043370428fe148b5ce51af5, type: 3}
+  - {fileID: 21300000, guid: 0878a222555af594f957612df11a822e, type: 3}
+  - {fileID: 21300000, guid: 521ccc72f04adff4f89c142d8d014da3, type: 3}
   - {fileID: 21300000, guid: 456be2d228cf5554fa128550b60e1928, type: 3}
   - {fileID: 21300000, guid: 1c797b54210281a44ba2efe83f2ac849, type: 3}
   - {fileID: 21300000, guid: e05fd564219427e4bb645a0c6481bad3, type: 3}
+  - {fileID: 21300000, guid: fd494aa416cc21d4e8351093fe44319b, type: 3}
   - {fileID: 21300000, guid: f8f2ae25d76295a459108211d89b8ec4, type: 3}
   - {fileID: 21300000, guid: 781e43751867c1f4fb4c7373a640b9b7, type: 3}
-  - {fileID: 21300000, guid: 863018e5ce3df9c4a972273e2d5c1708, type: 3}
   - {fileID: 21300000, guid: 92c247061270690478f60b264cfac0d7, type: 3}
   - {fileID: 21300000, guid: 66c087e643445fc4a8420d4831019f81, type: 3}
-  - {fileID: 21300000, guid: 78d321879f99b2846abedb36b8bfd723, type: 3}
-  - {fileID: 21300000, guid: 1a878c187122107479ce17b09b61daf4, type: 3}
-  - {fileID: 21300000, guid: 70094e5838a71c442a1168c019515cac, type: 3}
+  - {fileID: 21300000, guid: 9c6ac32705d31a340a5dc1579eb21598, type: 3}
+  - {fileID: 21300000, guid: a2886b27cfe57b54b9bdd134dfbe4bb9, type: 3}
+  - {fileID: 21300000, guid: 6a6c9f1830166f04785f0142f65dfbee, type: 3}
   - {fileID: 21300000, guid: 32359199429404949bf68e03d85754c3, type: 3}
-  - {fileID: 21300000, guid: 672d100a999330643b46e62f08037f8e, type: 3}
   - {fileID: 21300000, guid: 7e57fa6a86cbaba42ba2a8f547aafd2e, type: 3}
   - {fileID: 21300000, guid: f4d4abca465fe814fa5f512c6ba4f7e8, type: 3}
   - {fileID: 21300000, guid: 41cf103b3ad323b46a523167246f1ab1, type: 3}
@@ -68,28 +70,27 @@ SpriteAtlas:
   - {fileID: 21300000, guid: a1dce9eba5500084bb1409810e7a2468, type: 3}
   - {fileID: 21300000, guid: fb17a91c68a57f844b3d7eb804589d1e, type: 3}
   - {fileID: 21300000, guid: dd8b6f2d233d14f469e17ace6e371cd0, type: 3}
-  - {fileID: 21300000, guid: eb8b3a4d9e2c8ad489330966853af9c0, type: 3}
   - {fileID: 21300000, guid: d7243bdd37775e0489c1569d9051b95b, type: 3}
-  - {fileID: 21300000, guid: 4f52b88e36f126141899fec32329e4d0, type: 3}
   - {fileID: 21300000, guid: 1a5e999ea4b08a74da7cbf56f5105fae, type: 3}
-  - {fileID: 21300000, guid: 75ebd0ee7fc5e9b49a24c1c89e5f49b8, type: 3}
   - {fileID: 21300000, guid: 294be99f69b349342bd4699864d41917, type: 3}
   m_PackedSpriteNamesToIndex:
   - ui_speech_bubble_04
+  - ui_notify_panel
   - icon_bag
+  - icon_arrow
+  - ui_frame_2
   - icon_mail
   - ui_speech_bubble_02
   - ui_cursor
+  - ui_panel_2
   - ui_speech_bubble_01
   - ui_blur
-  - ui_11
   - icon_hage
   - ui_rect
-  - ui_5
-  - ui_6
-  - ui_panel
+  - ui_btn_3
+  - ui_btn_2
+  - ui_btn_1
   - icon_candy
-  - ui_10
   - ui_speech_bubble_06
   - ui_speech_bubble_05
   - icon_start
@@ -97,11 +98,8 @@ SpriteAtlas:
   - ui_speech_bubble_03
   - ui_stop_btn
   - ui_frame1
-  - ui_8
   - icon_mail_bundle
-  - ui_7
   - ui_4
-  - ui_9
   - map_temp
   m_Tag: atlas_ui
   m_IsVariant: 0

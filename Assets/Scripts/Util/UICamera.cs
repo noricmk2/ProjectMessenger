@@ -98,12 +98,11 @@ public class UICamera : Singleton<UICamera>
     {
         var targetAspectRatio = ConstValue.DEFULT_SCREEN_SIZE.x / ConstValue.DEFULT_SCREEN_SIZE.y;
         float currentAspectRatio = (float)Screen.width / Screen.height;
-        // If the current aspect ratio is already approximately equal to the desired aspect ratio,
-        // use a full-screen Rect (in case it was set to something else previously)
-        if ((int)(currentAspectRatio * 100) / 100.0f == (int)(targetAspectRatio * 100) / 100.0f)
+
+        if (currentAspectRatio.Equals(targetAspectRatio))
         {
             Camera.rect = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
-            if (backgroundCam)
+            if (backgroundCam != null)
                 Destroy(backgroundCam.gameObject);
             return;
         }
@@ -124,7 +123,6 @@ public class UICamera : Singleton<UICamera>
 
         if (!backgroundCam)
         {
-            // Make a new camera behind the normal camera which displays black; otherwise the unused space is undefined
             backgroundCam = new GameObject("BackgroundCam", typeof(Camera)).GetComponent<Camera>();
             backgroundCam.depth = int.MinValue;
             backgroundCam.clearFlags = CameraClearFlags.SolidColor;

@@ -49,7 +49,18 @@ public class LetterSlot : RecycleSlotBase
 
     public void OnClickMail()
     {
-        m_ParentWindow.OpenMailInfo(CurrentLetterData);
+        //m_ParentWindow.OpenMailInfo(CurrentLetterData);
+
+        UserInfo.Instance.AddInventoryLetter(CurrentLetterData);
+        UserInfo.Instance.RemoveChapterLetter(CurrentLetterData);
+        m_DataList.Remove(CurrentLetterData);
+        //ObjectFactory.Instance.DeactivateObject(this);
+        m_Scroll.RefreshScroll(m_DataList);
+        //m_ParentWindow.CloseMailInfo();
+        if (m_ParentWindow.PlayerBag.gameObject.activeSelf)
+            m_ParentWindow.PlayerBag.InventoryScroll.RefreshScroll(new List<IRecycleSlotData>(UserInfo.Instance.GetBagItemList().ToArray()));
+
+        ChatObject.Instance.CheckOverlapEvent(eOverlapType.MAILDROP);
     }
 
     public override float GetHeight()

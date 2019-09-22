@@ -40,7 +40,10 @@ public class IngameObject : MonoBehaviour
                 StartMap();
                 break;
             case eIngameState.Result:
-                StartResult();
+                AlwaysTopCanvas.Instance.SetFadeAnimation(1, true, eTransitionType.CIRCLE, () =>
+                {
+                    StartResult();
+                });
                 break;
         }
 
@@ -54,6 +57,9 @@ public class IngameObject : MonoBehaviour
 
     public void StartResult()
     {
+        var roomObj = ResourcesManager.Instantiate<TileMap>("Prefab/IsometricTileMap");
+        roomObj.transform.localPosition = new Vector3(4.07f, -1.75f);
+
         ResultWindow = WindowBase.OpenWindow(WindowBase.eWINDOW.ResultPhase, WindowParent, false) as Window_Result_Phase;
         ResultWindow.Init();
     }
